@@ -17,6 +17,7 @@
     "@types/react-dom": "^18.2.19",
     "@types/styled-components": "^5.1.34",
     "bcrypt": "^5.1.1",
+    "date-fns": "^3.6.0",
     "framer-motion": "^11.0.8",
     "mongoose": "^8.2.1",
     "passport": "^0.7.0",
