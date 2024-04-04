@@ -50,10 +50,10 @@ const articles = [
             Browse our favorite articles from students across all faculties.
           </Text>
           <Grid
-            templateColumns="repeat(auto-fit, minmax(300px, 1fr))"
+            templateColumns="repeat(auto-fit, minmax(850px, 10fr))"
             gap={4}
             // Add property for two columns per row
-            gridAutoRows="minmax(min-content, auto)"
+            gridAutoRows="minmax(max-content, auto)"
           >
             {articles.map((article) => (
               <Box key={article.title} bg="#F7FAFC" p={5} borderRadius="md" shadow="base">
@@ -76,7 +76,7 @@ const articles = [
                 <Text fontSize="md" color="gray.500">
                   {article.description}
                 </Text>
-                <Image mt={4} boxSize="150px" src={article.image} alt={article.title} />
+                <Image mt={4} boxSize="150px" src={article.image} alt={article.title} justifyContent="center"/>
               </Box>
             ))}
           </Grid>
