@@ -18,6 +18,7 @@ import meat from '../../assets/contains-meat.png'
 import vegetable from '../../assets/vegetable.png'
 import family from '../../assets/family.png'
 import woman from '../../assets/women.png'
+import { formatDistanceToNow } from 'date-fns';
 
 const articles = [
     // Replace with your actual article data (including author name, avatar URL, and submit date)
@@ -37,7 +38,7 @@ const articles = [
       author: 'Mandy Chow',
       topicId: 1,
       avatarURL: '', // Replace with placeholder or actual avatar URL
-      submitDate: '2024-04-03',
+      submitDate: new Date('2024-03-25T12:00:00Z'),
     },    
     {
       title: `Cause I'm as free as a bird now`,
@@ -46,7 +47,7 @@ const articles = [
       author: 'Kaling Bling',
       topicId: 4,
       avatarURL: '', // Replace with placeholder or actual avatar URL
-      submitDate: '2024-04-03',
+      submitDate: new Date('2024-03-25T12:00:00Z'),
     },
     {
       title: 'There could be hell below, below',
@@ -55,7 +56,7 @@ const articles = [
       author: 'Mandy Chow',
       topicId: 3,
       avatarURL: '', // Replace with placeholder or actual avatar URL
-      submitDate: '2024-04-03',
+      submitDate: new Date('2024-03-25T12:00:00Z'),
     },    {
       title: 'No alarms to no surprises',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
@@ -63,7 +64,7 @@ const articles = [
       author: 'Nicky Nicknack',
       topicId: 2,
       avatarURL: '', // Replace with placeholder or actual avatar URL
-      submitDate: '2024-04-03',
+      submitDate: new Date('2024-03-25T12:00:00Z'),
     },    {
       title: 'Sectoral heterochromia',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
@@ -71,7 +72,7 @@ const articles = [
       author: 'Kaling Bling',
       topicId: 1,
       avatarURL: '', // Replace with placeholder or actual avatar URL
-      submitDate: '2024-04-03',
+      submitDate: new Date('2024-03-25T12:00:00Z'),
     },
     // ... more articles
   ];
@@ -117,6 +118,14 @@ function Newsfeed() {
   const handleLoadMore = () => {
     setArticlesToShow(articlesToShow + 4); // Increase the number of articles to show
   };
+
+  const colorSchemes = ['teal', 'purple', 'orange', 'green'];
+
+  function getRandomColorScheme() {
+    const randomIndex = Math.floor(Math.random() * colorSchemes.length);
+    return colorSchemes[randomIndex];
+  }
+
   return (
     <Box>
       <AdminHeader /> {/* Assuming AdminHeader is a separate component */}
@@ -128,7 +137,7 @@ function Newsfeed() {
           Browse our favorite articles from students across all faculties.
         </Text>
         <Grid
-          templateColumns="repeat(auto-fit, minmax(850px, 10fr))"
+          templateColumns="repeat(auto-fit, minmax(1050px, 10fr))"
           gap={4}
         >
           {articles.slice(0, articlesToShow).map((article) => (
@@ -136,27 +145,27 @@ function Newsfeed() {
               <HStack spacing={4}>
                 <Avatar src={article.avatarURL} name={article.author} />
                 <VStack>
-                  <Text fontWeight="bold">{article.author}</Text>
-                  <Text fontSize="xs" color="gray.500">
-                    Submitted: {article.submitDate}
-                  </Text>
+                  <Text fontSize="lg" fontWeight="bold">{article.author}</Text>
+                  <Text fontSize="sm" color="gray.400" fontStyle="italic">
+                        Submitted {formatDistanceToNow(new Date(article.submitDate), { addSuffix: true })}
+                    </Text>
                 </VStack>
                 <Spacer /> {/* Add spacer to push topic to the right */}
                 {topics.map((topics) => topics.id === article.topicId && (
-                  <Tag variant="solid" colorScheme="green" borderRadius="full">
+                  <Tag variant="solid" colorScheme={getRandomColorScheme()}  borderRadius="full">
                     <Image objectFit="cover" src={topics.image} alt={topics.title} mr={2} w='45px' h='45px'/>
                     {topics.title}
                 </Tag>
                 ))}
                 
               </HStack>
-              <Heading fontSize="xl" mt={4}>
+              <Heading fontSize="3xl" mt={4}>
                 {article.title}
               </Heading>
               <Text fontSize="md" color="gray.500">
                 {article.description}
               </Text>
-              <Image display="flex" mt={4} boxSize="150px" src={article.image} alt={article.title} justifyContent="center" />
+              <Image display="flex" mt={4} boxSize="400px" src={article.image} alt={article.title} mx="auto" maxW='500px' maxH='500px'/>
             </Box>
           ))}
         </Grid>
