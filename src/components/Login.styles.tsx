@@ -100,6 +100,8 @@ export const Input = styled.input`
 `;
 
 export const Label = styled.label`
+font: "Museo Moderno";
+  font-size: 20px;
   color: white;
   display: block;
   margin-top: 20px;
@@ -138,13 +140,14 @@ export const Checkbox = styled.input`
 `;
 
 export const CheckboxLabel = styled.label`
-  font-size: 0.6rem;
+color: white;
+  font-size: 1rem;
   font-family: 'Lora';
   margin: 0; // Remove any default margin
 `;
 
 export const ForgotPasswordLink = styled.a`
-  font-size: 0.6rem;
+  font-size: 0.9rem;
   color: white;
   text-decoration: none;
   font-family: 'Lora';

@@ -96,7 +96,7 @@ export const Overview = () => {
 
         {/* Buttons column */}
         <VStack spacing={4} align="stretch">
-          <Link href='Members'> 
+          <Link href='/Admin/Members'> 
             <Button leftIcon={<FaCog />} colorScheme="teal" variant="solid">
               Manage accounts
             </Button>
