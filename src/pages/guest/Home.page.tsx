@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react';
 import about from "../../assets/seven-shooter-hPKTYwJ4FUo-unsplash.jpg"
 import { SearchIcon } from '@chakra-ui/icons';
-import { FaFacebook, FaTwitter, FaEnvelope } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaEnvelope, FaInstagram } from 'react-icons/fa';
 import post1 from "../../assets/post 1.jpg"
 import ceo1 from "../../assets/ceo1.png"
 import ceo2 from "../../assets/ceo2.jpg"
@@ -294,9 +294,15 @@ export function Footer() {
           <VStack gap={3.5}>
             <Text fontSize="5xl" fontWeight="bold" mb={2}>Website</Text>
             <HStack spacing={4}>
-              <Icon as={FaFacebook} w={10} h={10} href='/' />
-              <Icon as={FaTwitter} w={10} h={10} />
-              <Icon as={FaEnvelope} w={10} h={10} />
+              <Link href='https://www.facebook.com/'>
+                <Icon as={FaFacebook} w={10} h={10} />
+              </Link>
+              <Link href='https://www.instagram.com'>
+                <Icon as={FaInstagram} w={10} h={10} />
+              </Link>
+              <Link href='https://mail.google.com'>
+                <Icon as={FaEnvelope} w={10} h={10} />
+              </Link>
             </HStack>
             <Text fontSize="lg" textAlign="left">
               Or contact us locally
