@@ -27,14 +27,6 @@ export function MCSidebar() {
                         w='300px'
                         variant='outline'>View Pending Articles</Button>
                 </Link>
-                <Link as={RouterLink} to='/MyAccount'>
-                <Button bg={isActive('/MyAccount') ? 'whitesmoke' : 'transparent'} 
-                        _hover={isActive('/MyAccount') ? {} : { bg: '#fff', color: '#2d4b12' }} 
-                        leftIcon={<FaUser />} 
-                        color={isActive('/MyAccount') ? '#2d4b12' : 'whitesmoke'} 
-                        w='300px'
-                        variant='outline'>My Account</Button>
-                </Link>
             </VStack>
             {/* Footer */}
             <Text position="absolute" bottom={5} left={5} fontSize="sm">Copyright Website 2024</Text>

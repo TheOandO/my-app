@@ -42,22 +42,14 @@ export function StudentSidebar() {
         <Box minW="350px" bg="#2d4b12" color="white" p={5} alignItems="center" justifyContent="center" minH="100vh" // Minimum height to match the viewport height
         overflowY="auto">
             <VStack align="stretch" spacing={16} mt={20} alignItems="center" justifyContent="center">
-            <Link as={RouterLink} to='/Student/MyArticles'>
+              <Link as={RouterLink} to='/Student/MyArticles'>
                 <Button bg={isActive('/Student/MyArticles') ? 'whitesmoke' : 'transparent'} 
                         _hover={isActive('/Student/MyArticles') ? {} : { bg: '#fff', color: '#2d4b12' }} 
                         leftIcon={<FaNewspaper />} 
                         color={isActive('/Student/MyArticles') ? '#2d4b12' : 'whitesmoke'} 
                         w='300px'
                         variant='outline'>View My Articles</Button>
-                </Link>
-                <Link as={RouterLink} to='/Student/MyAccount'>
-                <Button bg={isActive('/Student/MyAccount') ? 'whitesmoke' : 'transparent'} 
-                        _hover={isActive('/Student/MyAccount') ? {} : { bg: '#fff', color: '#2d4b12' }} 
-                        leftIcon={<FaUser />} 
-                        color={isActive('/Student/MyAccount') ? '#2d4b12' : 'whitesmoke'} 
-                        w='300px'
-                        variant='outline'>My Account</Button>
-                </Link>
+              </Link>
             </VStack>
             {/* Footer */}
             <Text position="absolute" bottom={5} left={5} fontSize="sm">Copyright Website 2024</Text>
