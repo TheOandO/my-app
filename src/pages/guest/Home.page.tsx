@@ -315,7 +315,7 @@ export function Footer() {
           {/* Right text block */}
           <VStack alignItems="flex-start" spacing={2}>
             <Divider borderColor="whiteAlpha.800" />
-            <Link href=''>
+            <Link href='/About'>
               <Text fontSize="3xl" fontWeight="bold">About Website</Text>
             </Link>
             <Link href=''>
