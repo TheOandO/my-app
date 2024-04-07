@@ -12,6 +12,9 @@ import {
   Grid,
   Avatar,
   Spacer,
+  Input,
+  InputGroup,
+  InputLeftElement,
 } from '@chakra-ui/react';
 import { AdminHeader } from '../admin/AdminHome.page';
 import meat from '../../assets/contains-meat.png'
@@ -19,6 +22,7 @@ import vegetable from '../../assets/vegetable.png'
 import family from '../../assets/family.png'
 import woman from '../../assets/women.png'
 import { formatDistanceToNow } from 'date-fns';
+import { FaSearch } from 'react-icons/fa';
 
 const articles = [
     // Replace with your actual article data (including author name, avatar URL, and submit date)
@@ -136,6 +140,18 @@ function Newsfeed() {
         <Text fontSize="md" color="gray.500">
           Browse our favorite articles from students across all faculties.
         </Text>
+        <HStack w="80%" mb={5}>
+          <InputGroup>
+            <InputLeftElement pointerEvents="none">
+              <FaSearch />
+            </InputLeftElement>
+            <Input placeholder="Search an article" />
+          </InputGroup>
+          <Button bg='#426b1f' color='whitesmoke' variant="ghost" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s">
+            Submit
+          </Button>
+        </HStack>
+
         <Grid
           templateColumns="repeat(auto-fit, minmax(1050px, 10fr))"
           gap={4}
@@ -170,7 +186,7 @@ function Newsfeed() {
           ))}
         </Grid>
         {articles.length > articlesToShow && (
-          <Button onClick={handleLoadMore} colorScheme="teal" variant="outline">
+          <Button onClick={handleLoadMore} bg="#426b1f" variant="outline">
             Load More Articles
           </Button>
         )}

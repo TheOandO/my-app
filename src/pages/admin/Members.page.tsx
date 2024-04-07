@@ -36,7 +36,6 @@ import {
     FaSortAmountDown,
     FaSortAmountUp,
     FaBell,
-    FaUser,
     FaUserCog,
     FaBacon,
 } from 'react-icons/fa';
