@@ -15,6 +15,11 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Flex,
+  useColorModeValue,
+  Divider,
+  Icon,
+  Select,
 } from '@chakra-ui/react';
 import { LoggedinHeader } from '../admin/AdminHome.page';
 import meat from '../../assets/contains-meat.png'
@@ -22,7 +27,7 @@ import vegetable from '../../assets/vegetable.png'
 import family from '../../assets/family.png'
 import woman from '../../assets/women.png'
 import { formatDistanceToNow } from 'date-fns';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
 
 const articles = [
     // Replace with your actual article data (including author name, avatar URL, and submit date)
@@ -130,14 +135,21 @@ function ArticleList() {
     return colorSchemes[randomIndex];
   }
 
+  const [isAscending, setIsAscending] = useState(true);
+  const boxShadowColor = useColorModeValue('0px 2px 12px rgba(130,148,116,0.8)', '0px 2px 12px rgba(130,148,116,0.8)');
+  const toggleSortOrder = () => {
+      setIsAscending(!isAscending);
+  };
+
   return(
-      <VStack divider={<StackDivider />} spacing={4} overflowY="auto" >
+      <VStack spacing={4} overflowY="auto" >
         <Heading fontSize="5xl" color="#426b1f" textAlign="left">
           Welcome to The Newsfeed!
         </Heading>
         <Text fontSize="md" color="gray.500">
           Browse our favorite articles from students across all faculties.
         </Text>
+        <Divider my={10} borderColor="#426B1F" width='100%'/>
         <HStack w="80%" mb={5}>
           <InputGroup>
             <InputLeftElement pointerEvents="none">
@@ -149,7 +161,34 @@ function ArticleList() {
             Submit
           </Button>
         </HStack>
-
+        <Flex gap={4} >
+          <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
+            <option value="student">Student</option>
+            <option value="MarketingManager">Marketing Manager</option>
+            <option value="MarketingManager">Marketing Manager</option>
+            <option value="MarketingCoordinator">Marketing Coordinator</option>
+            <option value="Admin">Administrator</option>
+            <option value="Guest">Guest</option>
+          </Select>
+          <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+            <option value="name">Name</option>
+            <option value="id">ID</option>
+            <option value="email">Email</option>
+            <option value="role">Role</option>
+            <option value="major">Major</option>
+            <option value="faculty">Faculty</option>
+          </Select>
+          <Button
+            rightIcon={isAscending ? <Icon as={FaSortAmountUp} /> : <Icon as={FaSortAmountDown} />}
+            variant="outline"
+            onClick={toggleSortOrder}
+            boxShadow={boxShadowColor}
+          >
+            {isAscending ? 'Ascending' : 'Descending'}
+          </Button>
+                                
+        </Flex>
+        <Divider my={5} borderColor="#426B1F" width='50%'/>
         <Grid
           templateColumns="repeat(auto-fit, minmax(1050px, 10fr))"
           gap={4}

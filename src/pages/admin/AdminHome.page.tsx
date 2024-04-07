@@ -66,7 +66,7 @@ export function LoggedinHeader() {
   );
 }
 
-export const Overview = () => {
+export function Overview() {
   return (
     <Box bg="#d9e6d3" p={6} borderRadius="lg" boxShadow="xl">
       <Heading as="h3" size="lg" textAlign="center" mb={6} color="#1d4732">
@@ -81,7 +81,7 @@ export const Overview = () => {
             <Link href='/Admin/Members'>
               <StatNumber textDecoration='underline'>1,024</StatNumber>
             </Link>
-            
+
           </Stat>
           <Stat>
             <StatLabel><Icon as={FaNewspaper} mr={2} />Total articles</StatLabel>
@@ -101,33 +101,33 @@ export const Overview = () => {
 
         {/* Buttons column */}
         <VStack spacing={4} align="stretch">
-          <Link href='/Admin/Members'> 
-            <Button leftIcon={<FaCog />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+          <Link href='/Admin/Members'>
+            <Button leftIcon={<FaCog />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               Manage accounts
             </Button>
           </Link>
           <Link href='/Admin/ViewTopics'>
-            <Button leftIcon={<FaAnchor />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaAnchor />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               View topics
             </Button>
           </Link>
-          
+
           <Link href='/Admin/SendNotif'>
-            <Button leftIcon={<FaEnvelopeOpenText />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaEnvelopeOpenText />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               Send notifications
             </Button>
           </Link>
           <Link href='/MyAccount/1'>
-            <Button leftIcon={<FaUser />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaUser />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               My account
             </Button>
           </Link>
-          
+
         </VStack>
       </SimpleGrid>
     </Box>
   );
-};
+}
 
 
 
