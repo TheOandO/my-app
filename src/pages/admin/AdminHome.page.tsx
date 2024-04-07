@@ -85,7 +85,9 @@ export const Overview = () => {
           </Stat>
           <Stat>
             <StatLabel><Icon as={FaNewspaper} mr={2} />Total articles</StatLabel>
-            <StatNumber>1,024</StatNumber>
+            <Link href='/Newsfeed'>
+              <StatNumber textDecoration='underline'>1,024</StatNumber>
+            </Link>
           </Stat>
           <Stat>
             <StatLabel><Icon as={FaBell} mr={2} />Days until the end of the academic year</StatLabel>
