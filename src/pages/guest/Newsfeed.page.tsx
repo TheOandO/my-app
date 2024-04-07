@@ -116,7 +116,7 @@ const articles = [
     },
 ];
 
-function Newsfeed() {
+function ArticleList() {
   const [articlesToShow, setArticlesToShow] = useState(4);
 
   const handleLoadMore = () => {
@@ -130,9 +130,7 @@ function Newsfeed() {
     return colorSchemes[randomIndex];
   }
 
-  return (
-    <Box>
-      <AdminHeader /> {/* Assuming AdminHeader is a separate component */}
+  return(
       <VStack divider={<StackDivider />} spacing={4} overflowY="auto" >
         <Heading fontSize="5xl" color="#426b1f" textAlign="left">
           Welcome to The Newsfeed!
@@ -190,7 +188,15 @@ function Newsfeed() {
             Load More Articles
           </Button>
         )}
-      </VStack>
+      </VStack>    
+  )
+}
+
+function Newsfeed() {
+  return (
+    <Box>
+      <AdminHeader /> {/* Assuming AdminHeader is a separate component */}
+      <ArticleList />
     </Box>
   );
 }
