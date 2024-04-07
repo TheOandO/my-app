@@ -1,6 +1,6 @@
 import { VStack, Button, Box, Text, Link, FormControl, FormLabel, Input, Heading, Textarea, CheckboxGroup, Stack, Checkbox, Flex, useColorModeValue} from "@chakra-ui/react";
 import { FaUserCog, FaDatabase, FaBell, FaUser } from "react-icons/fa";
-import { AdminHeader } from "./AdminHome.page";
+import { LoggedinHeader } from "./AdminHome.page";
 import { AdminSidebar } from "./Members.page";
 
 function SendNotif() {
@@ -11,7 +11,7 @@ function SendNotif() {
     const boxShadowColor = useColorModeValue('0px 2px 12px rgba(130,148,116,0.8)', '0px 2px 12px rgba(130,148,116,0.8)');
       return (
       <>
-      <AdminHeader/>
+      <LoggedinHeader/>
       <Flex>
         <AdminSidebar/>
         <Box flex="1" p={6} display="flex" flexDirection="column"  bgGradient="linear(to-t, #e1f5dd, white)">

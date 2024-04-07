@@ -9,7 +9,7 @@ import {
     useColorModeValue,
     Heading
 } from '@chakra-ui/react';
-import { AdminHeader } from './AdminHome.page';
+import { LoggedinHeader } from './AdminHome.page';
 
 
 function AddForm() {
@@ -92,7 +92,7 @@ function Add() {
 
     return (
         <Box bgGradient="linear(to-t, #e1f5dd, rgba(44, 44, 44, 0.1))" minH="100vh" px={6}>
-            <AdminHeader/>
+            <LoggedinHeader/>
             <VStack spacing={8} mx="auto" maxW="xl" px={6} mt={200}>
                 <Box
                     borderRadius="lg"

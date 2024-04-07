@@ -39,7 +39,7 @@ import {
     FaUserCog,
     FaBacon,
 } from 'react-icons/fa';
-import { AdminHeader } from './AdminHome.page';
+import { LoggedinHeader } from './AdminHome.page';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
@@ -225,7 +225,7 @@ function MemberTable() {
 function Members() {
     return (
         <Box>
-            <AdminHeader/>
+            <LoggedinHeader/>
             <Flex h="100vh" overflowY="hidden">
                 {/* Sidebar */}
                 <AdminSidebar/>

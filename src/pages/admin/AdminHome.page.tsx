@@ -3,15 +3,15 @@ import {
   Box, Button, Divider, Flex, Heading, Icon, Link, Select, SimpleGrid, Spacer, Stat, StatLabel, StatNumber, VStack, Image, IconButton, Menu, MenuButton, MenuItem, MenuList, Tooltip,
 } from '@chakra-ui/react';
 import { Footer, Quote, DiscussionPage } from '../guest/Home.page' 
-import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaDatabase, FaEnvelopeOpenText } from 'react-icons/fa';
+import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaDatabase, FaEnvelopeOpenText, FaAnchor } from 'react-icons/fa';
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
-export function AdminHeader() {
+export function LoggedinHeader() {
   const notifications = [
-    { id: 1, message: 'New user registered' },
-    { id: 2, message: 'System update available' },
-    { id: 3, message: 'New contact message received' },
+    { id: 1, title:'', message: 'New topic registered' },
+    { id: 2, title:'', message: 'System update available' },
+    { id: 3, title:'', message: 'New contact message received' },
     // ... more notifications
   ];
 
@@ -55,8 +55,11 @@ export function AdminHeader() {
             </MenuList>
           </Menu>
 
-          {/* Avatar for admin account */}
-          <Avatar name="Admin Account" src="path-to-admin-avatar.jpg" size="md" />
+          {/* Avatar for logged in account */}
+          <Link href='/MyAccount/1'>
+            <Avatar name="My Account" src="path-to-admin-avatar.jpg" size="md" />
+          </Link>
+          
         </Box>
       </Flex>
     </Flex>
@@ -97,23 +100,23 @@ export const Overview = () => {
         {/* Buttons column */}
         <VStack spacing={4} align="stretch">
           <Link href='/Admin/Members'> 
-            <Button leftIcon={<FaCog />} colorScheme="teal" variant="solid">
+            <Button leftIcon={<FaCog />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               Manage accounts
             </Button>
           </Link>
-          <Link href=''>
-            <Button leftIcon={<FaDatabase />} colorScheme="teal" variant="solid">
-              System data
+          <Link href='/Admin/ViewTopics'>
+            <Button leftIcon={<FaAnchor />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+              View topics
             </Button>
           </Link>
           
-          <Link href='SendNotif'>
-            <Button leftIcon={<FaEnvelopeOpenText />} colorScheme="teal" variant="solid">
+          <Link href='/Admin/SendNotif'>
+            <Button leftIcon={<FaEnvelopeOpenText />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               Send notifications
             </Button>
           </Link>
-          <Link href=''>
-            <Button leftIcon={<FaUser />} colorScheme="teal" variant="solid">
+          <Link href='/MyAccount/1'>
+            <Button leftIcon={<FaUser />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
               My account
             </Button>
           </Link>
@@ -134,7 +137,7 @@ function Homepage() {
   };
   return (
     <Box>
-      <AdminHeader></AdminHeader>
+      <LoggedinHeader></LoggedinHeader>
       <Quote></Quote>
       <Overview></Overview>
       <DiscussionPage></DiscussionPage>

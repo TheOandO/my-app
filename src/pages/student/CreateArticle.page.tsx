@@ -25,7 +25,7 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
-import { AdminHeader } from "../admin/AdminHome.page";
+import { LoggedinHeader } from "../admin/AdminHome.page";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -83,7 +83,7 @@ function CreateArticle() {
       px={6}
       overflowY="auto"
     >
-      <AdminHeader />
+      <LoggedinHeader />
       <VStack spacing={8} mx="auto" maxW="xl" px={6} mt={200} mb={200}>
         <Box
           borderRadius="lg"

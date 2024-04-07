@@ -26,7 +26,7 @@ import {
 } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
-import { AdminHeader } from '../admin/AdminHome.page';
+import { LoggedinHeader } from '../admin/AdminHome.page';
 import { AddIcon, SearchIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
@@ -215,7 +215,7 @@ return (
 function MyArticles() {
     return(
         <Box>
-            <AdminHeader/>
+            <LoggedinHeader/>
             <Flex>
                 <StudentSidebar />
                 <ArticleList />

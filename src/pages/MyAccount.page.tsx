@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Flex, HStack, VStack, Text, InputGroup, Input, InputRightElement, FormControl, FormLabel, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter, useDisclosure } from "@chakra-ui/react";
-import { AdminHeader } from "./admin/AdminHome.page";
+import { LoggedinHeader } from "./admin/AdminHome.page";
 import { EditIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -164,7 +164,7 @@ function MyAccount() {
 
     return(
         <Box>
-            <AdminHeader />
+            <LoggedinHeader />
             <Flex>
                 <ProfileCard profileId={parseInt(id as string)}/>
             </Flex>

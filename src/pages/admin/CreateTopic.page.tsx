@@ -16,7 +16,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
-import { AdminHeader } from './AdminHome.page';
+import { LoggedinHeader } from './AdminHome.page';
 import { useNavigate } from 'react-router-dom';
 
 function CreateTopic() {
@@ -65,7 +65,7 @@ function CreateTopic() {
   const formBackground = useColorModeValue('white', 'white.500.700');
   return (
     <Box bgGradient="linear(to-t, #e1f5dd, rgba(44, 44, 44, 0.1))" minH="100vh" px={6}>
-      <AdminHeader />
+      <LoggedinHeader />
       <VStack spacing={8} mx="auto" maxW="xl" px={6} mt={200} mb={200}>
         <Box
           borderRadius="lg"

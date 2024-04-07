@@ -16,7 +16,7 @@ import {
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
-import { AdminHeader } from '../admin/AdminHome.page';
+import { LoggedinHeader } from '../admin/AdminHome.page';
 import meat from '../../assets/contains-meat.png'
 import vegetable from '../../assets/vegetable.png'
 import family from '../../assets/family.png'
@@ -195,7 +195,7 @@ function ArticleList() {
 function Newsfeed() {
   return (
     <Box>
-      <AdminHeader /> {/* Assuming AdminHeader is a separate component */}
+      <LoggedinHeader /> {/* Assuming LoggedinHeader is a separate component */}
       <ArticleList />
     </Box>
   );

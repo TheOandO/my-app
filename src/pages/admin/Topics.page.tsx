@@ -17,7 +17,7 @@ import {
   Link
 } from '@chakra-ui/react';
 import { AddIcon, SearchIcon, EditIcon } from '@chakra-ui/icons';
-import { AdminHeader } from './AdminHome.page';
+import { LoggedinHeader } from './AdminHome.page';
 import { AdminSidebar } from './Members.page';
 import meat from '../../assets/contains-meat.png'
 import vegetable from '../../assets/vegetable.png'
@@ -142,7 +142,7 @@ function TopicsList() {
 function ViewTopics(){
     return(
         <Box>
-        <AdminHeader/>
+        <LoggedinHeader/>
             <Flex>
                 <AdminSidebar />
                 <TopicsList />

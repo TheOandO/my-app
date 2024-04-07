@@ -17,7 +17,7 @@ import {
     HStack
   } from '@chakra-ui/react';
 import { AddIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
-import { AdminHeader } from '../admin/AdminHome.page';
+import { LoggedinHeader } from '../admin/AdminHome.page';
 import { Quote } from '../guest/Home.page';
 import { DiscussionPage } from '../guest/Home.page';
 import { Footer } from '../guest/Home.page';
@@ -174,7 +174,7 @@ function Dashboard() {
     };
     return (
       <Box>
-        <AdminHeader />
+        <LoggedinHeader />
         <Quote></Quote>
         <Dashboard/>
         <DiscussionPage></DiscussionPage>

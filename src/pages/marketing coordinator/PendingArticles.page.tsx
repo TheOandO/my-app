@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaNewspaper, FaUser } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
-import { AdminHeader } from "../admin/AdminHome.page";
+import { LoggedinHeader } from "../admin/AdminHome.page";
 import { formatDistanceToNow } from 'date-fns';
 
 
@@ -181,7 +181,7 @@ export function MCSidebar() {
 function PendingArticles() {
     return(
         <Box>
-            <AdminHeader />
+            <LoggedinHeader />
             <Flex>
                 <MCSidebar />
                 <ArticleList />
