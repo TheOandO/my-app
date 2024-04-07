@@ -136,7 +136,7 @@ function ArticleList() {
   }
 
   const [isAscending, setIsAscending] = useState(true);
-  const boxShadowColor = useColorModeValue('0px 2px 12px rgba(130,148,116,0.8)', '0px 2px 12px rgba(130,148,116,0.8)');
+  const boxShadowColor = useColorModeValue('0px 2px 8px rgba(130,148,116,0.8)', '0px 2px 12px rgba(130,148,116,0.8)');
   const toggleSortOrder = () => {
       setIsAscending(!isAscending);
   };
@@ -150,45 +150,36 @@ function ArticleList() {
           Browse our favorite articles from students across all faculties.
         </Text>
         <Divider my={10} borderColor="#426B1F" width='100%'/>
-        <HStack w="80%" mb={5}>
-          <InputGroup>
+        <HStack mb={5} gap={6}>
+          <InputGroup minW={450} maxW={900}>
             <InputLeftElement pointerEvents="none">
               <FaSearch />
             </InputLeftElement>
             <Input placeholder="Search an article" />
           </InputGroup>
-          <Button bg='#426b1f' color='whitesmoke' variant="ghost" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#2d4b12'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s">
+
+          <Flex gap={6}>
+            <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+              <option value="date">Date</option>
+              <option value="name">Name</option>
+              <option value="topic">Topic</option>
+              <option value="major">Major</option>
+              <option value="faculty">Faculty</option>
+            </Select>
+            <Button
+              rightIcon={isAscending ? <Icon as={FaSortAmountUp} /> : <Icon as={FaSortAmountDown} />}
+              variant="outline"
+              onClick={toggleSortOrder}
+              boxShadow={boxShadowColor}
+            >
+              {isAscending ? 'Ascending' : 'Descending'}
+            </Button>                
+          </Flex>
+          <Button bg='#426b1f' color='whitesmoke' variant="ghost" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#426b1f'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s" minW={150}>
             Submit
           </Button>
         </HStack>
-        <Flex gap={4} >
-          <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
-            <option value="student">Student</option>
-            <option value="MarketingManager">Marketing Manager</option>
-            <option value="MarketingManager">Marketing Manager</option>
-            <option value="MarketingCoordinator">Marketing Coordinator</option>
-            <option value="Admin">Administrator</option>
-            <option value="Guest">Guest</option>
-          </Select>
-          <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
-            <option value="name">Name</option>
-            <option value="id">ID</option>
-            <option value="email">Email</option>
-            <option value="role">Role</option>
-            <option value="major">Major</option>
-            <option value="faculty">Faculty</option>
-          </Select>
-          <Button
-            rightIcon={isAscending ? <Icon as={FaSortAmountUp} /> : <Icon as={FaSortAmountDown} />}
-            variant="outline"
-            onClick={toggleSortOrder}
-            boxShadow={boxShadowColor}
-          >
-            {isAscending ? 'Ascending' : 'Descending'}
-          </Button>
-                                
-        </Flex>
-        <Divider my={5} borderColor="#426B1F" width='50%'/>
+        
         <Grid
           templateColumns="repeat(auto-fit, minmax(1050px, 10fr))"
           gap={4}
