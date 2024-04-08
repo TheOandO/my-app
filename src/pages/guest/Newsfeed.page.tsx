@@ -203,6 +203,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
               variant="outline"
               onClick={toggleSortOrder}
               boxShadow={boxShadowColor}
+              minW={180}
             >
               {isAscending ? 'Ascending' : 'Descending'}
             </Button>                
@@ -253,13 +254,13 @@ function ArticleList({ articles }: { articles: Article[] }) {
         <Modal isOpen={selectedArticle !== null} onClose={closeModal} isCentered motionPreset='slideInBottom' size='6xl'>
           <ModalOverlay />
           <ModalContent>
-            <HStack m='12' alignItems='flex-start'>
-              <VStack>
+            <HStack m='12' >
+              <VStack alignItems='flex-start'>
                 <HStack spacing={10} mb={6}>
                   <Avatar size='xl' src={selectedArticle?.avatarURL} name={selectedArticle?.author} />
                   <VStack>
-                    <Text fontSize="lg" fontWeight="bold">{selectedArticle?.author}</Text>
-                    <Text fontSize="sm" color="gray.400" fontStyle="italic">
+                    <Text fontSize="xl" fontWeight="bold">{selectedArticle?.author}</Text>
+                    <Text fontSize="lg" color="gray.400" fontStyle="italic">
                       {selectedArticle?.submitDate ? selectedArticle.submitDate.toLocaleString() : 'No submit date'}
                     </Text>
                   </VStack>
