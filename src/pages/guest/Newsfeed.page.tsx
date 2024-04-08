@@ -181,7 +181,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
         <Text fontSize="md" color="gray.500">
           Browse our favorite articles from students across all faculties.
         </Text>
-        <Divider my={6} borderColor="#426B1F" width='100%'/>
+        <Divider my={6} borderWidth={2} borderColor="#426B1F" width='100%'/>
         <HStack mb={5} gap={6}>
           <InputGroup minW={450} maxW={900}>
             <InputLeftElement pointerEvents="none">
@@ -280,6 +280,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
                   {selectedArticle?.description}
                 </Text>
               </VStack>
+              <Divider orientation='vertical' minH='450px' borderColor='#426b1f' borderWidth={2} mx={6}/>
               <Image display="flex" mt={4} boxSize="400px" src={selectedArticle?.image} alt={selectedArticle?.title} mx="auto" maxW='500px' maxH='500px'/>
                            
             </HStack>
