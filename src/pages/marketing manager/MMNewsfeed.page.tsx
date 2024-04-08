@@ -171,11 +171,11 @@ function ArticleList({ articles }: { articles: Article[] }) {
   };
   return(
       <VStack spacing={4} overflowY="auto" >
-        <Heading fontSize="5xl" color="#426b1f">
-          Welcome to The Newsfeed!
+        <Heading fontSize="4xl" color="#426b1f">
+          Welcome to The Newsfeed, Marketing Manager!
         </Heading>
         <Text fontSize="md" color="gray.500">
-          Browse our favorite articles from students across all faculties.
+          Browse and download our favorite articles from students across all faculties.
         </Text>
         <Divider my={6} borderWidth={2} borderColor="#426B1F" width='100%'/>
         <HStack mb={5} gap={6}>
@@ -224,12 +224,17 @@ function ArticleList({ articles }: { articles: Article[] }) {
                     </Text>
                 </VStack>
                 <Spacer /> {/* Add spacer to push topic to the right */}
-                {topics.map((topics) => topics.id === article.topicId && (
-                  <Tag variant="solid" colorScheme={getRandomColorScheme()}  borderRadius="full" minW={60}>
-                    <Image objectFit="cover" src={topics.image} alt={topics.title} mr={2} w='45px' h='45px'/>
-                    {topics.title}
-                  </Tag>
-                ))}
+                <VStack>
+                    {topics.map((topics) => topics.id === article.topicId && (
+                        <Tag variant="solid" colorScheme={getRandomColorScheme()}  borderRadius="full" minW={54} w={60}>
+                        <Image objectFit="cover" src={topics.image} alt={topics.title} mr={2} w='45px' h='45px'/>
+                        {topics.title}
+                        </Tag> 
+                    ))}    
+                    <Button bg='#426b1f' color='whitesmoke' variant="ghost" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#426b1f'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s" borderRadius="full" minW={54} w={60} >
+                        Download    
+                    </Button>        
+                </VStack>
                 
               </HStack>
               <Heading fontSize="3xl" mt={4}>
@@ -251,10 +256,10 @@ function ArticleList({ articles }: { articles: Article[] }) {
           <ModalOverlay />
           <ModalContent>
             <HStack m='12' >
-              <VStack alignItems='flex-start'>
+              <VStack >
                 <HStack spacing={10} mb={6}>
                   <Avatar size='xl' src={selectedArticle?.avatarURL} name={selectedArticle?.author} />
-                  <VStack>
+                  <VStack alignItems='flex-start'>
                     <Text fontSize="xl" fontWeight="bold">{selectedArticle?.author}</Text>
                     <Text fontSize="lg" color="gray.400" fontStyle="italic">
                       {selectedArticle?.submitDate ? selectedArticle.submitDate.toLocaleString() : 'No submit date'}
@@ -275,6 +280,9 @@ function ArticleList({ articles }: { articles: Article[] }) {
                 <Text fontSize="xl" color="gray.500">
                   {selectedArticle?.description}
                 </Text>
+                <Button fontSize='2xl' bg='#426b1f' color='whitesmoke' variant="ghost" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#426b1f'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s" borderRadius="10" w={300} minH={14} mt={10} alignItems='center'>
+                    Download    
+                </Button>  
               </VStack>
               <Divider orientation='vertical' minH='450px' borderColor='#426b1f' borderWidth={2} mx={6}/>
               <Image display="flex" mt={4} boxSize="400px" src={selectedArticle?.image} alt={selectedArticle?.title} mx="auto" maxW='500px' maxH='500px'/>
@@ -288,7 +296,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
   )
 }
 
-function Newsfeed() {
+function MMNewsfeed() {
   return (
     <Box>
       <LoggedinHeader />
@@ -298,4 +306,4 @@ function Newsfeed() {
 }
   
   
-  export default Newsfeed;
+  export default MMNewsfeed;
