@@ -31,6 +31,7 @@ import family from '../../assets/family.png'
 import woman from '../../assets/women.png'
 import { formatDistanceToNow } from 'date-fns';
 import { FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
+import { Footer } from './Home.page';
 interface Article {
   title: string;
   author: string;
@@ -96,9 +97,9 @@ const articles: Article[] = [
       submitDate: new Date('2024-03-25T12:00:00Z'),
     },
     // ... more articles
-  ];
+];
 
-  const topics = [
+const topics = [
     {
         id: 1,
         title: 'Take pics of your meat',
@@ -165,12 +166,12 @@ function ArticleList({ articles }: { articles: Article[] }) {
   const openModal = (article: Article) => {
     setSelectedArticle(article);
   };
-
   const closeModal = () => {
     setSelectedArticle(null);
   };
+
   return(
-      <VStack spacing={4} overflowY="auto" >
+      <VStack spacing={4} overflowY="auto">
         <Heading fontSize="5xl" color="#426b1f">
           Welcome to The Newsfeed!
         </Heading>
@@ -210,11 +211,12 @@ function ArticleList({ articles }: { articles: Article[] }) {
         </HStack>
         
         <Grid
-          templateColumns="repeat(auto-fit, minmax(1050px, 10fr))"
-          gap={4}
+          templateColumns="repeat(2, minmax(150px, 5fr))"
+          gridAutoRows="minmax(min-content, auto)"
+          gap={38}
         >
           {articles.slice(0, articlesToShow).map((article) => (
-            <Box key={article.title} bg="#F7FAFC" p={5} borderRadius="md" shadow="base" cursor="pointer" onClick={() => openModal(article)}>
+            <Box key={article.title} bg="#F7FAFC" p={5} boxShadow={boxShadowColor} borderRadius="lg" cursor="pointer" onClick={() => openModal(article)} w='550px' mb={10}>
               <HStack spacing={4}>
                 <Avatar src={article.avatarURL} name={article.author} />
                 <VStack>
@@ -226,7 +228,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
                 <Spacer /> {/* Add spacer to push topic to the right */}
                 {topics.map((topics) => topics.id === article.topicId && (
                   <Tag variant="solid" colorScheme={getRandomColorScheme()}  borderRadius="full" minW={60}>
-                    <Image objectFit="cover" src={topics.image} alt={topics.title} mr={2} w='45px' h='45px'/>
+                    <Image objectFit="cover" src={topics.image} alt={topics.title} mr={2} w='40px' h='40px'/>
                     {topics.title}
                   </Tag>
                 ))}
@@ -241,11 +243,6 @@ function ArticleList({ articles }: { articles: Article[] }) {
               <Image display="flex" mt={4} boxSize="300px" src={article.image} alt={article.title} mx="auto" maxW='300px' maxH='300px'/>
             </Box>
           ))}
-        {articles.length > articlesToShow && (
-          <Button onClick={handleLoadMore} bg='#426b1f' color='whitesmoke' variant="outline" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#426b1f'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s" minW={50}>
-            Load More Articles
-          </Button>
-        )}
             {/* Modal for displaying article */}
         <Modal isOpen={selectedArticle !== null} onClose={closeModal} isCentered motionPreset='slideInBottom' size='6xl'>
           <ModalOverlay />
@@ -284,6 +281,11 @@ function ArticleList({ articles }: { articles: Article[] }) {
           </ModalContent>
         </Modal>
         </Grid>
+        {articles.length > articlesToShow && (
+          <Button onClick={handleLoadMore} bg='#426b1f' color='whitesmoke' variant="outline" colorScheme="green" _hover={{ bg:"whitesmoke", color:'#426b1f'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s" minW={50} w='50%' m={10}>
+            Load More Articles
+          </Button>
+        )}
       </VStack>    
   )
 }
@@ -293,6 +295,7 @@ function Newsfeed() {
     <Box>
       <LoggedinHeader />
       <ArticleList articles={articles}/>
+      <Footer/>
     </Box>
   );
 }

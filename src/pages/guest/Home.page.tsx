@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react';
 import about from "../../assets/seven-shooter-hPKTYwJ4FUo-unsplash.jpg"
 import { SearchIcon } from '@chakra-ui/icons';
-import { FaFacebook, FaTwitter, FaEnvelope, FaInstagram } from 'react-icons/fa';
+import { FaFacebook, FaEnvelope, FaInstagram } from 'react-icons/fa';
 import post1 from "../../assets/post 1.jpg"
 import ceo1 from "../../assets/ceo1.png"
 import ceo2 from "../../assets/ceo2.jpg"
@@ -32,7 +32,9 @@ import ceo3 from "../../assets/ceo3.jpg"
 import logo from '../../assets/logo.png'
 
 export function Header() {
-
+  const scrollToBottom = () => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  };
   return (
     <Flex as="header" align="center" padding="1rem" bg="white" boxShadow="sm" width="100%">
       <Box p="2">
@@ -45,12 +47,12 @@ export function Header() {
         <Box display="flex" alignItems="center">
           {/* This container will group the navigation links, language selector, and login button */}
 
-          <Link href="#" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+          <Link href="/Newsfeed" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
             Newsfeed
           </Link>
-          <Link href="#" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+          <Text px="3" py="1" rounded="md" _hover={{ textDecoration: 'revert-layer', bg: 'gray.100' }} mr={20} onClick={scrollToBottom}>
             Contact
-          </Link>
+          </Text>
 
           <Select placeholder="Language" width="auto" mr="20">
             <option value="en">English</option>

@@ -3,7 +3,7 @@ import {
   Box, Button, Divider, Flex, Heading, Icon, Link, Select, SimpleGrid, Spacer, Stat, StatLabel, StatNumber, VStack, Image, IconButton, Menu, MenuButton, MenuItem, MenuList, Tooltip,
 } from '@chakra-ui/react';
 import { Footer, Quote, DiscussionPage } from '../guest/Home.page' 
-import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaDatabase, FaEnvelopeOpenText, FaAnchor } from 'react-icons/fa';
+import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaEnvelopeOpenText, FaAnchor } from 'react-icons/fa';
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
@@ -32,7 +32,7 @@ export function LoggedinHeader() {
             Home
           </Link>
           
-          <Link href="#" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+          <Link href="/Newsfeed" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
             Newsfeed
           </Link>
 
