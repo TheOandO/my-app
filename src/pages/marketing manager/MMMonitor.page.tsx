@@ -30,7 +30,7 @@ export function MMSidebar() {
     );
 }
 
-function MMMonitor() {
+export default function MMMonitor() {
     return(
         <Box>
             <LoggedinHeader />
@@ -38,5 +38,3 @@ function MMMonitor() {
         </Box>
     )
 }
-
-export default MMMonitor()
