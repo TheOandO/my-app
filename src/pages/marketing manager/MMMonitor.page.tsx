@@ -75,7 +75,7 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
     {
       id: 1,
       title: 'No alarms to no surprises',
-      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
       status: 'Rejected' as StatusType,
       image: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg',
       comment: 'bad',
@@ -84,7 +84,7 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
     {
       id: 2,
       title: 'There could be hell below, below',
-      summary: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...',
+      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
       status: 'Overdue' as StatusType,
       image: 'https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg',
       comment: 'bad',
@@ -93,7 +93,7 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
     {
       id: 3,
       title: 'Mother Earth is pregnant for the third time',
-      summary: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip...',
+      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
       status: 'Waiting' as StatusType,
       image: 'https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg',
       comment: '',
@@ -105,7 +105,7 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
     {
         id: 4,
         title: "'Cause I'm as free as a bird now",
-        summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+        summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
         status: 'Published' as StatusType,
         image: 'https://i.scdn.co/image/ab67616d0000b273128450651c9f0442780d8eb8',
         comment: 'good',
@@ -114,7 +114,7 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
     {
         id: 5,
         title: 'Sectoral heterochromia',
-        summary: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...',
+        summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
         status: 'Published' as StatusType,
         image: 'https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg',
         comment: 'good',
@@ -183,30 +183,38 @@ function MemberTable() {
         </Box>
   
         {/* Modal for displaying articles */}
-        <Modal isOpen={selectedMember !== null} onClose={handleCloseModal}>
+        <Modal isOpen={selectedMember !== null} onClose={handleCloseModal}  size='6xl' isCentered>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>{selectedMember?.name}'s Articles</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              {/* Display pending articles */}
-              <Heading size="md">Pending Articles</Heading>
-              {pendingArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
-                <Box key={article.id}>
-                  <p>Title: {article.title}</p>
-                  <p>Summary: {article.summary}</p>
-                  <img src={article.image} alt={article.title} style={{ maxWidth: '100px', maxHeight: '100px' }} />
-                </Box>
-              ))}
-              {/* Display published articles */}
-              <Heading size="md">Published Articles</Heading>
-              {publishedArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
-                <Box key={article.id}>
-                  <p>Title: {article.title}</p>
-                  <p>Summary: {article.summary}</p>
-                  <img src={article.image} alt={article.title} style={{ maxWidth: '100px', maxHeight: '100px' }} />
-                </Box>
-              ))}
+              {/* Display pending articles title if there are pending articles */}
+              {pendingArticles.some(article => article.authorId === selectedMember?.id) && (
+                <>
+                  <Heading size="md">Pending Articles</Heading>
+                  {pendingArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
+                    <Box key={article.id}>
+                      <p>Title: {article.title}</p>
+                      <p>Summary: {article.summary}</p>
+                      <img src={article.image} alt={article.title} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                    </Box>
+                  ))}
+                </>
+              )}
+              {/* Display published articles title if there are published articles */}
+              {publishedArticles.some(article => article.authorId === selectedMember?.id) && (
+                <>
+                  <Heading size="md">Published Articles</Heading>
+                  {publishedArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
+                    <Box key={article.id}>
+                      <p>Title: {article.title}</p>
+                      <p>Summary: {article.summary}</p>
+                      <img src={article.image} alt={article.title} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                    </Box>
+                  ))}
+                </>
+              )}
             </ModalBody>
           </ModalContent>
         </Modal>
