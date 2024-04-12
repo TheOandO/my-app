@@ -200,7 +200,7 @@ function MemberTable() {
     };
    
     // Separate component for rendering modal content for Marketing Managers
-    const MarketingManagerModal: React.FC<{
+    const MarketingCoordinatorModal: React.FC<{
       selectedMember: Member;
       pendingArticles: Article[];
       handleClick: (comment: string | undefined) => void;
@@ -210,11 +210,11 @@ function MemberTable() {
         return student ? student.name : 'Unknown'; // Return the student's name if found, otherwise return 'Unknown'
       };
       // Extract manager's faculty from selectedMember
-      const managerFaculty = selectedMember.faculty;
+      const coordinatorFaculty = selectedMember.faculty;
        // Filter articles based on both student's and manager's faculty
       const filteredArticlesByFaculty = pendingArticles.filter(article => {
         const student = members.find(member => member.id === article.authorId);
-        return student && student.faculty === managerFaculty;
+        return student && student.faculty === coordinatorFaculty;
       });
       return ( 
           <>
@@ -399,7 +399,7 @@ function MemberTable() {
         <Modal isOpen={selectedMember !== null} onClose={ handleCloseModal}  size='6xl' isCentered>
           <ModalOverlay />
           <ModalContent>
-          <ModalHeader fontSize='4xl' color='#426b1f'>{selectedMember?.role === 'Marketing Manager'
+          <ModalHeader fontSize='4xl' color='#426b1f'>{selectedMember?.role === 'Marketing Coordinator'
               ? `${selectedMember?.name}'s Pending Articles`
               : `${selectedMember?.name}'s Articles`}
           </ModalHeader>
@@ -407,8 +407,8 @@ function MemberTable() {
             <Divider my={2} borderColor="#426B1F" width='100%'/>
             <ModalBody>
             {selectedMember ? (
-              selectedMember?.role === 'Marketing Manager' ? (
-                <MarketingManagerModal selectedMember={selectedMember} pendingArticles={pendingArticles} handleClick={handleClick} />
+              selectedMember?.role === 'Marketing Coordinator' ? (
+                <MarketingCoordinatorModal selectedMember={selectedMember} pendingArticles={pendingArticles} handleClick={handleClick} />
               ) : (
                 <StudentModal selectedMember={selectedMember} pendingArticles={pendingArticles} publishedArticles={publishedArticles} handleClick={handleClick} />
               )
