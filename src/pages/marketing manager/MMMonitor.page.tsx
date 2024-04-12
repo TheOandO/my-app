@@ -71,7 +71,7 @@ interface Member {
       id: 'MC001',
       name: 'Super',
       email: 'sober@website.edu',
-      role: 'Marketing Manager',
+      role: 'Marketing Coordinator',
       major: 'None',
       faculty: 'Faculty A',
     },
@@ -79,7 +79,7 @@ interface Member {
       id: 'MC002',
       name: 'Bat',
       email: 'bet@website.edu',
-      role: 'Marketing Manager',
+      role: 'Marketing Coordinator',
       major: 'None',
       faculty: 'Faculty B',
     },
@@ -340,10 +340,7 @@ function MemberTable() {
           <Flex gap={4} >
             <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
               <option value="student">Student</option>
-              <option value="MarketingManager">Marketing Manager</option>
               <option value="MarketingCoordinator">Marketing Coordinator</option>
-              <option value="Admin">Administrator</option>
-              <option value="Guest">Guest</option>
             </Select>
             <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
               <option value="name">Name</option>
