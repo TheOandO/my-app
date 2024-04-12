@@ -1,9 +1,10 @@
-import { Box, Button, Link, VStack, Text, Flex, InputLeftElement, Divider, Heading, Icon, Input, InputGroup, Select, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react";
+import { Box, Button, Link, VStack, Text, Flex, Image, Divider, Heading, Icon, Input, InputGroup, Select, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, HStack, Tag, useToast, InputLeftElement, Avatar } from "@chakra-ui/react";
 import { FaNewspaper, FaSearch, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { LoggedinHeader } from "../admin/AdminHome.page";
 import { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
 
 export function MMSidebar() {
     const location = useLocation();
@@ -66,10 +67,36 @@ interface Member {
         major: 'Computer Science',
         faculty: 'Faculty B',
     },
+    {
+      id: 'MC001',
+      name: 'Super',
+      email: 'sober@website.edu',
+      role: 'Marketing Manager',
+      major: 'None',
+      faculty: 'Faculty A',
+    },
+    {
+      id: 'MC002',
+      name: 'Bat',
+      email: 'bet@website.edu',
+      role: 'Marketing Manager',
+      major: 'None',
+      faculty: 'Faculty B',
+    },
 ];
 
     
   // Dummy student article data
+type Article = {
+    id: number;
+    title: string;
+    summary: string;
+    status: StatusType;
+    image?: string;
+    comment?: string;
+    authorId: string;
+    timeSubmitted: Date;
+  };
 type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
   const pendingArticles = [
     {
@@ -79,7 +106,8 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
       status: 'Rejected' as StatusType,
       image: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg',
       comment: 'bad',
-      authorId: 'P0001' 
+      authorId: 'P0001' ,
+      timeSubmitted: new Date('2024-03-27T12:00:00Z')
     },
     {
       id: 2,
@@ -88,7 +116,8 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
       status: 'Overdue' as StatusType,
       image: 'https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg',
       comment: 'bad',
-      authorId: 'CS001'
+      authorId: 'CS001',
+      timeSubmitted: new Date('2024-03-27T12:00:00Z')
     },
     {
       id: 3,
@@ -97,7 +126,8 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
       status: 'Waiting' as StatusType,
       image: 'https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg',
       comment: '',
-      authorId: 'CS002'
+      authorId: 'CS002',
+      timeSubmitted: new Date('2024-03-27T12:00:00Z')
     }
   ];
 
@@ -109,7 +139,8 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
         status: 'Published' as StatusType,
         image: 'https://i.scdn.co/image/ab67616d0000b273128450651c9f0442780d8eb8',
         comment: 'good',
-        authorId: 'P0001'
+        authorId: 'P0001',
+        timeSubmitted: new Date('2024-03-27T12:00:00Z')
     },
     {
         id: 5,
@@ -118,7 +149,8 @@ type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
         status: 'Published' as StatusType,
         image: 'https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg',
         comment: 'good',
-        authorId: 'CS001'
+        authorId: 'CS001',
+        timeSubmitted: new Date('2024-03-27T12:00:00Z')
     }
 ];
 
@@ -141,12 +173,189 @@ function MemberTable() {
       setSelectedMember(null);
     };
   
+    const StatusButton : React.FC<{ status: StatusType }> = ({ status }) => {
+      let color = 'gray';
+      if (status === 'Waiting') color = '#426B1F';
+      if (status === 'Published') color = '#426B1F';
+      if (status === 'Rejected') color = '#6B1F1F';
+      if (status === 'Overdue') color = '#383838';
+      return <Tag fontSize="lg" fontWeight='bold' width='140px' height='50px' display='flex' alignItems='center' justifyContent='center' borderRadius="full" variant="solid" bg={color} color='white'>{status}</Tag>
+    }
+
+    const [selectedComment, setSelectedComment] = useState(null); 
+    const toast = useToast();
+    const handleClick = (comment:any) => {
+      if (comment) {
+        setSelectedComment(comment);
+      } else {
+        toast({ // Display toast notification
+          title: 'No comment yet!',
+          status: 'info',
+          duration: 2000,
+          isClosable: true,
+          colorScheme: 'green',
+          size: 'xl'
+        });
+      }
+    };
+   
+    // Separate component for rendering modal content for Marketing Managers
+    const MarketingManagerModal: React.FC<{
+      selectedMember: Member;
+      pendingArticles: Article[];
+      handleClick: (comment: string | undefined) => void;
+    }> = ({ selectedMember, pendingArticles, handleClick }) => {
+      const getStudentName = (authorId: string) => {
+        const student = members.find(member => member.id === authorId);
+        return student ? student.name : 'Unknown'; // Return the student's name if found, otherwise return 'Unknown'
+      };
+      return ( 
+          <>
+            <Heading fontSize="2xl" m='4'>Pending Articles: ({pendingArticles.length})</Heading>
+            <Box maxHeight="400px" overflowY="auto">
+              {pendingArticles
+                .map(article => (
+                <HStack key={article.id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+                  <Avatar name={article.authorId} src={`path_to_author_avatar_based_on_${article.authorId}`} />
+
+                  <VStack align="flex-start" flex={1} mr={4}>
+                    <Text fontSize="xl">{getStudentName(article.authorId)}</Text>
+                    <Text fontSize="sm" color="gray.400" fontStyle="italic">
+                      Submitted {formatDistanceToNow(new Date(article.timeSubmitted), { addSuffix: true })}
+                    </Text>
+                  </VStack>
+                    
+                  <VStack align="flex-start" flex={4}>
+                    <Heading fontSize="3xl">{article.title}</Heading>
+                      <Text fontSize="xl" color="gray.500">
+                        {article.summary}
+                      </Text>
+                  </VStack>
+
+                  {article.image && (
+                    <Image borderRadius="md" boxSize="150px" src={article.image} alt={article.title} />
+                  )}
+                  <VStack>
+                    <StatusButton status={article.status} />
+                    <Button
+                      size="lg"
+                      variant="solid"
+                      onClick={() => handleClick(article.comment)}
+                      colorScheme="gray"
+                      borderRadius='full'
+                    >
+                      View comment
+                    </Button> 
+                  </VStack>
+
+                </HStack>
+                ))}
+            </Box>
+          </>  
+      );
+    };
+
+  // Separate component for rendering modal content for students
+  const StudentModal: React.FC<{
+    selectedMember: Member;
+    pendingArticles: Article[];
+    publishedArticles: Article[];
+    handleClick: (comment: string | undefined) => void;
+  }> = ({ selectedMember, pendingArticles, publishedArticles, handleClick }) => {
+    return (
+          <>
+            <Heading fontSize="2xl" m='4'>Pending Articles: ({pendingArticles.filter(article => article.authorId === selectedMember?.id).length})</Heading>
+            {pendingArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
+              <HStack key={article.id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+                {article.image && (
+                  <Image borderRadius="md" boxSize="150px" src={article.image} alt={article.title} maxW= '100px' maxH= '100px' />
+                )}
+                <Box flex={1}>
+                  <Heading fontSize="3xl">{article.title}</Heading>
+                  <Text fontSize="lg" color="gray.500">{article.summary}</Text>
+                </Box>
+                <VStack>
+                  <StatusButton status={article.status} />
+                  <Button
+                    size="lg"
+                    variant="solid"
+                    onClick={() => handleClick(article.comment)}
+                    colorScheme="gray"
+                    borderRadius='full'
+                  >
+                    View comment
+                  </Button>
+                </VStack>
+              </HStack>
+            ))}
+
+            <Heading fontSize="2xl" m='4'>Published Articles: ({publishedArticles.filter(article => article.authorId === selectedMember?.id).length})</Heading>
+            {publishedArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
+            <HStack key={article.id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+              {article.image && (
+                <Image borderRadius="md" boxSize="150px" src={article.image} alt={article.title} />
+              )}
+              <Box flex={1} my={4}>
+                <Heading fontSize="3xl" my={4}>{article.title}</Heading>
+                <Text fontSize="lg" color="gray.500">{article.summary}</Text>
+              </Box>
+              <VStack>
+                <StatusButton status={article.status} />
+                <Button
+                  size="lg"
+                  variant="solid"
+                  onClick={() => handleClick(article.comment)}
+                  colorScheme="gray"
+                  borderRadius='full'
+                >
+                  View comment
+                </Button>                        
+              </VStack>
+
+            </HStack>
+            ))}
+      </>
+    );
+  };
+
     return (
       <Box flex="1" bgGradient="linear(to-t, #e1f5dd, white)" p={5}>
-        {/* Existing content... */}
+          <Flex justify="space-between" align="center">
+            <Heading as="h2" fontSize="6xl" mb={10} textColor="#83AD5F">Account Monitor</Heading>
+            <InputGroup maxWidth="300px" mb={10}>
+              <InputLeftElement pointerEvents="none">
+                <FaSearch />
+              </InputLeftElement>
+              <Input placeholder="Search an account" />
+            </InputGroup>
+          </Flex>
         <Box bg="white" borderRadius="lg" p={8} overflowX="auto" boxShadow={boxShadowColor}>
-          {/* Existing content... */}
-          {/* Table for member data */}
+          <Flex gap={4} >
+            <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
+              <option value="student">Student</option>
+              <option value="MarketingManager">Marketing Manager</option>
+              <option value="MarketingCoordinator">Marketing Coordinator</option>
+              <option value="Admin">Administrator</option>
+              <option value="Guest">Guest</option>
+            </Select>
+            <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+              <option value="name">Name</option>
+              <option value="id">ID</option>
+              <option value="email">Email</option>
+              <option value="role">Role</option>
+              <option value="major">Major</option>
+              <option value="faculty">Faculty</option>
+            </Select>
+            <Button
+              rightIcon={isAscending ? <Icon as={FaSortAmountUp} /> : <Icon as={FaSortAmountDown} />}
+              variant="outline"
+              onClick={toggleSortOrder}
+              boxShadow={boxShadowColor}
+            >
+              {isAscending ? 'Ascending' : 'Descending'}
+            </Button>
+          </Flex>
+          <Divider my={10} borderColor="#426B1F" width='100%'/>
           <Table variant="simple">
             <Thead>
               <Tr>
@@ -183,38 +392,36 @@ function MemberTable() {
         </Box>
   
         {/* Modal for displaying articles */}
-        <Modal isOpen={selectedMember !== null} onClose={handleCloseModal}  size='6xl' isCentered>
+        <Modal isOpen={selectedMember !== null} onClose={ handleCloseModal}  size='6xl' isCentered>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{selectedMember?.name}'s Articles</ModalHeader>
+          <ModalHeader fontSize='4xl' color='#426b1f'>{selectedMember?.role === 'Marketing Manager'
+              ? `${selectedMember?.name}'s Pending Articles`
+              : `${selectedMember?.name}'s Articles`}
+          </ModalHeader>
+            <ModalCloseButton />
+            <Divider my={2} borderColor="#426B1F" width='100%'/>
+            <ModalBody>
+            {selectedMember ? (
+              selectedMember?.role === 'Marketing Manager' ? (
+                <MarketingManagerModal selectedMember={selectedMember} pendingArticles={pendingArticles} handleClick={handleClick} />
+              ) : (
+                <StudentModal selectedMember={selectedMember} pendingArticles={pendingArticles} publishedArticles={publishedArticles} handleClick={handleClick} />
+              )
+            ) : (
+              <p>No member selected.</p> // Placeholder or any other content for when no member is selected
+            )}
+            </ModalBody>
+          </ModalContent>
+        </Modal>  
+        {/* Modal for displaying comments */}
+        <Modal isOpen={selectedComment !== null} onClose={() => setSelectedComment(null)} size="md" isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader fontSize='3xl' color='#426b1f'>Article Comment</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              {/* Display pending articles title if there are pending articles */}
-              {pendingArticles.some(article => article.authorId === selectedMember?.id) && (
-                <>
-                  <Heading size="md">Pending Articles</Heading>
-                  {pendingArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
-                    <Box key={article.id}>
-                      <p>Title: {article.title}</p>
-                      <p>Summary: {article.summary}</p>
-                      <img src={article.image} alt={article.title} style={{ maxWidth: '100px', maxHeight: '100px' }} />
-                    </Box>
-                  ))}
-                </>
-              )}
-              {/* Display published articles title if there are published articles */}
-              {publishedArticles.some(article => article.authorId === selectedMember?.id) && (
-                <>
-                  <Heading size="md">Published Articles</Heading>
-                  {publishedArticles.filter(article => article.authorId === selectedMember?.id).map(article => (
-                    <Box key={article.id}>
-                      <p>Title: {article.title}</p>
-                      <p>Summary: {article.summary}</p>
-                      <img src={article.image} alt={article.title} style={{ maxWidth: '100px', maxHeight: '100px' }} />
-                    </Box>
-                  ))}
-                </>
-              )}
+              <Text fontSize='xl' m='5'>{selectedComment}</Text>
             </ModalBody>
           </ModalContent>
         </Modal>

@@ -124,99 +124,99 @@ function MemberTable() {
     };
     return (
         <Box flex="1" bgGradient="linear(to-t, #e1f5dd, white)" p={5}>
-                        <Flex justify="space-between" align="center">
-                            <Heading as="h2" size="lg" mb={10} textColor="#83AD5F">Account manager</Heading>
-                            <InputGroup maxWidth="300px" mb={10}>
-                            <InputLeftElement pointerEvents="none">
-                                <FaSearch />
-                            </InputLeftElement>
-                            <Input placeholder="Search an account" />
-                            </InputGroup>
-                        </Flex>
+            <Flex justify="space-between" align="center">
+                <Heading as="h2" size="lg" mb={10} textColor="#83AD5F">Account Manager</Heading>
+                <InputGroup maxWidth="300px" mb={10}>
+                    <InputLeftElement pointerEvents="none">
+                        <FaSearch />
+                    </InputLeftElement>
+                    <Input placeholder="Search an account" />
+                </InputGroup>
+            </Flex>
                         
-                        <Box bg="white" borderRadius="lg" p={8} overflowX="auto" boxShadow={boxShadowColor}>
-                            <Flex gap={4} >
-                                <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
-                                <option value="student">Student</option>
-                                <option value="MarketingManager">Marketing Manager</option>
-                                <option value="MarketingCoordinator">Marketing Coordinator</option>
-                                <option value="Admin">Administrator</option>
-                                <option value="Guest">Guest</option>
-                                </Select>
-                                <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
-                                <option value="name">Name</option>
-                                <option value="id">ID</option>
-                                <option value="email">Email</option>
-                                <option value="role">Role</option>
-                                <option value="major">Major</option>
-                                <option value="faculty">Faculty</option>
-                                </Select>
-                                <Button
-                                    rightIcon={isAscending ? <Icon as={FaSortAmountUp} /> : <Icon as={FaSortAmountDown} />}
-                                    variant="outline"
-                                    onClick={toggleSortOrder}
-                                    boxShadow={boxShadowColor}
-                                    >
-                                    {isAscending ? 'Ascending' : 'Descending'}
-                                </Button>
-                                
-                            </Flex>
-                            <Divider my={10} borderColor="#426B1F" width='100%'/>
-                            {/* Table for member data */}
-                            <Table variant="simple">
-                                <Thead>
-                                    <Tr>
-                                        <Th fontSize="3xl">ID</Th>
-                                        <Th fontSize="3xl">Name</Th>
-                                        <Th fontSize="3xl">Email</Th>
-                                        <Th fontSize="3xl">Role</Th>
-                                        <Th fontSize="3xl">Major</Th>
-                                        <Th fontSize="3xl">Faculty</Th>
-                                        <Th fontSize="3xl">Options</Th>
-                                    </Tr>
-                                </Thead>
-                                <Divider my={4} borderColor="#fff"/>
-                                <Tbody>
-                                    {members.map((member) => (
-                                        <Tr bg="rgba(137, 188, 93, 0.2)" key={member.id} _hover={{color: '#fff', bg: 'rgba(73,133,23,1)', boxShadow: {boxShadowColor}, transform: 'translateY(-2px)',
-                                        zIndex: 2}} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s" position='relative'>
-                                            <Td>{member.id}</Td>
-                                            <Td>{member.name}</Td>
-                                            <Td>{member.email}</Td>
-                                            <Td>{member.role}</Td>
-                                            <Td>{member.major}</Td>
-                                            <Td>{member.faculty}</Td>
-                                            
-                                            <Td>
-                                                <Menu>
-                                                    <MenuButton as={IconButton} icon={<FaEllipsisV />} />
-                                                    <MenuList>
-                                                        <MenuItem>View</MenuItem>
-                                                        <MenuItem>Update</MenuItem>
-                                                        <MenuItem>Delete</MenuItem>
-                                                    </MenuList>
-                                                </Menu>
-                                            </Td>
-                                            <Divider my={4} borderColor="#426B1F" width='100%'/>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </Box>
-                        {/* Button to add new member */}
-                        <Link href='/Admin/Add'>
-                            <Button leftIcon={<FaUserPlus />} bg="#2d4b12" color='#fff' variant="outline" colorScheme='green' onClick={onOpen} mt={8} _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }}>
-                                Add an account
-                            </Button>
-                        </Link>
+            <Box bg="white" borderRadius="lg" p={8} overflowX="auto" boxShadow={boxShadowColor}>
+                <Flex gap={4} >
+                    <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
+                        <option value="student">Student</option>
+                        <option value="MarketingManager">Marketing Manager</option>
+                        <option value="MarketingCoordinator">Marketing Coordinator</option>
+                        <option value="Admin">Administrator</option>
+                        <option value="Guest">Guest</option>
+                    </Select>
+                    <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+                        <option value="name">Name</option>
+                        <option value="id">ID</option>
+                        <option value="email">Email</option>
+                        <option value="role">Role</option>
+                        <option value="major">Major</option>
+                        <option value="faculty">Faculty</option>
+                    </Select>
+                    <Button
+                        rightIcon={isAscending ? <Icon as={FaSortAmountUp} /> : <Icon as={FaSortAmountDown} />}
+                        variant="outline"
+                        onClick={toggleSortOrder}
+                        boxShadow={boxShadowColor}
+                    >
+                        {isAscending ? 'Ascending' : 'Descending'}
+                    </Button>
+                    
+                </Flex>
+                <Divider my={10} borderColor="#426B1F" width='100%'/>
+                    {/* Table for member data */}
+                    <Table variant="simple">
+                        <Thead>
+                            <Tr>
+                                <Th fontSize="3xl">ID</Th>
+                                <Th fontSize="3xl">Name</Th>
+                                <Th fontSize="3xl">Email</Th>
+                                <Th fontSize="3xl">Role</Th>
+                                <Th fontSize="3xl">Major</Th>
+                                <Th fontSize="3xl">Faculty</Th>
+                                <Th fontSize="3xl">Options</Th>
+                            </Tr>
+                        </Thead>
+                        <Divider my={4} borderColor="#fff"/>
+                        <Tbody>
+                            {members.map((member) => (
+                            <Tr bg="rgba(137, 188, 93, 0.2)" key={member.id} _hover={{color: '#fff', bg: 'rgba(73,133,23,1)', boxShadow: {boxShadowColor}, transform: 'translateY(-2px)',
+                                zIndex: 2}} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s" position='relative'>
+                                <Td>{member.id}</Td>
+                                <Td>{member.name}</Td>
+                                <Td>{member.email}</Td>
+                                <Td>{member.role}</Td>
+                                <Td>{member.major}</Td>
+                                <Td>{member.faculty}</Td>
+ 
+                                <Td>
+                                    <Menu>
+                                        <MenuButton as={IconButton} icon={<FaEllipsisV />} />
+                                        <MenuList>
+                                            <MenuItem>View</MenuItem>
+                                            <MenuItem>Update</MenuItem>
+                                            <MenuItem>Delete</MenuItem>
+                                        </MenuList>
+                                    </Menu>
+                                </Td>
+                                <Divider my={4} borderColor="#426B1F" width='100%'/>
+                            </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+            </Box>
+        {/* Button to add new member */}
+            <Link href='/Admin/Add'>
+                <Button leftIcon={<FaUserPlus />} bg="#2d4b12" color='#fff' variant="outline" colorScheme='green' onClick={onOpen} mt={8} _hover={{ bg:"#fff", color:'#2d4b12'}} _focus={{ boxShadow: "none" }}>
+                    Add an account
+                </Button>
+            </Link>
                         
-                        {/* Drawer for adding a new member */}
-                        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-                            <DrawerOverlay />
-                            <DrawerContent>
-                                {/* Drawer content */}
-                            </DrawerContent>
-                        </Drawer>
+            {/* Drawer for adding a new member */}
+            <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+                <DrawerOverlay />
+                <DrawerContent>
+                    {/* Drawer content */}
+                </DrawerContent>
+            </Drawer>
         </Box>
     )
 }

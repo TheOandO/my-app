@@ -44,7 +44,7 @@ export function MCSidebar() {
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
             status: 'Rejected' as StatusType,
             image: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg',
-            author: 'Mike Hawk',
+            authorId: 'Mike Hawk',
             timeSubmitted: new Date('2024-03-25T12:00:00Z')
           },
           {
@@ -53,7 +53,7 @@ export function MCSidebar() {
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
             status: 'Overdue' as StatusType,
             image: 'https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg',
-            author: 'Mike Hawk',
+            authorId: 'Mike Hawk',
             timeSubmitted: new Date('2024-03-26T12:00:00Z')
           },
           {
@@ -62,7 +62,7 @@ export function MCSidebar() {
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.',
             status: 'Waiting' as StatusType,
             image: 'https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg',
-            author: 'Mike Hawk',
+            authorId: 'Mike Hawk',
             timeSubmitted: new Date('2024-03-27T12:00:00Z')
           }
     ])
@@ -131,10 +131,10 @@ export function MCSidebar() {
         {pendingArticles.map((article) => (
             <Box key={article.id}>
             <HStack p={5} spacing={4} align="center" borderBottomWidth="1px">
-                <Avatar name={article.author} src={`path_to_author_avatar_based_on_${article.author}`} />
+                <Avatar name={article.authorId} src={`path_to_author_avatar_based_on_${article.authorId}`} />
 
                 <VStack align="flex-start" flex={1}>
-                    <Text fontSize="xl">{article.author}</Text>
+                    <Text fontSize="xl">{article.authorId}</Text>
                     <Text fontSize="sm" color="gray.400" fontStyle="italic">
                         Submitted {formatDistanceToNow(new Date(article.timeSubmitted), { addSuffix: true })}
                     </Text>
