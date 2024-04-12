@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon, SearchIcon } from "@chakra-ui/icons";
-import { Button, VStack, Link, Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Input, Collapse, Heading, useDisclosure, Textarea, StackDivider, HStack, InputGroup, InputLeftElement, Tag, Image, Avatar, IconButton } from "@chakra-ui/react";
+import { Button, VStack, Link, Box, Text, Flex, Menu, MenuButton, MenuList, MenuItem, Input, Collapse, Heading, Textarea, StackDivider, HStack, InputGroup, InputLeftElement, Image, Avatar} from "@chakra-ui/react";
 import { useState } from "react";
-import { FaNewspaper, FaUser } from "react-icons/fa";
+import { FaNewspaper } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { LoggedinHeader } from "../admin/AdminHome.page";

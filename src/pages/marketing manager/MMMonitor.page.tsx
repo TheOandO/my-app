@@ -209,14 +209,21 @@ function MemberTable() {
         const student = members.find(member => member.id === authorId);
         return student ? student.name : 'Unknown'; // Return the student's name if found, otherwise return 'Unknown'
       };
+      // Extract manager's faculty from selectedMember
+      const managerFaculty = selectedMember.faculty;
+       // Filter articles based on both student's and manager's faculty
+      const filteredArticlesByFaculty = pendingArticles.filter(article => {
+        const student = members.find(member => member.id === article.authorId);
+        return student && student.faculty === managerFaculty;
+      });
       return ( 
           <>
-            <Heading fontSize="2xl" m='4'>Pending Articles: ({pendingArticles.length})</Heading>
+            <Heading fontSize="2xl" m='4'>Pending Articles: ({filteredArticlesByFaculty.length})</Heading>
             <Box maxHeight="400px" overflowY="auto">
-              {pendingArticles
+              {filteredArticlesByFaculty
                 .map(article => (
                 <HStack key={article.id} p={5} spacing={4} align="center" borderBottomWidth="1px">
-                  <Avatar name={article.authorId} src={`path_to_author_avatar_based_on_${article.authorId}`} />
+                  <Avatar size='lg' name={article.authorId} src={`path_to_author_avatar_based_on_${article.authorId}`} />
 
                   <VStack align="flex-start" flex={1} mr={4}>
                     <Text fontSize="xl">{getStudentName(article.authorId)}</Text>
