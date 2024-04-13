@@ -96,49 +96,49 @@ export function Overview() {
       <SimpleGrid columns={2} spacing={10}>
         {/* Statistics column */}
         <VStack spacing={4} align="stretch">
-          <Stat>
-            <StatLabel><Icon as={FaUser} mr={2} />Total accounts</StatLabel>
+          <Stat >
+            <StatLabel fontSize='3xl'><Icon as={FaUser} mr={2} />Total accounts</StatLabel>
             <Link href='/Admin/Members'>
               <StatNumber textDecoration='underline'>1,024</StatNumber>
             </Link>
 
           </Stat>
           <Stat>
-            <StatLabel><Icon as={FaNewspaper} mr={2} />Total articles</StatLabel>
+            <StatLabel fontSize='3xl'><Icon as={FaNewspaper} mr={2} />Total articles</StatLabel>
             <Link href='/Newsfeed'>
               <StatNumber textDecoration='underline'>1,024</StatNumber>
             </Link>
           </Stat>
           <Stat>
-            <StatLabel><Icon as={FaBell} mr={2} />Days until the end of the academic year</StatLabel>
+            <StatLabel fontSize='3xl'><Icon as={FaBell} mr={2} />Days until the end of the academic year</StatLabel>
             <StatNumber>1,024</StatNumber>
           </Stat>
           <Stat>
-            <StatLabel><Icon as={FaCalendarDay} mr={2} />Term end date</StatLabel>
+            <StatLabel fontSize='3xl'><Icon as={FaCalendarDay} mr={2} />Term end date</StatLabel>
             <StatNumber>May 4th, 2024</StatNumber>
           </Stat>
         </VStack>
 
         {/* Buttons column */}
-        <VStack spacing={4} align="stretch">
+        <VStack spacing={8} align="stretch">
           <Link href='/Admin/Members'>
-            <Button leftIcon={<FaCog />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaCog />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
               Manage accounts
             </Button>
           </Link>
           <Link href='/Admin/ViewTopics'>
-            <Button leftIcon={<FaAnchor />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaAnchor />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
               View topics
             </Button>
           </Link>
 
           <Link href='/Admin/SendNotif'>
-            <Button leftIcon={<FaEnvelopeOpenText />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaEnvelopeOpenText />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
               Send notifications
             </Button>
           </Link>
           <Link href='/MyAccount/1'>
-            <Button leftIcon={<FaUser />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12}>
+            <Button leftIcon={<FaUser />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
               My account
             </Button>
           </Link>
