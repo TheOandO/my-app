@@ -157,7 +157,7 @@ export function DiscussionPage() {
         {/* 'Discussions & Articles' header box */}
         <Flex justifyContent="space-between" p={4} bg="#fff" borderRadius="lg" boxShadow="md" mb="5">
           <Text fontSize="3xl" fontWeight="bold" color="#426B1F" alignSelf="center">Discussions <br/>& Articles</Text>
-          <Link color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
+          <Link href='/Newsfeed' color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
         </Flex>
         {/* 'View all discussions' header box */}
 
