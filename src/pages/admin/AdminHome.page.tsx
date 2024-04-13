@@ -7,7 +7,33 @@ import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaEnvelopeOpenText, 
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
+import { useState, useEffect } from 'react';
 export function LoggedinHeader() {
+  const CustomLink = () => {
+    const [href, setHref] = useState('/');
+  
+    useEffect(() => {
+      const currentPath = window.location.pathname;
+      if (currentPath.includes('/mm')) {
+        setHref('/mm');
+      } else if (currentPath.includes('/Admin')) {
+        setHref('/admin');
+      } else if (currentPath.includes('/Mc')) {
+        setHref('/mc');
+      } else if (currentPath.includes('/')) {
+        setHref('/');
+      } else if (currentPath.includes('/student')) {
+        setHref('/student');
+      } else {
+        setHref('/');
+      }
+    }, []);
+    return (
+      <Link href={href} px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+        Home
+      </Link>
+    );
+  }
   const notifications = [
     { id: 1, title:'', message: 'New topic registered' },
     { id: 2, title:'', message: 'System update available' },
@@ -28,9 +54,7 @@ export function LoggedinHeader() {
       <Flex alignItems="center" ml="auto" mr="auto">
         <Box display="flex" alignItems="center">
           {/* This container will group the navigation links, language selector, and avatar */}
-          <Link href="/" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
-            Home
-          </Link>
+          <CustomLink />
           
           <Link href="/Newsfeed" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
             Newsfeed
