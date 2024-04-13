@@ -178,8 +178,8 @@ function MemberTable() {
                         <Divider my={4} borderColor="#fff"/>
                         <Tbody>
                             {members.map((member) => (
-                            <Tr bg="rgba(137, 188, 93, 0.2)" key={member.id} _hover={{color: '#fff', bg: 'rgba(73,133,23,1)', boxShadow: {boxShadowColor}, transform: 'translateY(-2px)',
-                                zIndex: 2}} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s" position='relative'>
+                            <Tr bg="rgba(137, 188, 93, 0.2)" key={member.id} _hover={{bg: 'rgba(73,133,23,1)', boxShadow: {boxShadowColor},
+                                zIndex: 2}} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s">
                                 <Td>{member.id}</Td>
                                 <Td>{member.name}</Td>
                                 <Td>{member.email}</Td>
