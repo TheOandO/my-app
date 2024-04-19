@@ -16,6 +16,7 @@
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
     "@types/styled-components": "^5.1.34",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.0.8",

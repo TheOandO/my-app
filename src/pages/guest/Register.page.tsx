@@ -1,43 +1,72 @@
 import React, { useState } from 'react';
 import { LoginPageContainer, RegImageContainer, LoginFormContainer, Logo, Label, Input, SubmitButton, Divider, SocialIconsContainer, FooterLinksContainer, FooterLink, SignUpLink, SignUpText } from '../../components/Login.styles';
+import { Alert, AlertIcon } from '@chakra-ui/react'
 import logo from '../../assets/logo.png'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
-    const [formData, setFormData] = useState({
-      fullName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    });
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const navigate = useNavigate();
   
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: value
-      }));
-    };
-  
-    const handleSubmit = (event: React.FormEvent) => {
-      event.preventDefault();
-      // Handle form validation and submission here
-    };
-  
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:3001/signup', {
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+      });
+
+      console.log(response.data); // Log the response data
+      navigate('/login');
+    } catch (error:any) {
+      console.error('Error signing up:', error.response.data);
+      // Handle errors, such as displaying an error message to the user
+      setErrorMessage('Error Registering');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 5000); // Hide error notification after 5 seconds
+    }
+  }
+
     return (
       <LoginPageContainer>
         <RegImageContainer />
         <LoginFormContainer>
             <Logo src={logo} alt="Logo" /> {/* Replace with your logo path */}
-              <form>
+              <form onSubmit={handleSubmit}>
+              {showError && (
+                <Alert status="error" mt={4}>
+                  <AlertIcon />
+                  {errorMessage}
+                </Alert>
+              )}
                 <Label htmlFor="fullName">Full Name</Label>
-                <Input type="fullName" id="fullName" name="fullName" placeholder="" required />                    
+                <Input type="fullName" id="fullName" name="fullName" placeholder="" required value={formData.fullName} onChange={handleChange}/>                    
                 <Label htmlFor="email">Email address</Label>
-                <Input type="email" id="email" name="email" placeholder="" required />
+                <Input type="email" id="email" name="email" placeholder="" required value={formData.email} onChange={handleChange}/>
 
                 <Label htmlFor="password">Password</Label>
-                <Input type="password" id="password" name="password" placeholder="" required />
+                <Input type="password" id="password" name="password" placeholder="" required value={formData.password} onChange={handleChange}/>
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input type="password" id="confirmPassword" name="confirmPassword" placeholder="" required />
+                <Input type="password" id="confirmPassword" name="confirmPassword" placeholder="" required value={formData.confirmPassword} onChange={handleChange}/>
 
                 <SubmitButton type="submit">Create Account</SubmitButton>
 
