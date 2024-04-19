@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -29,7 +29,7 @@ const Register: React.FC = () => {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:3001/signup', {
-        fullName: formData.fullName,
+        name: formData.name,
         email: formData.email,
         password: formData.password,
         confirmPassword: formData.confirmPassword,
@@ -58,8 +58,8 @@ const Register: React.FC = () => {
                   {errorMessage}
                 </Alert>
               )}
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input type="fullName" id="fullName" name="fullName" placeholder="" required value={formData.fullName} onChange={handleChange}/>                    
+                <Label htmlFor="name">Full Name</Label>
+                <Input type="name" id="name" name="name" placeholder="" required value={formData.name} onChange={handleChange}/>                    
                 <Label htmlFor="email">Email address</Label>
                 <Input type="email" id="email" name="email" placeholder="" required value={formData.email} onChange={handleChange}/>
 
