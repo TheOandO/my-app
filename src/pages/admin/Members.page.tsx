@@ -40,10 +40,20 @@ import {
     FaBacon,
 } from 'react-icons/fa';
 import { LoggedinHeader } from './AdminHome.page';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
-
+import axios from 'axios';
+interface User {
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+    major: string;
+    faculty: string;
+    username: string
+    // Add other properties as needed
+}
   // Example members data
 const members = [
     {
@@ -116,12 +126,32 @@ export function AdminSidebar() {
 }
 
 function MemberTable() {
+    const [users, setUsers] = useState<User[]>([]);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isAscending, setIsAscending] = useState(true);
     const boxShadowColor = useColorModeValue('0px 2px 12px rgba(130,148,116,0.8)', '0px 2px 12px rgba(130,148,116,0.8)');
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    const fetchUsers = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:3001/get-all');
+            setUsers(response.data.users);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const toggleSortOrder = () => {
         setIsAscending(!isAscending);
     };
+    
     return (
         <Box flex="1" bgGradient="linear(to-t, #e1f5dd, white)" p={5}>
             <Flex justify="space-between" align="center">
@@ -177,28 +207,27 @@ function MemberTable() {
                         </Thead>
                         <Divider my={4} borderColor="#fff"/>
                         <Tbody>
-                            {members.map((member) => (
-                            <Tr bg="rgba(137, 188, 93, 0.2)" key={member.id} _hover={{bg: 'rgba(73,133,23,1)', boxShadow: {boxShadowColor},
-                                zIndex: 2}} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s">
-                                <Td>{member.id}</Td>
-                                <Td>{member.name}</Td>
-                                <Td>{member.email}</Td>
-                                <Td>{member.role}</Td>
-                                <Td>{member.major}</Td>
-                                <Td>{member.faculty}</Td>
- 
-                                <Td>
-                                    <Menu>
-                                        <MenuButton as={IconButton} icon={<FaEllipsisV />} />
-                                        <MenuList>
-                                            <MenuItem>View</MenuItem>
-                                            <MenuItem>Update</MenuItem>
-                                            <MenuItem>Delete</MenuItem>
-                                        </MenuList>
-                                    </Menu>
-                                </Td>
-                                <Divider my={4} borderColor="#426B1F" width='100%'/>
-                            </Tr>
+                            {users.map((user) => (
+                                <Tr bg="rgba(137, 188, 93, 0.2)" key={user._id} _hover={{bg: 'rgba(73,133,23,1)', boxShadow: {boxShadowColor}, zIndex: 2}} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s">
+                                    <Td>{user._id}</Td>
+                                    <Td>{user.username}</Td>
+                                    <Td>{user.email}</Td>
+                                    <Td>{user.role}</Td>
+                                    <Td>{user.major}</Td>
+                                    <Td>{user.faculty}</Td>
+                                    <Td>
+                                        {/* Options menu */}
+                                        <Menu>
+                                            <MenuButton as={IconButton} icon={<FaEllipsisV />} />
+                                            <MenuList>
+                                                <MenuItem>View</MenuItem>
+                                                <MenuItem>Update</MenuItem>
+                                                <MenuItem>Delete</MenuItem>
+                                            </MenuList>
+                                        </Menu>
+                                    </Td>
+                                    <Divider my={4} borderColor="#426B1F" width='100%'/>
+                                </Tr>
                             ))}
                         </Tbody>
                     </Table>
