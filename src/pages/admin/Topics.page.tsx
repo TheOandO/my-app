@@ -131,6 +131,8 @@ function TopicsList() {
               backgroundColor: "white",
               display: "flex",
               flexDirection: "column",
+              margin: "2px 0",
+              border: "1px solid gray",
             }}
           >
             {topics
@@ -145,7 +147,7 @@ function TopicsList() {
               })
               .slice(0, 5)
               .map((topic) => (
-                <div className="dropdown-item" style={{ textAlign: "start" }}>
+                <div className="dropdown-row" style={{ textAlign: "start" }}>
                   <a key={topic.id} href="#">
                     {topic.title}
                   </a>
