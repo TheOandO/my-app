@@ -203,7 +203,38 @@ function ArticleList({ articles }: { articles: Article[] }) {
           <InputLeftElement pointerEvents="none">
             <FaSearch />
           </InputLeftElement>
-          <Input placeholder="Search an article" />
+          <Input
+            placeholder="Search an article"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <div
+            className="dropdown"
+            style={{
+              backgroundColor: "white",
+              display: "flex",
+              flexDirection: "column",
+              margin: "2px 0",
+              border: "1px solid gray",
+            }}
+          >
+            {articles
+              .filter((article) => {
+                if (value === "") {
+                  return "";
+                } else if (
+                  article.title.toLowerCase().includes(value.toLowerCase())
+                ) {
+                  return article;
+                }
+              })
+              .slice(0, 5)
+              .map((article) => (
+                <div className="dropdown-row" style={{ textAlign: "start" }}>
+                  <a href="#">{article.title}</a>
+                </div>
+              ))}
+          </div>
         </InputGroup>
 
         <Flex gap={6}>
