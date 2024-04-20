@@ -275,6 +275,7 @@ function CreateArticle() {
                 }}
                 _focus={{ boxShadow: "none" }}
                 transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s"
+                onClick={(e) => handleSubmit(e)}
               >
                 Post
               </Button>
