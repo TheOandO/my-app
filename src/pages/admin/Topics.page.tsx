@@ -125,7 +125,14 @@ function TopicsList() {
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
-          <div className="dropdown">
+          <div
+            className="dropdown"
+            style={{
+              backgroundColor: "white",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             {topics
               .filter((topic) => {
                 if (value === "") {
@@ -136,8 +143,9 @@ function TopicsList() {
                   return topic;
                 }
               })
+              .slice(0, 5)
               .map((topic) => (
-                <div className="dropdown-item">
+                <div className="dropdown-item" style={{ textAlign: "start" }}>
                   <a key={topic.id} href="#">
                     {topic.title}
                   </a>
