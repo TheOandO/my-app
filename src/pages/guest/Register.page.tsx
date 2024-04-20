@@ -31,6 +31,7 @@ interface UserFormData {
 interface Faculty {
   _id: string;
   name: string;
+  marketing_coordinator_id: string;
 }
 
 enum UserRole {
@@ -57,35 +58,29 @@ const Register: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    fetchFaculties();
-  }, []);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: name === "facultyId" ? value : prevState[name],
+      [name]: value,
     }));
   };
 
   const fetchFaculties = async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/faculty/get-all");
-      if (response.data && response.data.faculties) {
         console.log("Faculty API Response:", response.data);
-        setFaculties(response.data.faculties);
-      } else {
-        console.error("No faculties data found in the response:", response.data);
-        setErrorMessage("No faculties data found");
-        setShowError(true);
-        setTimeout(() => setShowError(false), 5000);
-      }} catch (error) {
+        setFaculties(response.data.data);
+      } catch (error) {
       setErrorMessage("Error fetching faculties");
       setShowError(true);
       setTimeout(() => setShowError(false), 10000);
     }
   };
+
+  useEffect(() => {
+    fetchFaculties();
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -98,7 +93,7 @@ const Register: React.FC = () => {
         confirmPassword: formData.confirmPassword,
         username: formData.username,
         role: formData.role,
-        facultyId: formData.facultyId,
+        faculty_id: formData.facultyId,
       });
 
       navigate("/login");
@@ -187,7 +182,6 @@ const Register: React.FC = () => {
           disabled
         />  
         <Label htmlFor="facultyId">Faculty</Label>
-        {faculties && (
           <select
             id="facultyId"
             name="facultyId"
@@ -200,8 +194,8 @@ const Register: React.FC = () => {
                 {faculty.name}
               </option>
             ))}
+            
           </select>
-        )}
         <SubmitButton type="submit">Register</SubmitButton>
       </form>
         <SignUpText>Have an account?</SignUpText>
