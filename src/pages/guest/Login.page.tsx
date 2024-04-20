@@ -23,25 +23,27 @@ import {
 import { Alert, AlertIcon } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  
+  const navigate = useNavigate()
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
       // Make a POST request to your backend API
-      const response = await axios.post("http://localhost:3001/login", {
-        username: email,
+      const response = await axios.post("http://localhost:3001/api/user/login", {
+        username: username,
         password: password,
       });
 
-      // Handle the response
-      console.log(response.data); // Log the response data
-      // You can perform additional actions here, such as storing tokens in local storage or redirecting the user
+      console.log(response.data);
+      navigate('/student')
     } catch (error) {
       console.error("Error logging in:", error);
       setShowError(true);
@@ -64,14 +66,14 @@ const Login: React.FC = () => {
               Login failed. Please check your username and password.
             </Alert>
           )}
-          <Label htmlFor="email">Enter your school email</Label>
+          <Label htmlFor="username">Enter your school username</Label>
           <Input
-            type="email"
-            id="email"
-            name="email"
+            type="username"
+            id="username"
+            name="username"
             placeholder=""
             required
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
 
           <Label htmlFor="password">Password</Label>

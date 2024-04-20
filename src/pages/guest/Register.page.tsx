@@ -86,7 +86,7 @@ const Register: React.FC = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3001/api/user/signup", {
+      await axios.post("http://localhost:3001/api/user/signup", {
         name: formData.name,
         email: formData.email,
         password: formData.password,
