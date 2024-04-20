@@ -25,6 +25,7 @@ interface UserFormData {
   confirmPassword: string;
   role: UserRole;
   facultyId: string;
+  [key: string]: string;
 }
 
 interface Faculty {
@@ -57,7 +58,6 @@ const Register: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    // Fetch faculties from the backend when the component mounts
     fetchFaculties();
   }, []);
 
@@ -65,24 +65,25 @@ const Register: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: name === "facultyId" ? value : value,
+      [name]: name === "facultyId" ? value : prevState[name],
     }));
   };
 
   const fetchFaculties = async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/faculty/get-all");
-      console.log("Faculty API Response:", response.data);
       if (response.data && response.data.faculties) {
+        console.log("Faculty API Response:", response.data);
         setFaculties(response.data.faculties);
       } else {
         console.error("No faculties data found in the response:", response.data);
         setErrorMessage("No faculties data found");
         setShowError(true);
+        setTimeout(() => setShowError(false), 5000);
       }} catch (error) {
-      console.error("Error fetching faculties:", error);
       setErrorMessage("Error fetching faculties");
       setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
     }
   };
 
@@ -100,7 +101,6 @@ const Register: React.FC = () => {
         facultyId: formData.facultyId,
       });
 
-      console.log(response.data); // Log the response data
       navigate("/login");
     } catch (error: any) {
       console.error("Error signing up:", error.response.data);
@@ -166,7 +166,6 @@ const Register: React.FC = () => {
           value={formData.confirmPassword}
           onChange={handleChange}
         />
-        {/* Additional fields */}
         <Label htmlFor="username">Username</Label>
         <Input
           type="text"
@@ -187,20 +186,22 @@ const Register: React.FC = () => {
           value={UserRole.Student}
           disabled
         />  
-        <Label htmlFor="facultyId">Faculty ID</Label>
-        <select
-          id="facultyId"
-          name="facultyId"
-          value={formData.facultyId}
-          onChange={handleChange}
-        >
-          <option value="">Select Faculty</option>
-          {faculties.map((faculty) => (
-            <option key={faculty._id} value={faculty._id}>
-              {faculty.name}
-            </option>
-          ))}
-        </select>
+        <Label htmlFor="facultyId">Faculty</Label>
+        {faculties && (
+          <select
+            id="facultyId"
+            name="facultyId"
+            value={formData.facultyId}
+            onChange={handleChange}
+          >
+            <option value="">Select Faculty</option>
+            {faculties.map((faculty) => (
+              <option key={faculty._id} value={faculty._id}>
+                {faculty.name}
+              </option>
+            ))}
+          </select>
+        )}
         <SubmitButton type="submit">Register</SubmitButton>
       </form>
         <SignUpText>Have an account?</SignUpText>
