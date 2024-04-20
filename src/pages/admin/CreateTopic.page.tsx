@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   VStack,
   FormControl,
@@ -14,16 +14,62 @@ import {
   useColorModeValue,
   Divider,
   Heading,
+  Select,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { LoggedinHeader } from "./AdminHome.page";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Schema, model } from "mongoose";
+import { Label } from "../../components/Login.styles";
 
-function CreateTopic() {
-  const [title, setTitle] = useState("");
+interface Faculty {
+  _id: string;
+  name: string;
+  marketing_coordinator_id: string;
+}
+interface EntryFormData {
+  name: string;
+  dateline1: string;
+  dateline2: string;
+  facultyId: string;
+  description: string;
+  [key: string]: string;
+}
+
+const CreateTopic: React.FC = () => {
   const [description, setDescription] = useState("");
   const [imageSrc, setImageSrc] = useState("");
   const toast = useToast();
+
+  const [faculties, setFaculties] = useState<Faculty[]>([]);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [formData, setFormData] = useState<EntryFormData>({
+    name: "",
+    dateline1: "",
+    dateline2: "",
+    description: "",
+    facultyId: "",
+  });
+
+  const fetchFaculties = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/faculty/get-all"
+      );
+      console.log("Faculty API Response:", response.data);
+      setFaculties(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching faculties");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
+  useEffect(() => {
+    fetchFaculties();
+  }, []);
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
@@ -41,10 +87,37 @@ function CreateTopic() {
   const handleRemoveImage = () => {
     setImageSrc("");
   };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Form submission logic here
+    try {
+      await axios.post("http://localhost:3001/api/entry/create", {
+        name: formData.name,
+        dateline1: Date.now(),
+        dateline2: Date.now(),
+        description: formData.description,
+        faculty_id: formData.facultyId,
+      });
+    } catch (error: any) {
+      console.error("error adding topic", error.res.data);
+      toast({
+        title: "Error adding topic.",
+        description: error.res.data,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
     toast({
       title: "Topic created.",
       description: "We've created your topic for you.",
@@ -53,9 +126,6 @@ function CreateTopic() {
       isClosable: true,
     });
     // After submission clear the form
-    setTitle("");
-    setDescription("");
-    setImageSrc("");
   };
 
   const navigate = useNavigate();
@@ -94,21 +164,43 @@ function CreateTopic() {
             <FormControl id="topic-title" isRequired>
               <FormLabel>Topic title</FormLabel>
               <Input
-                placeholder="Boxed water is better !!!"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                size="lg" // Increased size for larger input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Boxed water is better!!!!"
+                required
+                value={formData.name}
+                onChange={handleChange}
               />
             </FormControl>
+
             <FormControl id="topic-description" isRequired>
               <FormLabel>Description</FormLabel>
-              <Textarea
-                placeholder="Description (200 words max)"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                maxLength={200}
-                size="lg" // Increased size for larger textarea
+              <Input
+                type="text"
+                id="description"
+                name="description"
+                placeholder="Input description"
+                required
+                value={formData.description}
+                onChange={handleChange}
               />
+            </FormControl>
+            <FormControl id="facultyId" isRequired>
+              <FormLabel>Select Faculty</FormLabel>
+              <select
+                id="facultyId"
+                name="facultyId"
+                value={formData.facultyId}
+                onChange={handleChange}
+              >
+                <option value="">Select Faculty</option>
+                {faculties.map((faculty) => (
+                  <option key={faculty._id} value={faculty._id}>
+                    {faculty.name}
+                  </option>
+                ))}
+              </select>
             </FormControl>
             <FormControl id="image">
               <FormLabel>Image</FormLabel>
@@ -178,6 +270,6 @@ function CreateTopic() {
       </VStack>
     </Box>
   );
-}
+};
 
 export default CreateTopic;
