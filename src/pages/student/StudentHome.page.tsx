@@ -14,14 +14,16 @@ import {
     Button,
     Tooltip,
     Link,
-    HStack
+    HStack,
+    Alert,
+    AlertIcon
   } from '@chakra-ui/react';
 import { AddIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 import { LoggedinHeader } from '../admin/AdminHome.page';
 import { Quote } from '../guest/Home.page';
 import { DiscussionPage } from '../guest/Home.page';
 import { Footer } from '../guest/Home.page';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addMonths, subMonths, format, startOfWeek, startOfMonth, endOfMonth, endOfWeek, eachDayOfInterval } from 'date-fns';
 import meat from '../../assets/contains-meat.png'
 import vegetable from '../../assets/vegetable.png'
@@ -167,38 +169,68 @@ function Dashboard() {
 }
 
   function StudentHome() {
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const handleAddButtonClick = () => {
       navigate('/Student/CreateArticle');
       // Additional logic when the plus button is clicked
     };
+
+    const [userRole, setUserRole] = useState('');
+    useEffect(() => {
+      // Fetch user role from local storage or API upon component mount
+      const storedUserRole = localStorage.getItem('userRole');
+      if (storedUserRole) {
+        setUserRole(storedUserRole);
+      } else {
+        // If user role is not stored in local storage, you can redirect to login or handle it as needed
+        setErrorMessage("Unauthorize Access");
+        setShowError(true);
+      }
+    }, []);
+
+    
     return (
       <Box>
-        <LoggedinHeader />
-        <Quote></Quote>
-        <Dashboard/>
-        <DiscussionPage></DiscussionPage>
-        <Footer></Footer>
-        <Tooltip label="Make a post" fontSize="md" placement="left" hasArrow>
-        <IconButton
-          aria-label="Make a post"
-          icon={<AddIcon />}
-          bg="#426B1F"
-          color='#fff'
-          variant="solid"
-          size="lg"
-          colorScheme='green'
-          isRound={true}
-          position="fixed"
-          bottom="1em" // Adjust the distance from the bottom
-          right="1em" // Adjust the distance from the right
-          zIndex="tooltip" // Ensure the button is above most other items
-          onClick={handleAddButtonClick}
-          boxShadow="0px 4px 12px rgba(0, 0, 0, 0.15)"
-          width="80px" // Set a specific width
-          height="80px" // Set a specific height
-          fontSize="40px"
-        /></Tooltip>
+          {/* {showError && (
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              {errorMessage}
+              <Link href='/login' ml={10}>
+                <Text fontStyle='italic'>Go to the Login Page</Text>
+              </Link>
+            </Alert>
+          )} */}
+        {/* {userRole === 'student' && (
+        <> */}
+          <LoggedinHeader />
+          <Quote></Quote>
+          <Dashboard/>
+          <DiscussionPage></DiscussionPage>
+          <Footer></Footer>
+          <Tooltip label="Make a post" fontSize="md" placement="left" hasArrow>
+          <IconButton
+            aria-label="Make a post"
+            icon={<AddIcon />}
+            bg="#426B1F"
+            color='#fff'
+            variant="solid"
+            size="lg"
+            colorScheme='green'
+            isRound={true}
+            position="fixed"
+            bottom="1em" // Adjust the distance from the bottom
+            right="1em" // Adjust the distance from the right
+            zIndex="tooltip" // Ensure the button is above most other items
+            onClick={handleAddButtonClick}
+            boxShadow="0px 4px 12px rgba(0, 0, 0, 0.15)"
+            width="80px" // Set a specific width
+            height="80px" // Set a specific height
+            fontSize="40px"
+          /></Tooltip>        
+        {/* </>
+        )} */}
       </Box>
   
     );

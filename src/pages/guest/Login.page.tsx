@@ -43,7 +43,33 @@ const Login: React.FC = () => {
       });
 
       console.log(response.data);
-      navigate('/student')
+
+      // // Extract the access token from the response
+      // const accessToken = response.data.access_token;
+
+      // // Make a POST request to validate the token
+      // await axios.post("http://localhost:3001/api/user/validate", {
+      //   access_token: accessToken,
+      // });
+
+        // Navigate to the appropriate page based on the user's role
+        switch (response.data.user.role) {
+          case "student":
+            navigate("/student");
+            break;
+          case "marketingManager":
+            navigate("/MM");
+            break;
+          case "marketingCoordinator":
+            navigate("/MC");
+            break;
+          case "admin":
+            navigate("/admin");
+            break;
+          default:
+
+            break;
+        }
     } catch (error) {
       console.error("Error logging in:", error);
       setShowError(true);
