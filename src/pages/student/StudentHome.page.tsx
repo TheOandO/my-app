@@ -127,7 +127,7 @@ export function Topics() {
     return `Starts in ${difference} day${difference !== 1 ? 's' : ''}`;
   } else if (status === 'Expired') {
     difference = differenceInDays(currentDate, dateline2);
-    return `${difference} day${difference !== 1 ? 's' : ''} ago`;
+    return `Ended ${difference} day${difference !== 1 ? 's' : ''} ago`;
   }
 
   return '';
