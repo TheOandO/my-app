@@ -24,24 +24,29 @@ import { Quote } from '../guest/Home.page';
 import { DiscussionPage } from '../guest/Home.page';
 import { Footer } from '../guest/Home.page';
 import React, { useEffect, useState } from 'react';
-import { addMonths, subMonths, format, startOfWeek, startOfMonth, endOfMonth, endOfWeek, eachDayOfInterval } from 'date-fns';
-import meat from '../../assets/contains-meat.png'
-import vegetable from '../../assets/vegetable.png'
-import family from '../../assets/family.png'
-import woman from '../../assets/women.png'
+import { addMonths, subMonths, format, startOfWeek, startOfMonth, endOfMonth, endOfWeek, eachDayOfInterval, differenceInDays } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Schema } from 'mongoose';
 
+
+interface Topic {
+  name: string,
+  dateline1: Date,
+  dateline2: Date,
+  faculty_id: Schema.Types.ObjectId
+}
+interface Faculty {
+  _id: string;
+  name: string;
+  marketing_coordinator_id: string;
+}
 
 export function Topics() {
-  type StatusType = 'In progress' | 'Expired' | 'Upcoming';
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const topics = [
-    { id: 1, title: 'Take pics of your meat', status: 'In progress' as StatusType, timeLeft: '2 days remaining', icon: meat },
-    { id: 2, title: 'Vegetable day ?!?', status: 'Expired'as StatusType, timeLeft: '4 days ago', icon: vegetable },
-    { id: 3, title: 'Where’s your family ?', status: 'Upcoming'as StatusType, timeLeft: 'In 1 week', icon: family },
-    { id: 4, title: 'Mother’s day bonanza', status: 'Upcoming'as StatusType, timeLeft: 'In 1 month', icon: woman },
-  ];
+  type StatusType = 'In progress' | 'Expired' | 'Upcoming';
 
   // Status button component
   const StatusButton : React.FC<{ status: StatusType }> = ({ status }) => {
@@ -53,19 +58,98 @@ export function Topics() {
     return <Tag fontSize="lg" fontWeight='bold' width='140px' height='50px' display='flex' alignItems='center' justifyContent='center' borderRadius="full" variant="solid" bg={color} color='white'>{status}</Tag>;
   };
 
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [faculties, setFaculties] = useState<Faculty[]>([]);
+
+  const fetchFaculties = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/faculty/get-all"
+      );
+      setFaculties(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching faculties");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
+  const fetchTopics = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/entry/get-all");
+
+      const currentDate = new Date();
+      const updatedTopics = response.data.data.map((topic: Topic) => {
+        const { dateline1, dateline2 } = topic;
+        const parsedDate1 = new Date(dateline1);
+        const parsedDate2 = new Date(dateline2);
+
+        let status: 'In progress' | 'Expired' | 'Upcoming' | 'Unknown' = 'Unknown';
+        if (currentDate > parsedDate2) {
+          status = 'Expired';
+        } else if (currentDate >= parsedDate1 && currentDate <= parsedDate2) {
+          status = 'In progress';
+        } else if (currentDate < parsedDate1) {
+          status = 'Upcoming';
+        }
+        return { ...topic, status };
+      });
+
+      setTopics(updatedTopics);
+    } catch (error) {
+      console.error("Error fetching topics:", error);
+      setErrorMessage("Error fetching topics");
+      setShowError(true);
+    }
+  };  
+  
+  useEffect(() => {
+    fetchFaculties();
+    fetchTopics();
+  }, []);
+
+  // Function to find faculty name by faculty id
+  const findFacultyName = (facultyId: string): string => {
+    const faculty = faculties.find((f) => f._id === facultyId);
+    return faculty ? faculty.name : 'Unknown Faculty';
+  };
+
+ // Function to calculate the difference between dates and format the message
+ const formatDatelineMessage = (status: StatusType, dateline1: Date, dateline2: Date): string => {
+  const currentDate = new Date();
+  let difference = 0;
+
+  if (status === 'In progress') {
+    difference = differenceInDays(dateline2, currentDate);
+    return `Ends in ${difference} day${difference !== 1 ? 's' : ''}`;
+  } else if (status === 'Upcoming') {
+    difference = differenceInDays(dateline1, currentDate);
+    return `Starts in ${difference} day${difference !== 1 ? 's' : ''}`;
+  } else if (status === 'Expired') {
+    difference = differenceInDays(currentDate, dateline2);
+    return `${difference} day${difference !== 1 ? 's' : ''} ago`;
+  }
+
+  return '';
+};
+
 return (
   <VStack spacing={4} alignItems="center" p={5} bg='white' flex={1}>
+    {showError && (
+      <Alert status="error" mt={4}>
+        <AlertIcon />
+        {errorMessage}
+      </Alert>
+    )}
     <Heading fontSize="4xl" mb={4} color='#426B1F'>Topics</Heading>
-    <List spacing={6} width="100%">
-      {topics.map((topic) => (
-        <ListItem key={topic.id}>
-          <Flex align="center" bg="white" p={4} borderRadius="lg" boxShadow="base" _hover={{transform: "translateY(-4px)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)"}} transition="background-color 0.2s, box-shadow 0.2s transform 0.4s">
-            <Box boxSize="50px" mr={4} bg="purple.100" borderRadius="md" >
-            <Image src={topic.icon} boxSize="50px" mr={4} borderRadius="md" /> {/* Placeholder for icon */}
-            </Box>
+    <List spacing={6} width="100%" minH={200} h={500} overflowY='auto' minW={700}>
+      {topics.map((topic: any) => (
+        <ListItem key={topic._id}>
+          <Flex align="center" bg="white" p={4} borderRadius="lg" boxShadow="base" _hover={{ transform: "translateY(-4px)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }} transition="background-color 0.2s, box-shadow 0.2s transform 0.4s">
             <Box flex="1">
-              <Text fontWeight="bold" fontSize='2xl' color='#426b1f'>{topic.title}</Text>
-              <Text fontSize="md" fontStyle='italic'>{topic.timeLeft}</Text>
+              <Text fontWeight="bold" fontSize='3xl' color='#426b1f'>{topic.name}</Text>
+              <Text fontSize="md" fontStyle='italic'>{formatDatelineMessage(topic.status, topic.dateline1, topic.dateline2)}</Text>
+              <Text fontSize="md" color="gray.600">Faculty: {findFacultyName(topic.faculty_id)}</Text>            
             </Box>
             <StatusButton status={topic.status} />
           </Flex>
