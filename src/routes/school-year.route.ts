@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import * as controller from '../controllers/school-year.controller';
+import { UserMiddleware } from '../middlewares';
+import { roles } from '../utils';
+export const schoolYear = Router();
+// const userMiddleware = new UserMiddleware();
+schoolYear.post('/create', controller.createSchoolYear);
+schoolYear.get('/get-by-id/:id', controller.getSchoolYearById);
+schoolYear.get('/get-all', controller.getAllSchoolYear);
+schoolYear.delete('/delete/:id', controller.deleteSchoolYear);
+schoolYear.put('/edit/:id', controller.editSchoolYear);
