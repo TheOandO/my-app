@@ -83,25 +83,25 @@ export const getById = async (req: Request, res: Response) => {
     try {
         const token = await getTokenInfo({ req }) as any;
         const { id } = req.params;
-        if (await token.user.roles.includes(roles.admin || roles.marketingManager)) {
+        // if (await token.user.roles.includes(roles.admin || roles.marketingManager)) {
             const user = await User.findById(id);
             if (!user) {
                 return res.status(404).json({ error: true, message: 'User not found' });
             } else {
                 return res.status(200).json({ error: false, user });
             }
-        } else {
-            if (token.user._id === id) {
-                const user = await User.findById(id);
-                if (!user) {
-                    return res.status(404).json({ error: true, message: 'User not found' });
-                } else {
-                    return res.status(200).json({ error: false, user });
-                }
-            }
-            return res.status(403).json({ error: true, message: 'Access Denied' });
+        // } else {
+        //     if (token.user._id === id) {
+        //         const user = await User.findById(id);
+        //         if (!user) {
+        //             return res.status(404).json({ error: true, message: 'User not found' });
+        //         } else {
+        //             return res.status(200).json({ error: false, user });
+        //         }
+        //     }
+        //     return res.status(403).json({ error: true, message: 'Access Denied' });
 
-        }
+        // }
 
     } catch (error) {
         console.log(error);
