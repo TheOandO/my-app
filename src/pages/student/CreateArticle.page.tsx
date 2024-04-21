@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   VStack,
   FormControl,
@@ -23,12 +23,38 @@ import {
   ModalBody,
   useDisclosure,
   Checkbox,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { LoggedinHeader } from "../admin/AdminHome.page";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
+
+interface Article {
+  text: string;
+  files: string;
+  images: string;
+  entry_id: string;
+  student_id: string;
+  school_year_id: string;
+  term_condition: boolean;
+}
+
+interface Entry {
+  name: string;
+  dateline1: Date,
+  dateline2: Date,
+  faculty_id: string;
+}
+
+interface SchoolYear {
+  name: string,
+  start_time: Date,
+  end_time: Date
+}
 
 function CreateArticle() {
   const [title, setTitle] = useState("");
@@ -36,7 +62,50 @@ function CreateArticle() {
   const [imageSrc, setImageSrc] = useState("");
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [schoolyears, setSchoolyears] = useState<SchoolYear[]>([]);
+
+  const [form, setForm] = useState<Article>({
+    text: "",
+    files: "",
+    images: "",
+    entry_id: "",
+    student_id: "",
+    school_year_id: "",
+    term_condition: false,
+  })
   const toast = useToast();
+
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/entry/get-all");
+        console.log("Entries API Response:", response.data);
+        setEntries(response.data.data);
+      } catch (error) {
+      setErrorMessage("Error fetching Entries");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
+  const fetchSchoolYears = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/school-year/get-all");
+        console.log("SchoolYears API Response:", response.data);
+        setEntries(response.data.data);
+      } catch (error) {
+      setErrorMessage("Error fetching SchoolYears");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
+  useEffect(() => {
+    fetchEntries()
+    fetchSchoolYears()
+  }, [])
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
@@ -55,21 +124,56 @@ function CreateArticle() {
     setImageSrc("");
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    // Form submission logic here
-    toast({
-      title: "Article created.",
-      description: "We've created your article for you.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-    // After submission clear the form
-    setTitle("");
-    setDescription("");
-    setImageSrc("");
+    
+    try {
+      const accessToken = localStorage.getItem('access_token');
+      const response = await axios.post(
+        "http://localhost:3001/api/article/create",
+        {
+          text: form.text,
+          files: "",
+          images: [imageSrc], // Assuming the image source is added to the images array
+          entry_id: form.entry_id,
+          // student_id: student_id,
+          // school_year_id: school_year_id,
+
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            user: localStorage.getItem('user')
+          },
+          
+        }
+      );
+  
+      // Handle success response
+      console.log("Article created:", response.data);
+      toast({
+        title: "Article created.",
+        description: "Your article has been created successfully.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+  
+      // Clear the form fields
+      setTitle("");
+      setDescription("");
+      setImageSrc("");
+  
+      // Optionally, you can navigate the user to a different page after successful article creation
+      // navigate('/some-route'); // Import the navigate function from 'react-router-dom' or 'react-router'
+    } catch (error) {
+      console.error("Error creating article:", error);
+      setErrorMessage("Error creating article");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
   };
+
 
   const navigate = useNavigate();
   const handleBack = () => {
@@ -92,6 +196,12 @@ function CreateArticle() {
           p={8}
           width={{ base: "90%", md: "768px" }} // Increased width for medium-sized devices and up
         >
+          {showError && (
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              {errorMessage}
+            </Alert>
+          )}
           <Heading
             as="h2"
             size="lg"
@@ -114,22 +224,12 @@ function CreateArticle() {
                 {/* ... more options */}
               </Select>
             </FormControl>
-
-            <FormControl id="article-title" isRequired>
-              <FormLabel>Article title</FormLabel>
-              <Input
-                placeholder="Ex: Boxed water is better !!!"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                size="lg" // Increased size for larger input
-              />
-            </FormControl>
             <FormControl id="article-description" isRequired>
               <FormLabel>Description</FormLabel>
               <ReactQuill
                 style={{ width: "100%", height: "300px" }}
                 theme="snow"
-                value={description}
+                value={form.text}
                 onChange={setDescription}
               />
             </FormControl>
@@ -168,7 +268,13 @@ function CreateArticle() {
             <FormControl>
               {/* Terms and conditions checkbox */}
               <Checkbox
-                onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                onChange={(e) => {
+                  setIsTermsAccepted(e.target.checked);
+                  // Set term_condition to true when the checkbox is checked
+                  if (e.target.checked) {
+                    form.term_condition = true
+                  };
+                }}
                 defaultChecked={isTermsAccepted}
               >
                 I agree to the{" "}
