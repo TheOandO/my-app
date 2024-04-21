@@ -30,6 +30,9 @@ import ceo1 from "../../assets/ceo1.png"
 import ceo2 from "../../assets/ceo2.jpg"
 import ceo3 from "../../assets/ceo3.jpg"
 import logo from '../../assets/logo.png'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Schema } from 'mongoose';
 
 export function Header() {
   const scrollToBottom = () => {
@@ -149,7 +152,115 @@ const latestArticle = {
   imageUrl: post1 // replace with actual image URL of the forest
 };
 
+interface Article {
+  text: string,
+  files: [string],
+  images: [string],
+  entry_id: Schema.Types.ObjectId,
+  student_id: Schema.Types.ObjectId,
+  school_year_id: Schema.Types.ObjectId,
+  term_condition: true
+}
+interface Topic {
+  _id: string,
+  name: string,
+  dateline1: Date,
+  dateline2: Date,
+  faculty_id: string
+}
+interface Student {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  role: 'student';
+  facultyId: string;
+  [key: string]: string;
+}
+interface SchoolYear {
+  name: string,
+  start_time: Date,
+  end_time: Date
+}
 export function DiscussionPage() {
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [latestArticle, setLatestArticle] = useState<Article | null>(null);
+  const [topics, setTopic] = useState<Topic[]>([])
+  const [students, setStudent] = useState<Student[]>([])
+  const [schoolyear, setSchoolYear] = useState<SchoolYear[]>([])
+
+  const fetchSchoolYear = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/school-year/get-all")
+      setSchoolYear(response.data.data)
+    } catch (error) {
+      console.error("Error fetching School Year:", error);
+      setErrorMessage("Error fetching School Year");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000)
+    }
+  }
+
+  const fetchTopic = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/entry/get-all")
+      setTopic(response.data.data)
+    } catch (error) {
+      console.error("Error fetching Entry:", error);
+      setErrorMessage("Error fetching Entry");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000)
+    }
+  }
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/user/get-all")
+      setStudent(response.data.data)
+      console.log(students)
+    } catch (error) {
+      console.error("Error fetching User:", error);
+      setErrorMessage("Error fetching User");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000)
+    }
+  }
+
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/article/get-all");
+      const { data } = response.data;
+        if (data && data.length > 0) {
+          setLatestArticle(data[0]);
+          setArticles(data.slice(1, 5));
+        }
+      console.log(articles)
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+      setErrorMessage("Error fetching articles");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+      }
+  }
+
+  useEffect(() => {
+    fetchSchoolYear()
+    fetchUser()
+    fetchTopic()
+    fetchArticles()
+  }, [])
+
+  const findTopicName = (topicid: string): string => {
+    const topic = topics.find((f) => f._id === topicid);
+    return topic ? topic.name : 'Unknown Topic';
+  };
+  const findUserName = (userid: string): string => {
+    const student = students.find((f) => f._id === userid);
+    return student ? student.name : 'Unknown User';
+  };
+
   return (
     <Flex background="#e1f4dc" p={20}>
       {/* Header for 'Discussions & Articles' and 'View all discussions' */}
@@ -164,13 +275,15 @@ export function DiscussionPage() {
         <Box width="full" backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" >
           <Stack spacing={4}>
             {/* Mapping discussions */}
-            {discussions.map((discussion) => (
-              <Flex key={discussion.id} alignItems="center">
-                <Avatar name={discussion.author} src={discussion.avatarUrl} />
+            {articles.map((article: any) => (
+              <Flex key={article._id} alignItems="center">
+                {/* Assuming the avatarUrl is available in the data */}
+                <Avatar name={findUserName(article.student_id)} />
                 <Flex justifyContent="space-between" p={4} bg="#fff" borderRadius="lg" boxShadow="md" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
                 <Box ml={3} >
-                  <Text fontWeight="bold" color="#426b1f">{discussion.title}</Text>
-                  <Text fontSize="sm" color="gray.300">{discussion.author} · {discussion.timeAgo}</Text>
+                  <Text fontWeight="bold" color="#426b1f">{article.text}</Text>
+                  {/* Assuming timeAgo property is available in the data */}
+                  <Text fontSize="sm" color="gray.300">{findUserName(article.student_id)} </Text>
                 </Box>
                 </Flex>
               </Flex>
@@ -194,8 +307,8 @@ export function DiscussionPage() {
       <Box backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" position="relative" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
         {/* Image */}
         <Image 
-          src={latestArticle.imageUrl} 
-          alt={latestArticle.title} 
+          src=''
+          alt='{latestArticle.title}' 
           objectFit="cover" 
           width="100%" 
           height="50%"
@@ -203,10 +316,10 @@ export function DiscussionPage() {
 
         {/* Discussion Title */}
         <Flex position="absolute" bottom={3} right={3} alignItems="center" backgroundColor="rgba(225, 244, 220, 0.8)" p={2} borderRadius="md" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
-          <Avatar name={latestArticle.author} src={latestArticle.avatarUrl} />
+          <Avatar name='{latestArticle.author}' src='{latestArticle.avatarUrl}' />
           <Box ml={3}>
-            <Text fontWeight="bold">{latestArticle.title}</Text>
-            <Text fontSize="sm">{latestArticle.author} · {latestArticle.timeAgo}</Text>
+            <Text fontWeight="bold">latestArticle.title</Text>
+            <Text fontSize="sm">latestArticle.author · latestArticle.timeAgo</Text>
           </Box>
         </Flex>
       </Box>

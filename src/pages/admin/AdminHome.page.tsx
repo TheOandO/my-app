@@ -37,7 +37,7 @@ export function LoggedinHeader() {
 
   return (
     <Flex as="header" align="center" padding="1rem" bg="transparent" boxShadow="sm" width="100%">
-      <Link href='/'>
+      <Link href={href}>
         <Box p="2">
           <Image src={logo} alt="Website logo" boxSize="70px" ml="4" />
         </Box>
