@@ -183,118 +183,118 @@ interface SchoolYear {
   end_time: Date
 }
 export function DiscussionPage() {
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [latestArticle, setLatestArticle] = useState<Article | null>(null);
-  const [topics, setTopic] = useState<Topic[]>([])
-  const [students, setStudent] = useState<Student[]>([])
-  const [schoolyear, setSchoolYear] = useState<SchoolYear[]>([])
+  // const [showError, setShowError] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState("");
+  // const [articles, setArticles] = useState<Article[]>([]);
+  // const [latestArticle, setLatestArticle] = useState<Article | null>(null);
+  // const [topics, setTopic] = useState<Topic[]>([])
+  // const [students, setStudent] = useState<Student[]>([])
+  // const [schoolyear, setSchoolYear] = useState<SchoolYear[]>([])
 
-  const fetchSchoolYear = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/api/school-year/get-all")
-      setSchoolYear(response.data.data)
-    } catch (error) {
-      console.error("Error fetching School Year:", error);
-      setErrorMessage("Error fetching School Year");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000)
-    }
-  }
+  // const fetchSchoolYear = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:3001/api/school-year/get-all")
+  //     setSchoolYear(response.data.data)
+  //   } catch (error) {
+  //     console.error("Error fetching School Year:", error);
+  //     setErrorMessage("Error fetching School Year");
+  //     setShowError(true);
+  //     setTimeout(() => setShowError(false), 10000)
+  //   }
+  // }
 
-  const fetchTopic = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/api/entry/get-all")
-      setTopic(response.data.data)
-    } catch (error) {
-      console.error("Error fetching Entry:", error);
-      setErrorMessage("Error fetching Entry");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000)
-    }
-  }
+  // const fetchTopic = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:3001/api/entry/get-all")
+  //     setTopic(response.data.data)
+  //   } catch (error) {
+  //     console.error("Error fetching Entry:", error);
+  //     setErrorMessage("Error fetching Entry");
+  //     setShowError(true);
+  //     setTimeout(() => setShowError(false), 10000)
+  //   }
+  // }
 
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/api/user/get-all")
-      setStudent(response.data.data)
-      console.log(students)
-    } catch (error) {
-      console.error("Error fetching User:", error);
-      setErrorMessage("Error fetching User");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000)
-    }
-  }
+  // const fetchUser = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:3001/api/user/get-all")
+  //     setStudent(response.data.data)
+  //     console.log(students)
+  //   } catch (error) {
+  //     console.error("Error fetching User:", error);
+  //     setErrorMessage("Error fetching User");
+  //     setShowError(true);
+  //     setTimeout(() => setShowError(false), 10000)
+  //   }
+  // }
 
-  const fetchUserById = async (userId: any) => {
-    try {
-      const accessToken = localStorage.getItem('access_token');
+  // const fetchUserById = async (userId: any) => {
+  //   try {
+  //     const accessToken = localStorage.getItem('access_token');
   
-      const response = await axios.get(`http://localhost:3001/api/user/get-by-id/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const userData = response.data.data;
-  
-      setStudent((prevState) => ({
-        ...prevState,
-        [userId]: userData,
-      }));
-    } catch (error) {
-      console.error("Error fetching User:", error);
-      setErrorMessage("Error fetching User");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
-    }
-  };
+  //     const response = await axios.get(`http://localhost:3001/api/user/get-by-id/${userId}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+  //     const userData = response.data.data;
+  //     console.log(userD)
+  //     setStudent((prevState) => ({
+  //       ...prevState,
+  //       [userId]: userData,
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error fetching User:", error);
+  //     setErrorMessage("Error fetching User");
+  //     setShowError(true);
+  //     setTimeout(() => setShowError(false), 10000);
+  //   }
+  // };
 
-  const fetchArticles = async () => {
-    try {
-      const accessToken = localStorage.getItem('access_token');
-      const response = await axios.get("http://localhost:3001/api/article/get-by-id/661aac22261c77855e4f2c1f", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+  // const fetchArticles = async () => {
+  //   try {
+  //     const accessToken = localStorage.getItem('access_token');
+  //     const response = await axios.get("http://localhost:3001/api/article/get-by-id/661aac22261c77855e4f2c1f", {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
 
-      const { data } = response.data.data;
-      if (data && data.length > 0) {
-        // Fetch the latest article
-        setLatestArticle(data[0]);
-        // Fetch user data for the remaining articles
-        for (let i = 1; i < data.length && i < 5; i++) {
-          const article = data[i];
-          await fetchUserById(article.student_id);
-        }
-        // Update the state with the fetched articles
-        setArticles(data.slice(1, 5));
-      }
-    } catch (error) {
-      console.error("Error fetching articles:", error);
-      setErrorMessage("Error fetching articles");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
-    }
-  };
+  //     const { data } = response.data.data;
+  //     if (data && data.length > 0) {
+  //       // Fetch the latest article
+  //       setLatestArticle(data[0]);
+  //       // Fetch user data for the remaining articles
+  //       for (let i = 1; i < data.length && i < 5; i++) {
+  //         const article = data[i];
+  //         await fetchUserById(article.student_id);
+  //       }
+  //       // Update the state with the fetched articles
+  //       setArticles(data.slice(1, 5));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching articles:", error);
+  //     setErrorMessage("Error fetching articles");
+  //     setShowError(true);
+  //     setTimeout(() => setShowError(false), 10000);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchSchoolYear()
-    fetchUser()
-    fetchTopic()
-    fetchArticles()
-  }, [])
+  // useEffect(() => {
+  //   fetchSchoolYear()
+  //   fetchUser()
+  //   fetchTopic()
+  //   fetchArticles()
+  // }, [])
 
-  const findTopicName = (topicid: string): string => {
-    const topic = topics.find((f) => f._id === topicid);
-    return topic ? topic.name : 'Unknown Topic';
-  };
-  const findUserName = (userid: string): string => {
-    const student = students.find((f) => f._id === userid);
-    return student ? student.name : 'Unknown User';
-  };
+  // const findTopicName = (topicid: string): string => {
+  //   const topic = topics.find((f) => f._id === topicid);
+  //   return topic ? topic.name : 'Unknown Topic';
+  // };
+  // const findUserName = (userid: string): string => {
+  //   const student = students.find((f) => f._id === userid);
+  //   return student ? student.name : 'Unknown User';
+  // };
 
   return (
     <Flex background="#e1f4dc" p={20}>
@@ -303,22 +303,21 @@ export function DiscussionPage() {
         {/* 'Discussions & Articles' header box */}
         <Flex justifyContent="space-between" p={4} bg="#fff" borderRadius="lg" boxShadow="md" mb="5">
           <Text fontSize="3xl" fontWeight="bold" color="#426B1F" alignSelf="center">Discussions <br/>& Articles</Text>
+          <Link color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
           <Link href='/Newsfeed' color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
         </Flex>
         {/* 'View all discussions' header box */}
-
+    
         <Box width="full" backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" >
           <Stack spacing={4}>
             {/* Mapping discussions */}
-            {articles.map((article: any) => (
-              <Flex key={article._id} alignItems="center">
-                {/* Assuming the avatarUrl is available in the data */}
-                <Avatar name={findUserName(article.student_id)} />
+            {discussions.map((discussion) => (
+              <Flex key={discussion.id} alignItems="center">
+                <Avatar name={discussion.author} src={discussion.avatarUrl} />
                 <Flex justifyContent="space-between" p={4} bg="#fff" borderRadius="lg" boxShadow="md" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
                 <Box ml={3} >
-                  <Text fontWeight="bold" color="#426b1f">{article.text}</Text>
-                  {/* Assuming timeAgo property is available in the data */}
-                  <Text fontSize="sm" color="gray.300">{findUserName(article.student_id)} </Text>
+                  <Text fontWeight="bold" color="#426b1f">{discussion.title}</Text>
+                  <Text fontSize="sm" color="gray.300">{discussion.author} · {discussion.timeAgo}</Text>
                 </Box>
                 </Flex>
               </Flex>
@@ -326,43 +325,38 @@ export function DiscussionPage() {
           </Stack>
         </Box>
       </Flex>
-
-
-      {/* Latest Articles Panel */}
-      <Box width="50%" ml={50}>
+       {/* Latest Articles Panel */}
+       <Box width="50%" ml={50}>
       {/* Title 'Latest Articles' */}
           <Text fontSize="4xl" fontWeight="bold" color="#426B1F" alignSelf="center" mb={5}>Latest Articles</Text>
       {/* Search bar */}
-      <InputGroup mb={5}>
-        <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
-        <Input variant="filled" placeholder="Search discussions" />
-      </InputGroup>
-
-      {/* Green box containing the image and discussion title */}
-      <Box backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" position="relative" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
-        {/* Image */}
-        <Image 
-          src=''
-          alt='{latestArticle.title}' 
-          objectFit="cover" 
-          width="100%" 
-          height="50%"
-        />
-
-        {/* Discussion Title */}
-        <Flex position="absolute" bottom={3} right={3} alignItems="center" backgroundColor="rgba(225, 244, 220, 0.8)" p={2} borderRadius="md" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
-          <Avatar name='{latestArticle.author}' src='{latestArticle.avatarUrl}' />
-          <Box ml={3}>
-            <Text fontWeight="bold">latestArticle.title</Text>
-            <Text fontSize="sm">latestArticle.author · latestArticle.timeAgo</Text>
+          <InputGroup mb={5}>
+            <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
+            <Input variant="filled" placeholder="Search discussions" />
+          </InputGroup>
+          {/* Green box containing the image and discussion title */}
+          <Box backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" position="relative" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
+            {/* Image */}
+            <Image 
+              src={latestArticle.imageUrl} 
+              alt={latestArticle.title} 
+              objectFit="cover" 
+              width="100%" 
+              height="50%"
+            />
+            {/* Discussion Title */}
+            <Flex position="absolute" bottom={3} right={3} alignItems="center" backgroundColor="rgba(225, 244, 220, 0.8)" p={2} borderRadius="md" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
+              <Avatar name={latestArticle.author} src={latestArticle.avatarUrl} />
+              <Box ml={3}>
+                <Text fontWeight="bold">{latestArticle.title}</Text>
+                <Text fontSize="sm">{latestArticle.author} · {latestArticle.timeAgo}</Text>
+              </Box>
+            </Flex>
           </Box>
+        </Box>
         </Flex>
-      </Box>
-    </Box>
-    </Flex>
-  );
-}
-
+      );
+    }
 const teamMembers = [
   {
     name: 'Marcus Thompson',
