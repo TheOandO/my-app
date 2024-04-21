@@ -228,22 +228,57 @@ export function DiscussionPage() {
     }
   }
 
+  const fetchUserById = async (userId: any) => {
+    try {
+      const accessToken = localStorage.getItem('access_token');
+  
+      const response = await axios.get(`http://localhost:3001/api/user/get-by-id/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const userData = response.data.data;
+  
+      setStudent((prevState) => ({
+        ...prevState,
+        [userId]: userData,
+      }));
+    } catch (error) {
+      console.error("Error fetching User:", error);
+      setErrorMessage("Error fetching User");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
   const fetchArticles = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/article/get-all");
-      const { data } = response.data;
-        if (data && data.length > 0) {
-          setLatestArticle(data[0]);
-          setArticles(data.slice(1, 5));
+      const accessToken = localStorage.getItem('access_token');
+      const response = await axios.get("http://localhost:3001/api/article/get-by-id/661aac22261c77855e4f2c1f", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const { data } = response.data.data;
+      if (data && data.length > 0) {
+        // Fetch the latest article
+        setLatestArticle(data[0]);
+        // Fetch user data for the remaining articles
+        for (let i = 1; i < data.length && i < 5; i++) {
+          const article = data[i];
+          await fetchUserById(article.student_id);
         }
-      console.log(articles)
+        // Update the state with the fetched articles
+        setArticles(data.slice(1, 5));
+      }
     } catch (error) {
       console.error("Error fetching articles:", error);
       setErrorMessage("Error fetching articles");
       setShowError(true);
       setTimeout(() => setShowError(false), 10000);
-      }
-  }
+    }
+  };
 
   useEffect(() => {
     fetchSchoolYear()
