@@ -30,6 +30,7 @@ import vegetable from '../../assets/vegetable.png'
 import family from '../../assets/family.png'
 import woman from '../../assets/women.png'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 export function Topics() {
@@ -179,21 +180,54 @@ function Dashboard() {
 
     const [userRole, setUserRole] = useState('');
     useEffect(() => {
-      // Fetch user role from local storage or API upon component mount
-      const storedUserRole = localStorage.getItem('userRole');
-      if (storedUserRole) {
-        setUserRole(storedUserRole);
-      } else {
-        // If user role is not stored in local storage, you can redirect to login or handle it as needed
-        setErrorMessage("Unauthorize Access");
-        setShowError(true);
+      const checkTokenValidity = async () => {
+        try {
+          // Make a request to the /validate endpoint to check token validity
+          await axios.post("http://localhost:3001/api/user/validate", {
+            access_token: localStorage.getItem('access_token'),
+            user: localStorage.getItem('user'),
+            
+          },);
+          
+          const userDataString = localStorage.getItem('user');
+          const userData = JSON.parse(userDataString || '');
+          const userRole = userData.role;
+          setUserRole(userRole);
+        } catch (error) {
+          console.error("Error validating token:", error);
+          setShowError(true)
+          setErrorMessage('Unauthorized Access')
+
+          // If token is invalid or expired, attempt to refresh it
+          try {
+            const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+              user: localStorage.getItem('user'),
+            });
+
+            // If refresh is successful, update the access token and continue rendering the student homepage
+            console.log(refreshResponse.data.message);
+            localStorage.setItem('access_token', refreshResponse.data.access_token);
+            setUserRole(refreshResponse.data.user.role);
+
+            // setShowError(false)
+            
+          } catch (refreshError) {
+            console.error("Error refreshing token:", refreshError);
+            // If refresh fails, redirect the user to the login page
+            setShowError(true)
+            setErrorMessage('Unauthorized Access')
+
+          }
+        }
       }
+      checkTokenValidity();
+
     }, []);
 
     
     return (
       <Box>
-          {/* {showError && (
+          {showError && (
             <Alert status="error" mt={4}>
               <AlertIcon />
               {errorMessage}
@@ -201,9 +235,9 @@ function Dashboard() {
                 <Text fontStyle='italic'>Go to the Login Page</Text>
               </Link>
             </Alert>
-          )} */}
-        {/* {userRole === 'student' && (
-        <> */}
+          )}
+        {userRole === 'student' && (
+        <>
           <LoggedinHeader />
           <Quote></Quote>
           <Dashboard/>
@@ -229,8 +263,8 @@ function Dashboard() {
             height="80px" // Set a specific height
             fontSize="40px"
           /></Tooltip>        
-        {/* </>
-        )} */}
+        </>
+        )}
       </Box>
   
     );

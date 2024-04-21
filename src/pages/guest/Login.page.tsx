@@ -44,14 +44,10 @@ const Login: React.FC = () => {
 
       console.log(response.data);
 
-      // // Extract the access token from the response
-      // const accessToken = response.data.access_token;
-
-      // // Make a POST request to validate the token
-      // await axios.post("http://localhost:3001/api/user/validate", {
-      //   access_token: accessToken,
-      // });
-
+      // Store the access token in local storage
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
         // Navigate to the appropriate page based on the user's role
         switch (response.data.user.role) {
           case "student":
