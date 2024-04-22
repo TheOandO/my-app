@@ -31,7 +31,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Schema } from "mongoose";
-import { differenceInDays } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 
 interface Topic {
   _id: string
@@ -171,6 +171,7 @@ return (
               <Box flex="1">
                 <Text fontWeight="bold" fontSize='3xl' color='#426b1f'>{topic.name}</Text>
                 <Text fontSize="md" fontStyle='italic'>{formatDatelineMessage(topic.status, topic.dateline1, topic.dateline2)}</Text>
+                <Text fontSize="md" fontStyle='italic'>From {format(new Date(topic.dateline1), 'MMMM dd, yyyy')} to {format(new Date(topic.dateline2), 'MMMM dd, yyyy')}</Text>
                 <Text fontSize="md" color="gray.600">Faculty: {findFacultyName(topic.faculty_id)}</Text>            
               </Box>
               <StatusButton status={topic.status} />
