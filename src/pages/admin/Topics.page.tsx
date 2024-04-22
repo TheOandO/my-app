@@ -1,13 +1,10 @@
 import {
   Box,
   VStack,
-  HStack,
   Heading,
   Text,
   Button,
-  Image,
   Input,
-  IconButton,
   Divider,
   Flex,
   Tag,
@@ -33,10 +30,6 @@ import {
 import { AddIcon, SearchIcon, EditIcon } from "@chakra-ui/icons";
 import { LoggedinHeader } from "./AdminHome.page";
 import { AdminSidebar } from "./Members.page";
-import meat from "../../assets/contains-meat.png";
-import vegetable from "../../assets/vegetable.png";
-import family from "../../assets/family.png";
-import woman from "../../assets/women.png";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
@@ -60,9 +53,7 @@ export function Topics() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState("");
-  const onSearch = () => {
-    //no API yet
-  };
+
   type StatusType = 'In progress' | 'Expired' | 'Upcoming';
 
   // Status button component
@@ -231,7 +222,7 @@ function TopicModal({ topicId }: { topicId: string }) {
 
   return (
     <>
-      <Button onClick={fetchTopicById}>View</Button>
+      <Button leftIcon={<EditIcon />} onClick={fetchTopicById}>View</Button>
       {isOpen && (
         <Modal isOpen={isOpen} onClose={handleClose}>
           <ModalOverlay />
