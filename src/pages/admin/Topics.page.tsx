@@ -176,20 +176,7 @@ function TopicModal({ topicId }: { topicId: string }) {
   const fetchTopicById = async () => {
     try {
       const response = await axios.get<Topic>(`http://localhost:3001/api/entry/get-by-id/${topicId}`);
-      const { name, dateline1, dateline2, faculty_id } = response.data;
-      
-      // Set the initial state for formData
-      setFormData({
-        name,
-        dateline1: new Date(dateline1).toISOString().slice(0, 10), // Convert to ISO string format
-        dateline2: new Date(dateline2).toISOString().slice(0, 10), // Convert to ISO string format
-        facultyId: faculty_id.toString(),
-      });
-  
-      // Set the initial state for startDate and endDate
-      setStartDate(new Date(dateline1));
-      setEndDate(new Date(dateline2));
-  
+
       setTopic(response.data);
       setIsOpen(true);
     } catch (error) {
