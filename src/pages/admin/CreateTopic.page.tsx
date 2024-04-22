@@ -29,7 +29,6 @@ interface EntryFormData {
   dateline1: string;
   dateline2: string;
   facultyId: string;
-  description: string;
   [key: string]: string;
 }
 
@@ -44,7 +43,6 @@ const CreateTopic: React.FC = () => {
     name: "",
     dateline1: "",
     dateline2: "",
-    description: "",
     facultyId: "",
   });
 
@@ -94,11 +92,12 @@ const CreateTopic: React.FC = () => {
     try {
       await axios.post("http://localhost:3001/api/entry/create", {
         name: formData.name,
-        dateline1: Date.now(),
-        dateline2: Date.now(),
-        description: formData.description,
+        dateline1: startDate,
+        dateline2: endDate,
         faculty_id: formData.facultyId,
       });
+
+      navigate('/admin/viewtopics')
     } catch (error: any) {
       console.error("error adding topic", error.res.data);
       toast({
@@ -171,18 +170,6 @@ const CreateTopic: React.FC = () => {
               />
             </FormControl>
 
-            <FormControl id="topic-description" isRequired>
-              <FormLabel>Description</FormLabel>
-              <Input
-                type="text"
-                id="description"
-                name="description"
-                placeholder="Input description"
-                required
-                value={formData.description}
-                onChange={handleChange}
-              />
-            </FormControl>
             <FormControl id="facultyId" isRequired>
               <FormLabel>Select Faculty</FormLabel>
               <select
