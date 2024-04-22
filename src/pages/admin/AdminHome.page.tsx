@@ -9,31 +9,27 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
 import { useState, useEffect } from 'react';
 export function LoggedinHeader() {
+  const userDataString = localStorage.getItem('user');
+  const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
+  const studentId = userData ? userData._id : ''; // Extract ID from user data
+  const [href, setHref] = useState('/');
 
-    const [href, setHref] = useState('/');
-  
-    useEffect(() => {
-      const currentPath = window.location.pathname.toLowerCase();
-      if (currentPath.includes('/mm')) {
-        setHref('/mm');
-      } else if (currentPath.includes('/admin')) {
-        setHref('/admin');
-      } else if (currentPath.includes('/mc')) {
-        setHref('/mc');
-      } else if (currentPath.includes('/')) {
-        setHref('/');
-      } else if (currentPath.includes('/student')) {
-        setHref('/student');
-      } else {
-        setHref('/');
-      }
-    }, []);
-  const notifications = [
-    { id: 1, title:'', message: 'New topic registered' },
-    { id: 2, title:'', message: 'System update available' },
-    { id: 3, title:'', message: 'New contact message received' },
-    // ... more notifications
-  ];
+  useEffect(() => {
+    const currentPath = window.location.pathname.toLowerCase();
+    if (currentPath.includes('/mm')) {
+      setHref('/mm');
+    } else if (currentPath.includes('/admin')) {
+      setHref('/admin');
+    } else if (currentPath.includes('/mc')) {
+      setHref('/mc');
+    } else if (currentPath.includes('/')) {
+      setHref('/');
+    } else if (currentPath.includes('/student')) {
+      setHref('/student');
+    } else {
+      setHref('/');
+    }
+  }, []);
 
   return (
     <Flex as="header" align="center" padding="1rem" bg="transparent" boxShadow="sm" width="100%">
@@ -62,21 +58,8 @@ export function LoggedinHeader() {
             {/* More languages */}
           </Select>
 
-          {/* Notification bell and dropdown list */}
-          <Menu>
-            <MenuButton as={IconButton} icon={<FaBell />} variant="ghost" position="relative" mr="4" width={10}>
-              {/* If you have a notification count you want to display, you can add a Badge component here */}
-            </MenuButton>
-
-            <MenuList>
-              {notifications.map(notification => (
-                <MenuItem key={notification.id}>{notification.message}</MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-
           {/* Avatar for logged in account */}
-          <Link href='/MyAccount/1'>
+          <Link href={`/MyAccount/${studentId}`}>
             <Avatar name="My Account" src="path-to-admin-avatar.jpg" size="md" />
           </Link>
           

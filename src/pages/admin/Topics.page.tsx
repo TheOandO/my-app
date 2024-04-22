@@ -116,7 +116,7 @@ export function Topics() {
     fetchTopics();
   }, []);
 
-  // Function to find faculty name by faculty id
+  // Function to find  name by faculty id
   const findFacultyName = (facultyId: string): string => {
     const faculty = faculties.find((f) => f._id === facultyId);
     return faculty ? faculty.name : 'Unknown Faculty';
