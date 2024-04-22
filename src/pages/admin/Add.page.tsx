@@ -95,7 +95,7 @@ const AddForm: React.FC = () => {
         faculty_id: formData.facultyId,
       });
 
-      navigate("/admin/add");
+      navigate("/admin/members");
     } catch (error: any) {
       console.error("Error signing up:", error.response.data);
       // Handle errors, such as displaying an error message to the user
