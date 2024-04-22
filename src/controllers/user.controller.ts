@@ -28,7 +28,7 @@ export const signup = async (req: Request, res: Response) => {
                 username: new_user.username,
                 email: new_user.email,
                 // role: new_user.role,
-                  role: roles.student,
+                  roles: [roles.student],
                 _id: new_user._id,
             }
         });
@@ -68,7 +68,7 @@ export const login = async (req: Request, res: Response) => {
             user: {
                 username: user.username,
                 email: user.email,
-                role: user.role,
+                roles: user.roles,
                 _id: user._id,
             },
         });
@@ -311,7 +311,7 @@ export const getRole = async (req: Request, res: Response) => {
         if (!user) {
             return res.status(404).json({ error: true, message: 'User not found' });
         } else {
-            return res.status(200).json({ error: false, role: user.role });
+            return res.status(200).json({ error: false, roles: user.roles });
         }
     } catch (error) {
         console.log(error);
@@ -325,7 +325,7 @@ export const getAllRole = async (req: Request, res: Response) => {
         const roles = users.map(user => {
             return {
                 _id: user._id,
-                role: user.role
+                roles: user.roles
             }
         });
         return res.status(200).json({ error: false, roles });
