@@ -20,17 +20,18 @@ import {
   SocialIcons,
   SocialIconsLink,
 } from "../../components/Login.styles";
-import { Alert, AlertIcon } from "@chakra-ui/react";
+import { Alert, AlertIcon, useToast } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login: React.FC = () => {
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
   
-  const navigate = useNavigate()
+  const toast = useToast()
+  const navigate = useNavigate();
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -42,30 +43,35 @@ const Login: React.FC = () => {
         password: password,
       });
 
-      console.log(response.data);
 
+  
       // Store the access token in local storage
       localStorage.setItem('access_token', response.data.access_token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      
-        // Navigate to the appropriate page based on the user's role
-        switch (response.data.user.role) {
-          case "student":
-            navigate("/student");
-            break;
-          case "marketingManager":
-            navigate("/MM");
-            break;
-          case "marketingCoordinator":
-            navigate("/MC");
-            break;
-          case "admin":
-            navigate("/admin");
-            break;
-          default:
-
-            break;
-        }
+      // Navigate to the appropriate page based on the user's role
+      switch (true) {
+        case response.data.user.roles.includes("student"):
+          navigate("/student");
+          break;
+        case response.data.user.roles.includes("marketingManager"):
+          navigate("/MM");
+          break;
+        case response.data.user.roles.includes("marketingCoordinator"):
+          navigate("/MC");
+          break;
+        case response.data.user.roles.includes("admin"):
+          navigate("/admin");
+          break;
+        default:
+          toast({
+            title: "Unhandled Role",
+            description: "Your role is not recognized. Please contact support.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+          });
+          break;
+      }
     } catch (error) {
       console.error("Error logging in:", error);
       setShowError(true);
@@ -95,8 +101,7 @@ const Login: React.FC = () => {
             name="username"
             placeholder=""
             required
-            onChange={(e) => setUsername(e.target.value)}
-          />
+            onChange={(e) => setUsername(e.target.value)} />
 
           <Label htmlFor="password">Password</Label>
           <Input
@@ -105,8 +110,7 @@ const Login: React.FC = () => {
             name="password"
             placeholder=""
             required
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            onChange={(e) => setPassword(e.target.value)} />
 
           <CheckboxContainer>
             <div>
@@ -145,6 +149,6 @@ const Login: React.FC = () => {
       </LoginFormContainer>
     </LoginPageContainer>
   );
-};
+}
 
 export default Login;

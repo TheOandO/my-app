@@ -275,7 +275,7 @@ function Dashboard() {
           
           const userDataString = localStorage.getItem('user');
           const userData = JSON.parse(userDataString || '');
-          const userRole = userData.role;
+          const userRole = userData.roles;
           setUserRole(userRole);
         } catch (error) {
           console.error("Error validating token:", error);
@@ -320,7 +320,7 @@ function Dashboard() {
               </Link>
             </Alert>
           )}
-        {userRole === 'student' && (
+        {userRole.includes('student') && (
         <>
           <LoggedinHeader />
           <Quote></Quote>
