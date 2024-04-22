@@ -210,6 +210,30 @@ function TopicModal({ topicId }: { topicId: string }) {
     }
   };
 
+  const handleDelete = async (e: React.FormEvent) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/entry/delete/${topicId}`);
+      toast({
+        title: "Topic deleted.",
+        description: "The topic has been successfully deleted.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      setIsOpen(false); 
+      window.location.reload();
+      } catch (error) {
+      console.error("Error deleting topic:", error);
+      toast({
+        title: "Error deleting topic.",
+        description: "An error occurred while deleting the topic.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -282,10 +306,11 @@ function TopicModal({ topicId }: { topicId: string }) {
               )}
             </ModalBody>
             <ModalFooter>
-              <Button bg="#426b1f" colorScheme="green" color='#fff' mr={3} onClick={handleEdit}>
+              <Button bg="#426b1f" colorScheme="green" color='#fff' m={3} onClick={handleEdit}>
                 Save Changes
               </Button>
-              <Button onClick={handleClose}>Close</Button>
+              <Button onClick={handleClose} m={3}>Close</Button>
+              <Button bg="#6B1F1F" color='#fff' onClick={handleDelete} m={3} variant='solid'>Delete this Topic</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
