@@ -160,7 +160,7 @@ return (
         />
       </InputGroup>
     </Box>
-    <List spacing={6} width="100%" minH={200} h={500} overflowY='auto' minW={700}>
+    <List spacing={6} width="100%" minH={200} h={900} overflowY='auto' minW={700}>
       {topics
         .filter((topic) =>
           topic.name.toLowerCase().includes(value.toLowerCase())
