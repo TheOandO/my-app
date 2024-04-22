@@ -44,6 +44,7 @@ interface Article {
 }
 
 interface Entry {
+  _id: string;
   name: string;
   dateline1: Date,
   dateline2: Date,
@@ -51,6 +52,7 @@ interface Entry {
 }
 
 interface SchoolYear {
+  _id: string;
   name: string,
   start_time: Date,
   end_time: Date
@@ -58,7 +60,7 @@ interface SchoolYear {
 
 function CreateArticle() {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [text, setText] = useState("");
   const [imageSrc, setImageSrc] = useState("");
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -136,8 +138,8 @@ function CreateArticle() {
           files: "",
           images: [imageSrc], // Assuming the image source is added to the images array
           entry_id: form.entry_id,
-          // student_id: student_id,
-          // school_year_id: school_year_id,
+          student_id: form.student_id,
+          school_year_id: form.school_year_id,
 
         },
         {
@@ -160,12 +162,9 @@ function CreateArticle() {
       });
   
       // Clear the form fields
-      setTitle("");
-      setDescription("");
+      setText("");
       setImageSrc("");
   
-      // Optionally, you can navigate the user to a different page after successful article creation
-      // navigate('/some-route'); // Import the navigate function from 'react-router-dom' or 'react-router'
     } catch (error) {
       console.error("Error creating article:", error);
       setErrorMessage("Error creating article");
@@ -217,11 +216,12 @@ function CreateArticle() {
           <VStack as="form" onSubmit={handleSubmit} spacing={6}>
             <FormControl id="article-topic" isRequired>
               <FormLabel>Choose a topic</FormLabel>
-              <Select placeholder="Select topic">
-                {/* Populate with topics */}
-                <option value="topic1">Topic 1</option>
-                <option value="topic2">Topic 2</option>
-                {/* ... more options */}
+              <Select placeholder="Select topic" id="entryId" name="entryId" value={form.entry_id}>
+              {entries.map((entry) => (
+                <option key={entry._id} value={entry._id}>
+                  {entry.name}
+                </option>
+              ))}
               </Select>
             </FormControl>
             <FormControl id="article-description" isRequired>
@@ -229,8 +229,8 @@ function CreateArticle() {
               <ReactQuill
                 style={{ width: "100%", height: "300px" }}
                 theme="snow"
-                value={form.text}
-                onChange={setDescription}
+                value={text}
+                onChange={setText}
               />
             </FormControl>
             <FormControl id="image">
