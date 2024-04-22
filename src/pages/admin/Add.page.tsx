@@ -89,7 +89,6 @@ const AddForm: React.FC = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword,
         username: formData.username,
         role: formData.role,
         faculty_id: formData.facultyId,
