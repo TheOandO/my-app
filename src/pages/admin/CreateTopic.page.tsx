@@ -4,24 +4,20 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea,
   Button,
-  Image,
   Box,
-  IconButton,
   useToast,
   HStack,
   useColorModeValue,
   Divider,
   Heading,
-  Select,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
 import { LoggedinHeader } from "./AdminHome.page";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Schema, model } from "mongoose";
-import { Label } from "../../components/Login.styles";
+import { format } from 'date-fns';
 
 interface Faculty {
   _id: string;
@@ -38,8 +34,7 @@ interface EntryFormData {
 }
 
 const CreateTopic: React.FC = () => {
-  const [description, setDescription] = useState("");
-  const [imageSrc, setImageSrc] = useState("");
+
   const toast = useToast();
 
   const [faculties, setFaculties] = useState<Faculty[]>([]);
@@ -52,6 +47,18 @@ const CreateTopic: React.FC = () => {
     description: "",
     facultyId: "",
   });
+
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    setStartDate(date);
+  };
+  
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    setEndDate(date);
+  };
 
   const fetchFaculties = async () => {
     try {
@@ -71,22 +78,6 @@ const CreateTopic: React.FC = () => {
     fetchFaculties();
   }, []);
 
-  const handleImageChange = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (upload) {
-        if (upload.target && typeof upload.target.result === "string") {
-          setImageSrc(upload.target.result);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImageSrc("");
-  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -148,6 +139,12 @@ const CreateTopic: React.FC = () => {
           p={8}
           width={{ base: "90%", md: "768px" }} // Increased width for medium-sized devices and up
         >
+          {showError && (
+            <Alert status="error" mt={4}>
+              <AlertIcon />
+              {errorMessage}
+            </Alert>
+          )}
           <Heading
             as="h2"
             size="lg"
@@ -202,39 +199,22 @@ const CreateTopic: React.FC = () => {
                 ))}
               </select>
             </FormControl>
-            <FormControl id="image">
-              <FormLabel>Image</FormLabel>
-              <Box width="full">
-                {imageSrc && (
-                  <Box position="relative" textAlign="center">
-                    <Image
-                      src={imageSrc}
-                      maxH="400px"
-                      alt="Uploaded image preview"
-                    />
-                    <IconButton
-                      aria-label="Remove image"
-                      icon={<CloseIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      position="absolute"
-                      top="0"
-                      right="0"
-                      onClick={handleRemoveImage}
-                    />
-                  </Box>
-                )}
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  size="md"
-                  pt={2}
-                  width="full" // Stretch the input to take full width
-                />
-              </Box>
+            <FormControl id="SDate">
+              <FormLabel>Start date</FormLabel>
+              <input
+                type="date"
+                value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
+                onChange={handleStartDateChange}
+              />
             </FormControl>
-
+            <FormControl id="EDate">
+              <FormLabel>End date</FormLabel>
+              <input
+                type="date"
+                value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
+                onChange={handleEndDateChange}
+              />
+            </FormControl>
             <HStack width="full" justifyContent="space-between">
               <Button
                 width="full"
