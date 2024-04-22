@@ -257,7 +257,7 @@ function MemberTable() {
           </Thead>
           <Divider my={4} borderColor="#fff" />
           <Tbody>
-            {users.map((user) => (
+            {users?.map((user) => (
               <Tr
                 bg="rgba(137, 188, 93, 0.2)"
                 key={user._id}
@@ -272,7 +272,6 @@ function MemberTable() {
                 <Td>{user.username}</Td>
                 <Td>{user.email}</Td>
                 <Td>{user.role}</Td>
-                <Td>{user.major}</Td>
                 <Td>{user.faculty}</Td>
                 <Td>
                   {/* Options menu */}
