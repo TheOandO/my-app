@@ -4,7 +4,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea,
   Button,
   Image,
   Box,
@@ -37,9 +36,9 @@ interface Article {
   text: string;
   files: string;
   images: string;
-  entry_id: string;
-  student_id: string;
-  school_year_id: string;
+  entryid: string;
+  studentid: string;
+  school_yearid: string;
   term_condition: boolean;
 }
 
@@ -59,7 +58,6 @@ interface SchoolYear {
 }
 
 function CreateArticle() {
-  const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [imageSrc, setImageSrc] = useState("");
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
@@ -73,30 +71,66 @@ function CreateArticle() {
     text: "",
     files: "",
     images: "",
-    entry_id: "",
-    student_id: "",
-    school_year_id: "",
+    entryid: "",
+    studentid: "",
+    school_yearid: "",
     term_condition: false,
   })
   const toast = useToast();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const fetchEntries = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/entry/get-all");
-        console.log("Entries API Response:", response.data);
-        setEntries(response.data.data);
-      } catch (error) {
+      // Retrieve user data from local storage
+      const userDataString = localStorage.getItem('user');
+  
+      // If user data exists and contains faculty_id
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        const facultyId = userData?.faculty_id; // Access faculty_id safely
+  
+        if (facultyId) {
+          const response = await axios.get("http://localhost:3001/api/entry/get-all");
+          console.log("Entries API Response:", response.data);
+  
+          // Filter entries based on faculty_id
+          const filteredEntries: Entry[] = response.data.data.filter((entry: Entry) => entry.faculty_id === facultyId);
+  
+          // Set filtered entries
+          setEntries(filteredEntries);
+        } else {
+          console.error("faculty_id not found in user data");
+          setErrorMessage("Error fetching Entries");
+          setShowError(true);
+          setTimeout(() => setShowError(false), 10000);
+        }
+      } else {
+        console.error("User data not found in local storage");
+        setErrorMessage("Error fetching Entries");
+        setShowError(true);
+        setTimeout(() => setShowError(false), 10000);
+      }
+    } catch (error) {
+      console.error("Error fetching Entries:", error);
       setErrorMessage("Error fetching Entries");
       setShowError(true);
       setTimeout(() => setShowError(false), 10000);
     }
   };
+  
 
   const fetchSchoolYears = async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/school-year/get-all");
         console.log("SchoolYears API Response:", response.data);
-        setEntries(response.data.data);
+        setSchoolyears(response.data.data);
       } catch (error) {
       setErrorMessage("Error fetching SchoolYears");
       setShowError(true);
@@ -114,7 +148,7 @@ function CreateArticle() {
     if (file) {
       const reader = new FileReader();
       reader.onload = function (upload) {
-        if (upload.target && typeof upload.target.result === "string") {
+        if (upload && upload.target && typeof upload.target.result === "string") {
           setImageSrc(upload.target.result);
         }
       };
@@ -131,23 +165,27 @@ function CreateArticle() {
     
     try {
       const accessToken = localStorage.getItem('access_token');
+      const userDataString = localStorage.getItem('user');
+      const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
+      const studentId = userData ? userData.student_id : ''; // Extract student ID from user data
+  
+      // Construct FormData object
+      const formData = new FormData();
+      formData.append('text', form.text);
+      formData.append('files', form.files);
+      formData.append('images', imageSrc);
+      formData.append('entry_id', form.entryid);
+      formData.append('student_id', studentId);
+      formData.append('school_year_id', form.school_yearid);
+  
       const response = await axios.post(
         "http://localhost:3001/api/article/create",
-        {
-          text: form.text,
-          files: "",
-          images: [imageSrc], // Assuming the image source is added to the images array
-          entry_id: form.entry_id,
-          student_id: form.student_id,
-          school_year_id: form.school_year_id,
-
-        },
+        formData, // Use FormData object as request body
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            user: localStorage.getItem('user')
+            'Content-Type': 'multipart/form-data', // Set content type to form-data
           },
-          
         }
       );
   
@@ -172,8 +210,7 @@ function CreateArticle() {
       setTimeout(() => setShowError(false), 10000);
     }
   };
-
-
+  
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);
@@ -216,7 +253,7 @@ function CreateArticle() {
           <VStack as="form" onSubmit={handleSubmit} spacing={6}>
             <FormControl id="article-topic" isRequired>
               <FormLabel>Choose a topic</FormLabel>
-              <Select placeholder="Select topic" id="entryId" name="entryId" value={form.entry_id}>
+              <Select id="entryId" name="entryId" value={form.entryid} onChange={handleChange}>
               {entries.map((entry) => (
                 <option key={entry._id} value={entry._id}>
                   {entry.name}
