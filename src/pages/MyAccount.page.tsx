@@ -4,37 +4,6 @@ import { EditIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
-// Dummy profile data
-const profile = [
-  {
-    id: 1,
-    name: 'Mike Hawk',
-    email: 'hawk@website.edu',
-    faculty: 'Faculty A',
-    password: 'password123',
-    major: 'Computer Science',
-    image: 'path-to-avatar-image.jpg' // Replace with actual path to the avatar image
-  },
-  {
-    id: 2,
-    name: 'Sarah Lee',
-    email: 'sarah.lee@university.com',
-    faculty: 'Faculty B',
-    password: 'secure_password',
-    major: 'Biology',
-    image: 'path-to-sarah-avatar.png' // Replace with actual path to the avatar image
-  },
-  {
-    id: 3,
-    name: 'David Kim',
-    email: 'david_kim@hotmail.co.kr',
-    faculty: 'Faculty C',
-    password: 'coding_is_fun',
-    major: 'Software Engineering',
-    image: 'path-to-david-avatar.gif' // Replace with actual path to the avatar image
-  }
-];
   
 interface User{
   name: string,
