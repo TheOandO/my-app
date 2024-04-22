@@ -58,7 +58,9 @@ const Register: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -68,10 +70,12 @@ const Register: React.FC = () => {
 
   const fetchFaculties = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/faculty/get-all");
-        console.log("Faculty API Response:", response.data);
-        setFaculties(response.data.data);
-      } catch (error) {
+      const response = await axios.get(
+        "http://localhost:3001/api/faculty/get-all"
+      );
+      console.log("Faculty API Response:", response.data);
+      setFaculties(response.data.data);
+    } catch (error) {
       setErrorMessage("Error fetching faculties");
       setShowError(true);
       setTimeout(() => setShowError(false), 10000);
@@ -92,7 +96,7 @@ const Register: React.FC = () => {
         password: formData.password,
         confirmPassword: formData.confirmPassword,
         username: formData.username,
-        role: formData.role,
+        role: UserRole.Student,
         faculty_id: formData.facultyId,
       });
 
@@ -115,73 +119,63 @@ const Register: React.FC = () => {
         </a>
         {/* Replace with your logo path */}
         <form onSubmit={handleSubmit}>
-        {showError && (
+          {showError && (
             <Alert status="error" mt={4}>
               <AlertIcon />
               {errorMessage}
             </Alert>
           )}
-        <Label htmlFor="name">Full Name</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Full Name"
-          required
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <Label htmlFor="email">Email address</Label>
-        <Input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="Email Address"
-          required
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <Label htmlFor="password">Password</Label>
-        <Input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Password"
-          required
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
-        <Input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          required
-          value={formData.confirmPassword}
-          onChange={handleChange}
-        />
-        <Label htmlFor="username">Username</Label>
-        <Input
-          type="text"
-          id="username"
-          name="username"
-          placeholder="Username"
-          required
-          value={formData.username}
-          onChange={handleChange}
-        />
-        <Label htmlFor="role">Role</Label>
-        <Input
-          type="text"
-          id="role"
-          name="role"
-          placeholder=""
-          required
-          value={UserRole.Student}
-          disabled
-        />  
-        <Label htmlFor="facultyId">Faculty</Label>
+          <Label htmlFor="name">Full Name</Label>
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Full Name"
+            required
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <Label htmlFor="email">Email address</Label>
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email Address"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <Label htmlFor="password">Password</Label>
+          <Input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            required
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            required
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          <Label htmlFor="username">Username</Label>
+          <Input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            required
+            value={formData.username}
+            onChange={handleChange}
+          />
+          <Label htmlFor="facultyId">Faculty</Label>
           <select
             id="facultyId"
             name="facultyId"
@@ -194,10 +188,9 @@ const Register: React.FC = () => {
                 {faculty.name}
               </option>
             ))}
-            
           </select>
-        <SubmitButton type="submit">Register</SubmitButton>
-      </form>
+          <SubmitButton type="submit">Register</SubmitButton>
+        </form>
         <SignUpText>Have an account?</SignUpText>
         <SignUpLink href="/login">Sign in</SignUpLink>
         <FooterLinksContainer>
