@@ -50,13 +50,6 @@ interface Entry {
   faculty_id: string;
 }
 
-interface SchoolYear {
-  _id: string;
-  name: string,
-  start_time: Date,
-  end_time: Date
-}
-
 function CreateArticle() {
   const [text, setText] = useState("");
   const [imageSrc, setImageSrc] = useState("");
@@ -65,8 +58,7 @@ function CreateArticle() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [schoolyears, setSchoolyears] = useState<SchoolYear[]>([]);
-
+  const [userRole, setUserRole] = useState('');
   const [form, setForm] = useState<Article>({
     text: "",
     files: "",
@@ -80,11 +72,45 @@ function CreateArticle() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm((prevState) => ({
-      ...prevState,
+    setForm(prevForm => ({
+      ...prevForm,
       [name]: value,
     }));
   };
+
+  const handleText = (value: string) => {
+    setForm(prevForm => ({
+      ...prevForm,
+      text: value,
+    }));
+  };
+
+  const handleImageChange = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (upload) {
+        if (upload && upload.target && typeof upload.target.result === "string") {
+          setImageSrc(upload.target.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageSrc("");
+  };
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
 
   const fetchEntries = async () => {
     try {
@@ -103,7 +129,6 @@ function CreateArticle() {
           // Filter entries based on faculty_id
           const filteredEntries: Entry[] = response.data.data.filter((entry: Entry) => entry.faculty_id === facultyId);
   
-          // Set filtered entries
           setEntries(filteredEntries);
         } else {
           console.error("faculty_id not found in user data");
@@ -124,85 +149,113 @@ function CreateArticle() {
       setTimeout(() => setShowError(false), 10000);
     }
   };
-  
-
-  const fetchSchoolYears = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/api/school-year/get-all");
-        console.log("SchoolYears API Response:", response.data);
-        setSchoolyears(response.data.data);
-      } catch (error) {
-      setErrorMessage("Error fetching SchoolYears");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
-    }
-  };
 
   useEffect(() => {
-    fetchEntries()
-    fetchSchoolYears()
-  }, [])
+    const checkTokenValidity = async () => {
+      try {
+        // Make a request to the /validate endpoint to check token validity
+        await axios.post("http://localhost:3001/api/user/validate", {
+          access_token: localStorage.getItem('access_token'),
+          user: localStorage.getItem('user'),
+          
+        },);
+        
+        const userDataString = localStorage.getItem('user');
+        const userData = JSON.parse(userDataString || '');
+        const userRole = userData.roles;
+        setUserRole(userRole);
+      } catch (error) {
+        console.error("Error validating token:", error);
+        setShowError(true)
+        setErrorMessage('Unauthorized Access')
 
-  const handleImageChange = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (upload) {
-        if (upload && upload.target && typeof upload.target.result === "string") {
-          setImageSrc(upload.target.result);
+        // If token is invalid or expired, attempt to refresh it
+        try {
+          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            user: localStorage.getItem('user'),
+          });
+
+          // If refresh is successful, update the access token and continue rendering the student homepage
+          console.log(refreshResponse.data.message);
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          setUserRole(refreshResponse.data.user.roles);
+
+          // setShowError(false)
+          
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          // If refresh fails, redirect the user to the login page
+          setShowError(true)
+          setErrorMessage('Unauthorized Access')
+
         }
-      };
-      reader.readAsDataURL(file);
+      }
     }
-  };
-
-  const handleRemoveImage = () => {
-    setImageSrc("");
-  };
+    checkTokenValidity();
+    fetchEntries()
+  }, [])
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    
+  
     try {
       const accessToken = localStorage.getItem('access_token');
       const userDataString = localStorage.getItem('user');
       const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
-      const studentId = userData ? userData.student_id : ''; // Extract student ID from user data
+      const studentId = userData ? userData._id : '';
+
+      const SYresponse = await axios.get("http://localhost:3001/api/school-year/get-all");
+      const schoolYearsData = SYresponse.data.data;
+      const lastSchoolYear = schoolYearsData.length > 0 ? schoolYearsData[schoolYearsData.length - 1]._id : null;
   
-      // Construct FormData object
-      const formData = new FormData();
-      formData.append('text', form.text);
-      formData.append('files', form.files);
-      formData.append('images', imageSrc);
-      formData.append('entry_id', form.entryid);
-      formData.append('student_id', studentId);
-      formData.append('school_year_id', form.school_yearid);
-  
-      const response = await axios.post(
-        "http://localhost:3001/api/article/create",
-        formData, // Use FormData object as request body
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data', // Set content type to form-data
-          },
+      // Check if the last school year is valid and not expired
+      if (lastSchoolYear) {
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append('text', form.text);
+          formData.append('files', selectedFile);
+          formData.append('term_condition', form.term_condition.toString());
+
+          if (imageSrc) {
+            const imageBlob = await fetch(imageSrc).then((res) => res.blob());
+            const imageFile = new File([imageBlob], 'image.jpg', { type: 'image/jpeg' }); // Adjust the file name and type as needed
+            formData.append('images', imageFile);
+          }
+            
+          formData.append('entry_id', form.entryid);
+          formData.append('student_id', studentId);
+          formData.append('school_year_id', lastSchoolYear);
+          const response = await axios.post(
+            "http://localhost:3001/api/article/create", formData,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'multipart/form-data'
+              },
+            }
+          );
+    
+          // Handle success response
+          console.log("Article created:", response.data);
+          toast({
+            title: "Article created.",
+            description: "Your article has been created successfully.",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+    
+          // Clear the form fields
+          setText("");
+          setImageSrc("");
         }
-      );
-  
-      // Handle success response
-      console.log("Article created:", response.data);
-      toast({
-        title: "Article created.",
-        description: "Your article has been created successfully.",
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
-  
-      // Clear the form fields
-      setText("");
-      setImageSrc("");
-  
+
+      } else {
+        // Handle case where no valid school year is found
+        setErrorMessage("No valid school year found");
+        setShowError(true);
+        setTimeout(() => setShowError(false), 10000);
+      }
     } catch (error) {
       console.error("Error creating article:", error);
       setErrorMessage("Error creating article");
@@ -215,6 +268,7 @@ function CreateArticle() {
   const handleBack = () => {
     navigate(-1);
   };
+
   const formBackground = useColorModeValue("white", "white.500.700");
   return (
     <Box
@@ -224,6 +278,8 @@ function CreateArticle() {
       overflowY="auto"
     >
       <LoggedinHeader />
+      {userRole.includes('student') && (
+        <>
       <VStack spacing={8} mx="auto" maxW="xl" px={6} mt={200} mb={200}>
         <Box
           borderRadius="lg"
@@ -245,15 +301,16 @@ function CreateArticle() {
             textColor="#426B1F"
             textAlign="center"
           >
-            Create a Article
+            Create an Article
           </Heading>
 
           <Divider my={4} borderColor="#426B1F" width="100%" />
 
-          <VStack as="form" onSubmit={handleSubmit} spacing={6}>
+          <VStack as="form" onSubmit={handleSubmit} spacing={10}>
             <FormControl id="article-topic" isRequired>
-              <FormLabel>Choose a topic</FormLabel>
-              <Select id="entryId" name="entryId" value={form.entryid} onChange={handleChange}>
+              <FormLabel htmlFor="entryId">Choose a topic</FormLabel>
+              <Select id="entryId" name="entryid" value={form.entryid} onChange={handleChange}>
+              <option value="">Select a Topic</option>
               {entries.map((entry) => (
                 <option key={entry._id} value={entry._id}>
                   {entry.name}
@@ -266,8 +323,8 @@ function CreateArticle() {
               <ReactQuill
                 style={{ width: "100%", height: "300px" }}
                 theme="snow"
-                value={text}
-                onChange={setText}
+                value={form.text}
+                onChange={handleText}
               />
             </FormControl>
             <FormControl id="image">
@@ -299,6 +356,17 @@ function CreateArticle() {
                   size="md"
                   pt={2}
                   width="full" // Stretch the input to take full width
+                />
+              </Box>
+            </FormControl>
+            <FormControl>
+              <FormLabel>File Upload</FormLabel>
+              <Box width='full'>
+                <Input
+                  type="file"
+                  id="file"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" // Specify accepted file types
+                  onChange={handleFileChange}
                 />
               </Box>
             </FormControl>
@@ -426,6 +494,8 @@ function CreateArticle() {
           </VStack>
         </Box>
       </VStack>
+      </>
+        )}
     </Box>
   );
 }
