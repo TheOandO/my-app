@@ -198,12 +198,12 @@ const getFileIcon = (fileName:any) => {
   const fileExtension = fileName.split('.').pop().toLowerCase();
   switch (fileExtension) {
     case 'pdf':
-      return <FaFilePdf height='150' width='150' />;
+      return <FaFilePdf style={{ fontSize: '4em' }} />;
     case 'doc':
     case 'docx':
-      return <FaFileWord height='150' width='150' />;
+      return <FaFileWord style={{ fontSize: '4em' }} />;
     default:
-      return <FaFile height='150' width='150' />;
+      return <FaFile style={{ fontSize: '4em' }} />;
   }
 };
 
@@ -234,17 +234,21 @@ return (
                 </Button>
             </Link>
           </Box>
-          {/* Map through pending articles */}
           {articles.map((article) => (
             <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+              {article.images && Array.isArray(article.images) && (
+                <>
+                  {article.images.map((image, index) => (
+                    <Image key={index} borderRadius="md" boxSize="100px" src={`http://localhost:3001/assets/uploads/${image}`} alt="image" />
+                  ))}
+                </>
+              )}
               <Box flex={1}>
                 <Text fontSize="2xl">{stripHtmlTags(article.text)}</Text>
                 <Text fontSize="md">Created {formatDistanceToNow(new Date(article.createdAt))} ago</Text>
                 <Text fontSize="md" fontStyle='italic'>Topic: {findTopicName(article.entry_id)}</Text>
               </Box>
-              {article.images && (
-                <Image borderRadius="md" boxSize="150px" src={article.images} alt={stripHtmlTags(article.text)} />
-              )}
+  
               {article.files && Array.isArray(article.files) &&(
                 <Flex alignItems="center">
                   {article.files.map((file, index) => (

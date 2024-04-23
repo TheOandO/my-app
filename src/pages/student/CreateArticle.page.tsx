@@ -36,8 +36,8 @@ import axios from "axios";
 
 interface Article {
   text: string;
-  files: string;
-  images: string;
+  files: string[];
+  images: string[];
   entryid: string;
   studentid: string;
   school_yearid: string;
@@ -63,8 +63,8 @@ function CreateArticle() {
   const [userRole, setUserRole] = useState('');
   const [form, setForm] = useState<Article>({
     text: "",
-    files: "",
-    images: "",
+    files: [],
+    images: [],
     entryid: "",
     studentid: "",
     school_yearid: "",
@@ -94,6 +94,13 @@ function CreateArticle() {
       reader.onload = function (upload) {
         if (upload && upload.target && typeof upload.target.result === "string") {
           setImageSrc(upload.target.result);
+          // Generate a unique name for the image
+          const imageName = `${Date.now()}_${file.name}`;
+          // Save the generated filename to the form state
+          setForm(prevForm => ({
+            ...prevForm,
+            images: [imageName], // Save the filename in an array
+          }));
         }
       };
       reader.readAsDataURL(file);
@@ -110,6 +117,13 @@ function CreateArticle() {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      // Generate a unique name for the file
+      const fileName = `${Date.now()}_${file.name}`;
+      // Save the generated filename to the form state
+      setForm(prevForm => ({
+        ...prevForm,
+        files: [fileName], // Save the filename in an array
+      }));
     }
   };
 
@@ -201,73 +215,89 @@ function CreateArticle() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-  
-    try {
-      const accessToken = localStorage.getItem('access_token');
-      const userDataString = localStorage.getItem('user');
-      const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
-      const studentId = userData ? userData._id : '';
+  // Perform validation
+    if (!form.entryid || !form.text || !isTermsAccepted) {
+      // If any required field is empty or checkbox is unchecked, show error message
+      toast({
+        title: 'Form Validation Error',
+        description: 'Please fill out all required fields and accept the terms & conditions.',
+        status: 'error',
+        duration: 10000,
+        isClosable: true,
+      });
 
-      const SYresponse = await axios.get("http://localhost:3001/api/school-year/get-all");
-      const schoolYearsData = SYresponse.data.data;
-      const lastSchoolYear = schoolYearsData.length > 0 ? schoolYearsData[schoolYearsData.length - 1]._id : null;
-  
-      // Check if the last school year is valid and not expired
-      if (lastSchoolYear) {
-        if (selectedFile) {
-          const formData = new FormData();
-          formData.append('term_condition', form.term_condition.toString());
-          formData.append('text', form.text);
-          formData.append('files', selectedFile);
+      return;
+    } else {
+      try {
+        const accessToken = localStorage.getItem('access_token');
+        const userDataString = localStorage.getItem('user');
+        const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
+        const studentId = userData ? userData._id : '';
 
-          if (imageSrc) {
-            const imageBlob = await fetch(imageSrc).then((res) => res.blob());
-            const imageFile = new File([imageBlob], 'image.jpg', { type: 'image/jpeg' }); // Adjust the file name and type as needed
-            formData.append('images', imageFile);
-          }
-            
-          formData.append('entry_id', form.entryid);
-          formData.append('student_id', studentId);
-          formData.append('school_year_id', lastSchoolYear);
-          const response = await axios.post(
-            "http://localhost:3001/api/article/create", formData,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'multipart/form-data'
-              },
+        const SYresponse = await axios.get("http://localhost:3001/api/school-year/get-all");
+        const schoolYearsData = SYresponse.data.data;
+        const lastSchoolYear = schoolYearsData.length > 0 ? schoolYearsData[schoolYearsData.length - 1]._id : null;
+    
+        // Check if the last school year is valid and not expired
+        if (lastSchoolYear) {
+            const formData = new FormData();
+            formData.append('term_condition', form.term_condition.toString());
+            formData.append('text', form.text);
+
+            // Append files if selected
+            if (selectedFile) {
+              formData.append('files', selectedFile || null);
+            } 
+
+            if (imageSrc) {
+              const imageBlob = await fetch(imageSrc).then((res) => res.blob());
+              const imageFile = new File([imageBlob], 'image.jpg', { type: 'image/jpeg' }); // Adjust the file name and type as needed
+              formData.append('images', imageFile || null);
             }
-          );
-    
-          // Handle success response
-          console.log("Article created:", response.data);
-          toast({
-            title: "Article created.",
-            description: "Your article has been created successfully.",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          });
-    
-          // Clear the form fields
-          setText("");
-          setImageSrc(null);
-          setSelectedFile(null);
-          navigate('/student/MyArticles')
-        }
+              
+            formData.append('entry_id', form.entryid);
+            formData.append('student_id', studentId);
+            formData.append('school_year_id', lastSchoolYear);
+            const response = await axios.post(
+              "http://localhost:3001/api/article/create", formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                  'Content-Type': 'multipart/form-data'
+                },
+              }
+            );
+      
+            // Handle success response
+            console.log("Article created:", response.data);
+            toast({
+              title: "Article created.",
+              description: "Your article has been created successfully.",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            });
+      
+            // Clear the form fields
+            setText("");
+            setImageSrc(null);
+            setSelectedFile(null);
+            navigate('/student/MyArticles')
 
-      } else {
-        // Handle case where no valid school year is found
-        setErrorMessage("No valid school year found");
+        } else {
+          // Handle case where no valid school year is found
+          setErrorMessage("No valid school year found");
+          setShowError(true);
+          setTimeout(() => setShowError(false), 10000);
+        }
+      } catch (error) {
+        console.error("Error creating article:", error);
+        setErrorMessage("Error creating article");
         setShowError(true);
         setTimeout(() => setShowError(false), 10000);
-      }
-    } catch (error) {
-      console.error("Error creating article:", error);
-      setErrorMessage("Error creating article");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
+      }      
     }
+
   };
   
   const navigate = useNavigate();
@@ -510,7 +540,7 @@ function CreateArticle() {
                 }}
                 _focus={{ boxShadow: "none" }}
                 transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s"
-                onClick={(e) => handleSubmit(e)}
+                onClick={handleSubmit}
               >
                 Post
               </Button>
