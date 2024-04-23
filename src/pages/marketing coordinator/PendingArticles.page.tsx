@@ -33,8 +33,6 @@ import { Schema } from "mongoose";
 
 interface Comment {
   text: string;
-  user_id: string;
-  article_id: string;
 }
 interface EntryFormData {
   text: string;
