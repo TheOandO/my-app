@@ -381,6 +381,7 @@ function CreateArticle() {
                   };
                 }}
                 defaultChecked={isTermsAccepted}
+                isRequired
               >
                 I agree to the{" "}
                 <Button onClick={onOpen} variant="link" colorScheme="green">

@@ -112,14 +112,6 @@ function Login() {
             required
             onChange={(e) => setPassword(e.target.value)} />
 
-          <CheckboxContainer>
-            <div>
-              <Checkbox type="checkbox" id="remember-me" value="Remember Me" />
-              <CheckboxLabel htmlFor="remember-me">Remember me</CheckboxLabel>
-            </div>
-            <ForgotPasswordLink href="#">Forgot password?</ForgotPasswordLink>
-          </CheckboxContainer>
-
           <SubmitButton type="submit">Sign in</SubmitButton>
 
           <Divider>Or sign in with</Divider>
