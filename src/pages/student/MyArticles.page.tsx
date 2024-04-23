@@ -11,7 +11,6 @@ import {
     HStack,
     Input,
     InputLeftElement,
-    Tag,
     Image,
     Modal,
     ModalBody,
@@ -24,7 +23,6 @@ import {
 } from '@chakra-ui/react';
 import {
   FaFile,
-  FaFileImage,
   FaFilePdf,
     FaFileWord,
     FaNewspaper,
@@ -36,7 +34,7 @@ import { AddIcon, EditIcon, SearchIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
 import axios from 'axios';
-import { format, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 
 export function StudentSidebar() {
     const location = useLocation();

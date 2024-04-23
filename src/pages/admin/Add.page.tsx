@@ -8,8 +8,11 @@ import {
   Button,
   useColorModeValue,
   Heading,
+  Alert,
+  Link,
+  AlertIcon,
+  Text
 } from "@chakra-ui/react";
-import { Label } from "../../components/Login.styles";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +80,44 @@ const AddForm: React.FC = () => {
     }
   };
 
+  const [userRole, setUserRole] = useState('');
   useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        // Make a request to the /validate endpoint to check token validity
+        await axios.post("http://localhost:3001/api/user/validate", {
+          access_token: localStorage.getItem('access_token'),
+          user: localStorage.getItem('user'),
+          
+        },);
+        
+        const userDataString = localStorage.getItem('user');
+        const userData = JSON.parse(userDataString || '');
+        const userRole = userData.roles;
+        setUserRole(userRole);
+  
+      } catch (error) {
+        console.error("Error validating token:", error);
+        // If token is invalid or expired, attempt to refresh it
+        try {
+          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            user: localStorage.getItem('user'),
+          });
+  
+          console.log(refreshResponse.data.message);
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          setUserRole(refreshResponse.data.user.roles);
+          
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          // If refresh fails, redirect the user to the login page
+          setShowError(true)
+          setErrorMessage('Error refreshing token')
+  
+        }
+      }
+    }
+    checkTokenValidity();
     fetchFaculties();
   }, []);
 
@@ -105,7 +145,19 @@ const AddForm: React.FC = () => {
   };
 
   return (
+    
     <form onSubmit={handleFormSubmit}>
+      {showError && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          {errorMessage}
+          <Link href='/login' ml={10}>
+            <Text fontStyle='italic'>Go to the Login Page</Text>
+          </Link>
+        </Alert>
+      )}
+      {userRole.includes('admin') && (
+        <>
       <VStack spacing={4}>
         <Heading as="h1" size="2xl" color="#2d4b12" my={4}>
           Add an account
@@ -220,6 +272,8 @@ const AddForm: React.FC = () => {
           Sign up
         </Button>
       </VStack>
+      </>
+      )}
     </form>
   );
 };

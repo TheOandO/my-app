@@ -13,6 +13,8 @@ import {
   Heading,
   Alert,
   AlertIcon,
+  Link,
+  Text
 } from "@chakra-ui/react";
 import { LoggedinHeader } from "./AdminHome.page";
 import { useNavigate } from "react-router-dom";
@@ -37,8 +39,6 @@ const CreateTopic: React.FC = () => {
   const toast = useToast();
 
   const [faculties, setFaculties] = useState<Faculty[]>([]);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState<EntryFormData>({
     name: "",
     dateline1: "",
@@ -72,7 +72,46 @@ const CreateTopic: React.FC = () => {
     }
   };
 
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userRole, setUserRole] = useState('');
   useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        // Make a request to the /validate endpoint to check token validity
+        await axios.post("http://localhost:3001/api/user/validate", {
+          access_token: localStorage.getItem('access_token'),
+          user: localStorage.getItem('user'),
+          
+        },);
+        
+        const userDataString = localStorage.getItem('user');
+        const userData = JSON.parse(userDataString || '');
+        const userRole = userData.roles;
+        setUserRole(userRole);
+  
+      } catch (error) {
+        console.error("Error validating token:", error);
+        // If token is invalid or expired, attempt to refresh it
+        try {
+          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            user: localStorage.getItem('user'),
+          });
+  
+          console.log(refreshResponse.data.message);
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          setUserRole(refreshResponse.data.user.roles);
+          
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          // If refresh fails, redirect the user to the login page
+          setShowError(true)
+          setErrorMessage('Error refreshing token')
+  
+        }
+      }
+    }
+    checkTokenValidity();
     fetchFaculties();
   }, []);
 
@@ -130,6 +169,17 @@ const CreateTopic: React.FC = () => {
       px={6}
     >
       <LoggedinHeader />
+      {showError && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          {errorMessage}
+          <Link href='/login' ml={10}>
+            <Text fontStyle='italic'>Go to the Login Page</Text>
+          </Link>
+        </Alert>
+      )}
+      {userRole.includes('admin') && (
+        <>
       <VStack spacing={8} mx="auto" maxW="xl" px={6} mt={200} mb={200}>
         <Box
           borderRadius="lg"
@@ -138,12 +188,6 @@ const CreateTopic: React.FC = () => {
           p={8}
           width={{ base: "90%", md: "768px" }} // Increased width for medium-sized devices and up
         >
-          {showError && (
-            <Alert status="error" mt={4}>
-              <AlertIcon />
-              {errorMessage}
-            </Alert>
-          )}
           <Heading
             as="h2"
             size="lg"
@@ -235,6 +279,8 @@ const CreateTopic: React.FC = () => {
           </VStack>
         </Box>
       </VStack>
+      </>
+      )}
     </Box>
   );
 };

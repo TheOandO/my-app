@@ -111,7 +111,44 @@ export function Topics() {
     }
   };  
   
+  const [userRole, setUserRole] = useState('');
   useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        // Make a request to the /validate endpoint to check token validity
+        await axios.post("http://localhost:3001/api/user/validate", {
+          access_token: localStorage.getItem('access_token'),
+          user: localStorage.getItem('user'),
+          
+        },);
+        
+        const userDataString = localStorage.getItem('user');
+        const userData = JSON.parse(userDataString || '');
+        const userRole = userData.roles;
+        setUserRole(userRole);
+  
+      } catch (error) {
+        console.error("Error validating token:", error);
+        // If token is invalid or expired, attempt to refresh it
+        try {
+          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            user: localStorage.getItem('user'),
+          });
+  
+          console.log(refreshResponse.data.message);
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          setUserRole(refreshResponse.data.user.roles);
+          
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          // If refresh fails, redirect the user to the login page
+          setShowError(true)
+          setErrorMessage('Error refreshing token')
+  
+        }
+      }
+    }
+    checkTokenValidity();
     fetchFaculties();
     fetchTopics();
   }, []);
@@ -325,44 +362,51 @@ return (
       <Alert status="error" mt={4}>
         <AlertIcon />
         {errorMessage}
+        <Link href='/login' ml={10}>
+          <Text fontStyle='italic'>Go to the Login Page</Text>
+        </Link>
       </Alert>
-    )}
-    <Box p={5} shadow="md" w="100%">
-      <InputGroup size="lg" mb={5}>
-        <InputLeftElement pointerEvents="none">
-          <Icon as={SearchIcon} color="gray.300" />
-        </InputLeftElement>
-        <Input
-          placeholder="Search a topic"
-          _placeholder={{ color: "gray.500" }}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-      </InputGroup>
-    </Box>
-    <List spacing={6} width="100%" minH={200} h={900} overflowY='auto' minW={700}>
-      {topics
-        .filter((topic) =>
-          topic.name.toLowerCase().includes(value.toLowerCase())
-        )
-        .map((topic: any) => (
-          <ListItem key={topic._id}>
-            <Flex align="center" bg="white" p={4} borderRadius="lg" boxShadow="base" _hover={{ transform: "translateY(-4px)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }} transition="background-color 0.2s, box-shadow 0.2s transform 0.4s">
-              <Box flex="1">
-                <Text fontWeight="bold" fontSize='3xl' color='#426b1f'>{topic.name}</Text>
-                <Text fontSize="md" fontStyle='italic'>{formatDatelineMessage(topic.status, topic.dateline1, topic.dateline2)}</Text>
-                <Text fontSize="md" fontStyle='italic'>From {format(new Date(topic.dateline1), 'MMMM dd, yyyy')} to {format(new Date(topic.dateline2), 'MMMM dd, yyyy')}</Text>
-                <Text fontSize="md" color="gray.600">Faculty: {findFacultyName(topic.faculty_id)}</Text>     
-              </Box>
-              <VStack>  
-                <StatusButton status={topic.status} />
-                <TopicModal topicId={topic._id}/>
-              </VStack>
-              
-            </Flex>
-          </ListItem>
-        ))}
-    </List>
+      )}
+      {userRole.includes('admin') && (
+        <>
+          <Box p={5} shadow="md" w="100%">
+            <InputGroup size="lg" mb={5}>
+              <InputLeftElement pointerEvents="none">
+                <Icon as={SearchIcon} color="gray.300" />
+              </InputLeftElement>
+              <Input
+                placeholder="Search a topic"
+                _placeholder={{ color: "gray.500" }}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+            </InputGroup>
+          </Box>
+          <List spacing={6} width="100%" minH={200} h={900} overflowY='auto' minW={700}>
+            {topics
+              .filter((topic) =>
+                topic.name.toLowerCase().includes(value.toLowerCase())
+              )
+              .map((topic: any) => (
+                <ListItem key={topic._id}>
+                  <Flex align="center" bg="white" p={4} borderRadius="lg" boxShadow="base" _hover={{ transform: "translateY(-4px)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)" }} transition="background-color 0.2s, box-shadow 0.2s transform 0.4s">
+                    <Box flex="1">
+                      <Text fontWeight="bold" fontSize='3xl' color='#426b1f'>{topic.name}</Text>
+                      <Text fontSize="md" fontStyle='italic'>{formatDatelineMessage(topic.status, topic.dateline1, topic.dateline2)}</Text>
+                      <Text fontSize="md" fontStyle='italic'>From {format(new Date(topic.dateline1), 'MMMM dd, yyyy')} to {format(new Date(topic.dateline2), 'MMMM dd, yyyy')}</Text>
+                      <Text fontSize="md" color="gray.600">Faculty: {findFacultyName(topic.faculty_id)}</Text>     
+                    </Box>
+                    <VStack>  
+                      <StatusButton status={topic.status} />
+                      <TopicModal topicId={topic._id}/>
+                    </VStack>
+                    
+                  </Flex>
+                </ListItem>
+              ))}
+          </List>
+        </>
+      )}
   </VStack>
   )
 }

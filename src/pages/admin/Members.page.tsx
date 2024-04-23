@@ -4,21 +4,13 @@ import {
   Text,
   Heading,
   Button,
-  IconButton,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   useDisclosure,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
   Input,
   Select,
   VStack,
@@ -43,13 +35,11 @@ import {
 } from "@chakra-ui/react";
 import {
   FaUserPlus,
-  FaEllipsisV,
   FaSearch,
   FaSortAmountDown,
   FaSortAmountUp,
   FaBell,
   FaUserCog,
-  FaBacon,
 } from "react-icons/fa";
 import { LoggedinHeader } from "./AdminHome.page";
 import { useEffect, useState } from "react";
