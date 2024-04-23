@@ -29,14 +29,12 @@ import { LoggedinHeader } from "../admin/AdminHome.page";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
-import { Schema } from "mongoose";
 
 interface Comment {
   text: string;
 }
-interface EntryFormData {
+interface CommentFormData {
   text: string;
-  [key: string]: string;
 }
 
 export function MCSidebar() {
@@ -137,7 +135,7 @@ function ArticleList() {
     null
   );
   const [comments, setComments] = useState<Comment[]>([]); // Placeholder for comments state
-  const [formData, setFormData] = useState<EntryFormData>({
+  const [formData, setFormData] = useState<CommentFormData>({
     text: "",
   });
   const handleChange = (
@@ -175,8 +173,6 @@ function ArticleList() {
     try {
       await axios.post("http://localhost:3001/api/comment/create", {
         text: formData.text,
-        user_id: Schema.Types.ObjectId,
-        article_id: Schema.Types.ObjectId,
       });
     } catch (error: any) {
       console.error("error adding comment", error.res.data);
