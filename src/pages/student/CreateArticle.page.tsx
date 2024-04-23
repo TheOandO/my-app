@@ -24,6 +24,8 @@ import {
   Checkbox,
   Alert,
   AlertIcon,
+  FormErrorMessage,
+  Text
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { LoggedinHeader } from "../admin/AdminHome.page";
@@ -52,7 +54,7 @@ interface Entry {
 
 function CreateArticle() {
   const [text, setText] = useState("");
-  const [imageSrc, setImageSrc] = useState("");
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showError, setShowError] = useState(false);
@@ -111,6 +113,9 @@ function CreateArticle() {
     }
   };
 
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
 
   const fetchEntries = async () => {
     try {
@@ -124,7 +129,6 @@ function CreateArticle() {
   
         if (facultyId) {
           const response = await axios.get("http://localhost:3001/api/entry/get-all");
-          console.log("Entries API Response:", response.data);
   
           // Filter entries based on faculty_id
           const filteredEntries: Entry[] = response.data.data.filter((entry: Entry) => entry.faculty_id === facultyId);
@@ -212,9 +216,9 @@ function CreateArticle() {
       if (lastSchoolYear) {
         if (selectedFile) {
           const formData = new FormData();
+          formData.append('term_condition', form.term_condition.toString());
           formData.append('text', form.text);
           formData.append('files', selectedFile);
-          formData.append('term_condition', form.term_condition.toString());
 
           if (imageSrc) {
             const imageBlob = await fetch(imageSrc).then((res) => res.blob());
@@ -247,7 +251,7 @@ function CreateArticle() {
     
           // Clear the form fields
           setText("");
-          setImageSrc("");
+          setImageSrc(null);
         }
 
       } else {
@@ -306,8 +310,9 @@ function CreateArticle() {
 
           <Divider my={4} borderColor="#426B1F" width="100%" />
 
-          <VStack as="form" onSubmit={handleSubmit} spacing={10}>
-            <FormControl id="article-topic" isRequired>
+          <VStack as="form" onSubmit={handleSubmit} spacing={12}>
+            <FormControl id="article-topic" isRequired isInvalid={!form.entryid}>
+            <FormErrorMessage>Please choose a topic</FormErrorMessage>
               <FormLabel htmlFor="entryId">Choose a topic</FormLabel>
               <Select id="entryId" name="entryid" value={form.entryid} onChange={handleChange}>
               <option value="">Select a Topic</option>
@@ -318,7 +323,8 @@ function CreateArticle() {
               ))}
               </Select>
             </FormControl>
-            <FormControl id="article-description" isRequired>
+            <FormControl id="article-description" isRequired isInvalid={!form.text}>
+            <FormErrorMessage>Please enter a description</FormErrorMessage>
               <FormLabel>Description</FormLabel>
               <ReactQuill
                 style={{ width: "100%", height: "300px" }}
@@ -337,16 +343,6 @@ function CreateArticle() {
                       maxH="400px"
                       alt="Uploaded image preview"
                     />
-                    <IconButton
-                      aria-label="Remove image"
-                      icon={<CloseIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      position="absolute"
-                      top="0"
-                      right="0"
-                      onClick={handleRemoveImage}
-                    />
                   </Box>
                 )}
                 <Input
@@ -357,21 +353,46 @@ function CreateArticle() {
                   pt={2}
                   width="full" // Stretch the input to take full width
                 />
+                <IconButton
+                  aria-label="Remove image"
+                  icon={<CloseIcon />}
+                  size="sm"
+                  colorScheme="red"
+                  position="absolute"
+                  top="0"
+                  right="0"
+                  onClick={handleRemoveImage}
+                />
               </Box>
             </FormControl>
             <FormControl>
               <FormLabel>File Upload</FormLabel>
               <Box width='full'>
+                {selectedFile && (
+                  <Box position="relative">
+                    <Text>{selectedFile.name}</Text>
+                  </Box>
+                )}
                 <Input
                   type="file"
                   id="file"
                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" // Specify accepted file types
                   onChange={handleFileChange}
                 />
+                  <IconButton
+                    aria-label="Remove file"
+                    icon={<CloseIcon />}
+                    size="sm"
+                    colorScheme="red"
+                    position="absolute"
+                    top="0"
+                    right="0"
+                    onClick={handleRemoveFile}
+                  />
               </Box>
             </FormControl>
             <FormControl>
-              {/* Terms and conditions checkbox */}
+              <FormErrorMessage>Please accept the terms & conditions</FormErrorMessage>
               <Checkbox
                 onChange={(e) => {
                   setIsTermsAccepted(e.target.checked);
