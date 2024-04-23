@@ -18,17 +18,25 @@ import {
     ModalCloseButton,
     ModalContent,
     ModalHeader,
-    ModalOverlay
+    ModalOverlay,
+    Alert,
+    AlertIcon
 } from '@chakra-ui/react';
 import {
+  FaFile,
+  FaFileImage,
+  FaFilePdf,
+    FaFileWord,
     FaNewspaper,
 } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
 import { LoggedinHeader } from '../admin/AdminHome.page';
-import { AddIcon, SearchIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
+import { AddIcon, EditIcon, SearchIcon } from '@chakra-ui/icons';
+import { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/toast';
+import axios from 'axios';
+import { format, formatDistanceToNow } from 'date-fns';
 
 export function StudentSidebar() {
     const location = useLocation();
@@ -56,161 +64,242 @@ export function StudentSidebar() {
     );
   }
 
-  // Dummy article data
-  type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
-  const pendingArticles = [
-    {
-      id: 1,
-      title: 'No alarms to no surprises',
-      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      status: 'Rejected' as StatusType,
-      image: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg',
-      comment: 'bad'
-    },
-    {
-      id: 2,
-      title: 'There could be hell below, below',
-      summary: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...',
-      status: 'Overdue' as StatusType,
-      image: 'https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg',
-      comment: 'bad'
-    },
-    {
-      id: 3,
-      title: 'Mother Earth is pregnant for the third time',
-      summary: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip...',
-      status: 'Waiting' as StatusType,
-      image: 'https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg',
-      comment: ''
-    }
-  ];
-
-  const publishedArticles = [
-    {
-      id: 4,
-      title: "'Cause I'm as free as a bird now",
-      summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      status: 'Published' as StatusType,
-      image: 'https://i.scdn.co/image/ab67616d0000b273128450651c9f0442780d8eb8',
-      comment: 'good'
-    },
-    {
-      id: 5,
-      title: 'Sectoral heterochromia',
-      summary: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...',
-      status: 'Published' as StatusType,
-      image: 'https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg',
-      comment: 'good'
-    }
-  ];
+  interface Article {
+    _id: string;
+    text: string;
+    files: string;
+    images: string;
+    entry_id: string;
+    studentId: string;
+    schoolyearId: string;
+    createdAt: string;
+  }
+  interface Topic {
+    _id: string
+    name: string,
+    dateline1: Date,
+    dateline2: Date,
+    faculty_id: string
+  }
 
 function ArticleList() {
-const StatusButton : React.FC<{ status: StatusType }> = ({ status }) => {
-    let color = 'gray';
-    if (status === 'Waiting') color = '#426B1F';
-    if (status === 'Published') color = '#426B1F';
-    if (status === 'Rejected') color = '#6B1F1F';
-    if (status === 'Overdue') color = '#383838';
-    return <Tag fontSize="lg" fontWeight='bold' width='140px' height='50px' display='flex' alignItems='center' justifyContent='center' borderRadius="full" variant="solid" bg={color} color='white'>{status}</Tag>
+
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedComment, setSelectedComment] = useState(null); 
+  const toast = useToast();
+
+  const handleClick = (article:any) => {
+    if (article.comment) {
+      setSelectedComment(article.comment); // Assuming comment is always a string
+    } else {
+      toast({ // Display toast notification
+        title: 'No comment yet!',
+        status: 'info',
+        duration: 2000,
+        isClosable: true,
+        colorScheme: 'green'
+      });
+    }
+  };
+
+  const accessToken = localStorage.getItem('access_token');
+  const userDataString = localStorage.getItem('user');
+  const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
+  const userId = userData ? userData._id : ''; // Extract ID from user data
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/article/get-by-student/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      setArticles(response.data.data)
+      console.log(response.data)
+    } catch {
+      setShowError(true)
+      setErrorMessage('Unauthorized Access')
+    }
   }
 
-const [selectedComment, setSelectedComment] = useState(null); 
-const toast = useToast();
-const handleClick = (article:any) => {
-  if (article.comment) {
-    setSelectedComment(article.comment); // Assuming comment is always a string
-  } else {
-    toast({ // Display toast notification
-      title: 'No comment yet!',
-      status: 'info',
-      duration: 2000,
-      isClosable: true,
-      colorScheme: 'green'
-    });
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/entry/get-all"
+      );
+      setTopics(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching entries");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
+  const [topics, setTopics] = useState<Topic[]>([])
+  // Function to find faculty name by faculty id
+  const findTopicName = (topicId: string): string => {
+    const topic = topics.find((t) => t._id === topicId);
+    return topic ? topic.name : 'Unknown Entry';
+  };
+
+const [userRole, setUserRole] = useState('');
+const [showError, setShowError] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
+useEffect(() => {
+  const checkTokenValidity = async () => {
+    try {
+      // Make a request to the /validate endpoint to check token validity
+      await axios.post("http://localhost:3001/api/user/validate", {
+        access_token: localStorage.getItem('access_token'),
+        user: localStorage.getItem('user'),
+        
+      },);
+      
+      const userDataString = localStorage.getItem('user');
+      const userData = JSON.parse(userDataString || '');
+      const userRole = userData.roles;
+      setUserRole(userRole);
+
+    } catch (error) {
+      console.error("Error validating token:", error);
+      // If token is invalid or expired, attempt to refresh it
+      try {
+        const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          user: localStorage.getItem('user'),
+        });
+
+        // If refresh is successful, update the access token and continue rendering the student homepage
+        console.log(refreshResponse.data.message);
+        localStorage.setItem('access_token', refreshResponse.data.access_token);
+        setUserRole(refreshResponse.data.user.roles);
+
+        // setShowError(false)
+        
+      } catch (refreshError) {
+        console.error("Error refreshing token:", refreshError);
+        // If refresh fails, redirect the user to the login page
+        setShowError(true)
+        setErrorMessage('Error refreshing token')
+
+      }
+    }
+  }
+  checkTokenValidity();
+  fetchEntries()
+  fetchArticles()
+}, [])
+
+const stripHtmlTags = (html: string) => {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+};
+
+const getFileIcon = (fileName:any) => {
+  const fileExtension = fileName.split('.').pop().toLowerCase();
+  switch (fileExtension) {
+    case 'pdf':
+      return <FaFilePdf height='150' width='150' />;
+    case 'doc':
+    case 'docx':
+      return <FaFileWord height='150' width='150' />;
+    default:
+      return <FaFile height='150' width='150' />;
   }
 };
+
+
 return (
     <VStack divider={<StackDivider />}  w="100%" h="full" spacing={4} align="stretch" overflowY="auto">
-      <Box bg="#F7FAFC" p={5}>
-        <Heading size="lg" color="#2D3748">
-          Pending Articles: {pendingArticles.length}
-        </Heading>
-        <InputGroup size="lg" mt={4}>
-          <InputLeftElement pointerEvents="none">
-            <SearchIcon color="gray.500" />
-          </InputLeftElement>
-          <Input placeholder="Search my article" />
-        </InputGroup>
-        <Link href='/Student/CreateArticle'>
-            <Button leftIcon={<AddIcon />} bg="#426b1f" color='whitesmoke' my={4} _hover={{ bg:"grey", color:'#2d4b12', transform: 'translateY(-2px)'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s">
-            Create New Article
-            </Button>
-        </Link>
-      </Box>
-      {/* Map through pending articles */}
-      {pendingArticles.map((article) => (
-        <HStack key={article.id} p={5} spacing={4} align="center" borderBottomWidth="1px">
-        {article.image && (
-            <Image borderRadius="md" boxSize="150px" src={article.image} alt={article.title} />
-        )}
-          <Box flex={1}>
-            <Heading fontSize="3xl">{article.title}</Heading>
-            <Text fontSize="xl" color="gray.500">{article.summary}</Text>
+      {showError && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          {errorMessage}
+        </Alert>
+      )}
+      {userRole.includes('student') && (
+        <>
+          <Box bg="#F7FAFC" p={5}>
+            <Heading size="lg" color="#2D3748">
+              My Articles: {articles.length}
+            </Heading>
+            <InputGroup size="lg" mt={4}>
+              <InputLeftElement pointerEvents="none">
+                <SearchIcon color="gray.500" />
+              </InputLeftElement>
+              <Input placeholder="Search my article" />
+            </InputGroup>
+            <Link href='/Student/CreateArticle'>
+                <Button leftIcon={<AddIcon />} bg="#426b1f" color='whitesmoke' my={4} _hover={{ bg:"grey", color:'#2d4b12', transform: 'translateY(-2px)'}} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s">
+                Create New Article
+                </Button>
+            </Link>
           </Box>
-          <StatusButton status={article.status} />
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => handleClick(article)}
-          >
-            View comment
-          </Button>
-        </HStack>
-      ))}
-      <Box bg="#F7FAFC" p={5} mt={10}>
-        <Heading size="lg" color="#2D3748">
-          Published Articles: {publishedArticles.length}
-        </Heading>
-      </Box>
-      {/* Map through published articles */}
-      {publishedArticles.map((article) => (
-        <HStack key={article.id} p={5} spacing={4} align="center" borderBottomWidth="1px">
-        {article.image && (
-            <Image borderRadius="md" boxSize="150px" src={article.image} alt={article.title} />
-        )}
-          <Box flex={1} my={4}>
-            <Heading fontSize="3xl" my={4}>{article.title}</Heading>
-            <Text fontSize="xl" color="gray.500">{article.summary}</Text>
-          </Box>
-          <StatusButton status={article.status} />
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => handleClick(article)}
-          >
-            View comment
-          </Button>
-        </HStack>
-      ))}
+          {/* Map through pending articles */}
+          {articles.map((article) => (
+            <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+              <Box flex={1}>
+                <Text fontSize="2xl">{stripHtmlTags(article.text)}</Text>
+                <Text fontSize="md">Created {formatDistanceToNow(new Date(article.createdAt))} ago</Text>
+                <Text fontSize="md" fontStyle='italic'>Topic: {findTopicName(article.entry_id)}</Text>
+              </Box>
+              {article.images && (
+                <Image borderRadius="md" boxSize="150px" src={article.images} alt={stripHtmlTags(article.text)} />
+              )}
+              {article.files && Array.isArray(article.files) &&(
+                <Flex alignItems="center">
+                  {article.files.map((file, index) => (
+                    <Box key={index} mx={4}>
+                      {getFileIcon(file)} {/* Function to get file icon based on file type */}
+                      <Text>{file}</Text> {/* Display filename */}
+                    </Box>
+                  ))}
+                </Flex>
+              )}
+              <VStack>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleClick(article)}
+              >
+                View comment
+              </Button>
+              <Button
+                rightIcon={<EditIcon />}
+                bg="#fff"
+                color='#426b1f'
+                variant="solid"
+                size="xl"
+                p="4"
+                fontSize="lg"
+              >
+                Edit
+              </Button>           
+              </VStack>
 
-      {/* Comment modal */}
-      <Modal isOpen={!!selectedComment} onClose={() => setSelectedComment(null)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Comment</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody p={4}>
-            {selectedComment ? (
-              <Text>{selectedComment}</Text>
-            ) : (
-              <Text>No comment yet!</Text>
-            )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+            </HStack>
+          ))}
+
+          {/* Comment modal */}
+          <Modal isOpen={!!selectedComment} onClose={() => setSelectedComment(null)}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Comment</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody p={4}>
+                {selectedComment ? (
+                  <Text>{selectedComment}</Text>
+                ) : (
+                  <Text>No comment yet!</Text>
+                )}
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </>
+      )}
     </VStack>
   );
 }
+
 function MyArticles() {
     return(
         <Box>
