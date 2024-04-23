@@ -167,12 +167,9 @@ useEffect(() => {
           user: localStorage.getItem('user'),
         });
 
-        // If refresh is successful, update the access token and continue rendering the student homepage
         console.log(refreshResponse.data.message);
         localStorage.setItem('access_token', refreshResponse.data.access_token);
         setUserRole(refreshResponse.data.user.roles);
-
-        // setShowError(false)
         
       } catch (refreshError) {
         console.error("Error refreshing token:", refreshError);
