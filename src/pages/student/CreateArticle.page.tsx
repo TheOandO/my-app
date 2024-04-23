@@ -53,7 +53,7 @@ interface Entry {
 }
 
 function CreateArticle() {
-  const [text, setText] = useState("");
+  const [, setText] = useState("");
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -252,6 +252,8 @@ function CreateArticle() {
           // Clear the form fields
           setText("");
           setImageSrc(null);
+          setSelectedFile(null);
+          navigate('/student/MyArticles')
         }
 
       } else {

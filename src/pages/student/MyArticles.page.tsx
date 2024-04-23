@@ -21,7 +21,6 @@ import {
     ModalOverlay
 } from '@chakra-ui/react';
 import {
-    FaUser,
     FaNewspaper,
 } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';

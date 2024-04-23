@@ -9,7 +9,6 @@ import {
     Circle,
     List,
     ListItem,
-    Image,
     Tag,
     Button,
     Tooltip,
