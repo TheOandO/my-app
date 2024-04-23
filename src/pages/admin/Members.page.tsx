@@ -78,7 +78,7 @@ interface Faculty {
 
 interface Role {
   _id: string;
-  name: string;
+  roles: string;
 }
 
 export function AdminSidebar() {
@@ -144,7 +144,7 @@ export function AdminSidebar() {
   );
 }
 
-const toast = useToast
+
 
 function MemberTable() {
   const [users, setUsers] = useState<User[]>([]);
@@ -154,7 +154,7 @@ function MemberTable() {
     "0px 2px 12px rgba(130,148,116,0.8)",
     "0px 2px 12px rgba(130,148,116,0.8)"
   );
-
+  const toast = useToast()
   const accessToken = localStorage.getItem('access_token');
 
   const fetchUsers = async () => {
@@ -419,8 +419,8 @@ function MemberTable() {
                       >
                         <option value="">Select Role</option>
                         {roles.map((role) => (
-                          <option key={role.name} value={role._id}>
-                            {role.name}
+                          <option key={role._id} value={role._id}>
+                            {role.roles}
                           </option>
                         ))}
                       </Select>
