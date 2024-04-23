@@ -1,6 +1,8 @@
 import {
   Avatar,
   Box, Button, Divider, Flex, Heading, Icon, Link, Select, SimpleGrid, Spacer, Stat, StatLabel, StatNumber, VStack, Image, IconButton, Menu, MenuButton, MenuItem, MenuList, Tooltip,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { Footer, Quote, DiscussionPage } from '../guest/Home.page' 
 import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaEnvelopeOpenText, FaAnchor } from 'react-icons/fa';
@@ -8,6 +10,7 @@ import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 export function LoggedinHeader() {
   const userDataString = localStorage.getItem('user');
   const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
@@ -135,38 +138,88 @@ export function Overview() {
 
 
 function Homepage() {
+  const [userRole, setUserRole] = useState('');
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        // Make a request to the /validate endpoint to check token validity
+        await axios.post("http://localhost:3001/api/user/validate", {
+          access_token: localStorage.getItem('access_token'),
+          user: localStorage.getItem('user'),
+          
+        },);
+        
+        const userDataString = localStorage.getItem('user');
+        const userData = JSON.parse(userDataString || '');
+        const userRole = userData.roles;
+        setUserRole(userRole);
+  
+      } catch (error) {
+        console.error("Error validating token:", error);
+        // If token is invalid or expired, attempt to refresh it
+        try {
+          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            user: localStorage.getItem('user'),
+          });
+  
+          console.log(refreshResponse.data.message);
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          setUserRole(refreshResponse.data.user.roles);
+          
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          // If refresh fails, redirect the user to the login page
+          setShowError(true)
+          setErrorMessage('Error refreshing token')
+  
+        }
+      }
+    }
+    checkTokenValidity();
+  }, [])
   const navigate = useNavigate();
   const handleAddButtonClick = () => {
     navigate('/Admin/CreateTopic');
-    // Additional logic when the plus button is clicked
   };
   return (
     <Box>
-      <LoggedinHeader></LoggedinHeader>
-      <Quote></Quote>
-      <Overview></Overview>
-      <DiscussionPage></DiscussionPage>
-      <Footer></Footer>
-      <Tooltip label="Add a topic" fontSize="md" placement="left" hasArrow>
-      <IconButton
-        aria-label="Add new topic"
-        icon={<AddIcon />}
-        bg="#426B1F"
-        color='#fff'
-        variant="solid"
-        size="lg"
-        colorScheme='green'
-        isRound={true}
-        position="fixed"
-        bottom="1em" // Adjust the distance from the bottom
-        right="1em" // Adjust the distance from the right
-        zIndex="tooltip" // Ensure the button is above most other items
-        onClick={handleAddButtonClick}
-        boxShadow="0px 4px 12px rgba(0, 0, 0, 0.15)"
-        width="80px" // Set a specific width
-        height="80px" // Set a specific height
-        fontSize="40px"
-      /></Tooltip>
+      {showError && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          {errorMessage}
+        </Alert>
+      )}
+      {userRole.includes('admin') && (
+        <>
+          <LoggedinHeader></LoggedinHeader>
+          <Quote></Quote>
+          <Overview></Overview>
+          <DiscussionPage></DiscussionPage>
+          <Footer></Footer>
+          <Tooltip label="Add a topic" fontSize="md" placement="left" hasArrow>
+          <IconButton
+            aria-label="Add new topic"
+            icon={<AddIcon />}
+            bg="#426B1F"
+            color='#fff'
+            variant="solid"
+            size="lg"
+            colorScheme='green'
+            isRound={true}
+            position="fixed"
+            bottom="1em" // Adjust the distance from the bottom
+            right="1em" // Adjust the distance from the right
+            zIndex="tooltip" // Ensure the button is above most other items
+            onClick={handleAddButtonClick}
+            boxShadow="0px 4px 12px rgba(0, 0, 0, 0.15)"
+            width="80px" // Set a specific width
+            height="80px" // Set a specific height
+            fontSize="40px"
+          /></Tooltip>
+        </>
+      )}
     </Box>
 
   );
