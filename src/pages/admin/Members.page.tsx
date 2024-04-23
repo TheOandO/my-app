@@ -44,42 +44,25 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import axios from "axios";
+import { format } from "date-fns";
+
 interface User {
   _id: string;
+  name: string;
   email: string;
-  role: string;
+  password: string;
+  roles: string[];
   major: string;
-  faculty: string;
+  faculty_id: string;
   username: string;
-  // Add other properties as needed
+  createdAt: string
 }
-// Example members data
-const members = [
-  {
-    id: "P0001",
-    name: "Nicky Nicknack",
-    email: "nick@website.edu",
-    role: "Student",
-    major: "Photography",
-    faculty: "Faculty A",
-  },
-  {
-    id: "CS001",
-    name: "Mandy Chow",
-    email: "mandy@website.edu",
-    role: "Student",
-    major: "Computer Science",
-    faculty: "Faculty A",
-  },
-  {
-    id: "CS002",
-    name: "Kaling Bling",
-    email: "kaling@website.edu",
-    role: "Student",
-    major: "Computer Science",
-    faculty: "Faculty B",
-  },
-];
+
+interface Faculty {
+  _id: string;
+  name: string;
+  marketing_coordinator_id: string;
+}
 
 export function AdminSidebar() {
   const location = useLocation();
@@ -95,7 +78,7 @@ export function AdminSidebar() {
       p={5}
       alignItems="center"
       justifyContent="center"
-      minH="100vh" // Minimum height to match the viewport height
+      minH="100vh"
       overflowY="auto"
     >
       <VStack
@@ -168,23 +151,57 @@ function MemberTable() {
     "0px 2px 12px rgba(130,148,116,0.8)",
     "0px 2px 12px rgba(130,148,116,0.8)"
   );
-  const [loading, setLoading] = useState(false);
+
+  const accessToken = localStorage.getItem('access_token');
 
   const fetchUsers = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(
-        "http://localhost:3001/api/user/get-all"
+        "http://localhost:3001/api/user/get-all",{
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }          
+        }
       );
+      console.log(response.data)
       setUsers(response.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
+
+  const [faculties, setFaculties] = useState<Faculty[]>([]);
+
+  const fetchFaculties = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/faculty/get-all"
+      );
+      setFaculties(response.data.data);
+    } catch (error) {
+      console.log("Error fetching faculties");
+    }
+  };
+
   useEffect(() => {
+    fetchFaculties()
     fetchUsers();
   }, []);
 
+  // Function to find faculty name by faculty id
+  const findFacultyName = (facultyId: string): string => {
+    const faculty = faculties.find((f) => f._id === facultyId);
+    return faculty ? faculty.name : 'Unknown Faculty';
+  };
+
+  const truncate = (password:any) => {
+    const maxLength = 5; // Maximum length of the displayed password
+    if (password.length <= maxLength) {
+      return password; // Return the full password if it's shorter than maxLength
+    } else {
+      return password.substring(0, maxLength) + '...'; // Truncate the password and add ellipses
+    }
+  };
   const toggleSortOrder = () => {
     setIsAscending(!isAscending);
   };
@@ -209,6 +226,8 @@ function MemberTable() {
         p={8}
         overflowX="auto"
         boxShadow={boxShadowColor}
+        maxHeight="800px"
+        overflowY="auto" 
       >
         <Flex gap={4}>
           <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
@@ -223,7 +242,6 @@ function MemberTable() {
             <option value="id">ID</option>
             <option value="email">Email</option>
             <option value="role">Role</option>
-            <option value="major">Major</option>
             <option value="faculty">Faculty</option>
           </Select>
           <Button
@@ -248,10 +266,12 @@ function MemberTable() {
             <Tr>
               <Th fontSize="3xl">ID</Th>
               <Th fontSize="3xl">Name</Th>
+              <Th fontSize="3xl">Username</Th>
               <Th fontSize="3xl">Email</Th>
+              <Th fontSize="3xl">Password</Th>
               <Th fontSize="3xl">Role</Th>
-              <Th fontSize="3xl">Major</Th>
               <Th fontSize="3xl">Faculty</Th>
+              <Th fontSize="3xl">Created At</Th>
               <Th fontSize="3xl">Options</Th>
             </Tr>
           </Thead>
@@ -269,12 +289,14 @@ function MemberTable() {
                 transition="background-color 0.2s, box-shadow 0.2s, transform 0.2s"
               >
                 <Td>{user._id}</Td>
+                <Td>{user.name}</Td>
                 <Td>{user.username}</Td>
                 <Td>{user.email}</Td>
-                <Td>{user.role}</Td>
-                <Td>{user.faculty}</Td>
+                <Td>{truncate(user.password)}</Td>
+                <Td>{user.roles}</Td>
+                <Td>{findFacultyName(user.faculty_id)}</Td>
+                <Td>{format(user.createdAt, 'MM-dd-yyyy')}</Td>
                 <Td>
-                  {/* Options menu */}
                   <Menu>
                     <MenuButton as={IconButton} icon={<FaEllipsisV />} />
                     <MenuList>
@@ -321,10 +343,8 @@ function Members() {
     <Box>
       <LoggedinHeader />
       <Flex h="100vh" overflowY="hidden">
-        {/* Sidebar */}
         <AdminSidebar />
 
-        {/* Main content */}
         <MemberTable />
       </Flex>
     </Box>
