@@ -240,7 +240,7 @@ const AddForm: React.FC = () => {
         </FormControl>
         <FormControl id="faculty">
           <FormLabel>Faculty</FormLabel>
-          <select
+          <Select
             id="facultyId"
             name="facultyId"
             value={formData.facultyId}
@@ -252,7 +252,7 @@ const AddForm: React.FC = () => {
                 {faculty.name}
               </option>
             ))}
-          </select>
+          </Select>
         </FormControl>
         <Button
           type="submit"

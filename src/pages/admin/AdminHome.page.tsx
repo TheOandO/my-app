@@ -131,7 +131,7 @@ export function Overview() {
       setArticles(response.data.data);
       
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching Articles:", error);
     }
   };
 
@@ -153,7 +153,7 @@ export function Overview() {
       
 
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching School Years:", error);
     }
   };
 
@@ -209,7 +209,7 @@ export function Overview() {
             </Button>
           </Link>
 
-          <Link href='/Admin/CreateTopic'>
+          <Link href='/Admin/Add'>
             <Button leftIcon={<FaAtlas />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
               Add an Account
             </Button>

@@ -399,20 +399,22 @@ function MemberTable() {
                       </Select>
                     </FormControl>
 
-                    <FormControl id="roleId" isRequired>
-                      <FormLabel>Change Role</FormLabel>
+                    <FormControl id="role">
+                      <FormLabel>Role</FormLabel>
                       <Select
-                        id="roleId"
-                        name="roleid"
+                        placeholder="Select role"
+                        id="role"
+                        name="role"
                         value={formData.roles}
                         onChange={handleChange}
                       >
-                        <option value="">Select Role</option>
-                        {roles.map((role) => (
-                          <option key={role._id} value={role._id}>
-                            {role.roles}
-                          </option>
-                        ))}
+                        <option value='student'>Student</option>
+                        <option value='marketingManager'>Marketing Manager</option>
+                        <option value='marketingCoordinator'>
+                          Marketing Coordinator
+                        </option>
+                        <option value='admin'>Administrator</option>
+                        <option value='guest'>Guest</option>
                       </Select>
                     </FormControl>
 
