@@ -5,12 +5,13 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import { Footer, Quote, DiscussionPage } from '../guest/Home.page' 
-import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaEnvelopeOpenText, FaAnchor } from 'react-icons/fa';
+import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaEnvelopeOpenText, FaAnchor, FaAtlas } from 'react-icons/fa';
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { differenceInDays, format } from 'date-fns';
 export function LoggedinHeader() {
   const userDataString = localStorage.getItem('user');
   const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
@@ -72,7 +73,97 @@ export function LoggedinHeader() {
   );
 }
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  roles: string;
+  faculty_id: string;
+  username: string;
+  createdAt: string
+}
+
+interface Article {
+  _id: string;
+  text: string;
+  files: string;
+  images: string;
+  entryId: string;
+  school_yearId: string;
+  studentId: string;
+  term_condition: string;
+}
+
 export function Overview() {
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [endTime, setEndTime] = useState(Number);
+  const [schoolYears, setSchoolYears] = useState(Number);
+  const accessToken = localStorage.getItem('access_token');
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/user/get-all",{
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }          
+        }
+      );
+      setUsers(response.data.users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/article/get-all",{
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }          
+        }
+      );
+
+      setArticles(response.data.data);
+      
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const fetchSchoolYear = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/school-year/get-all",{
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }          
+        }
+      );
+      if (response.data.data.length > 0) {
+        const endTerm = response.data.data[0].end_time 
+        const daysUntilEndTerm = differenceInDays(new Date(endTerm), new Date());
+        setEndTime(daysUntilEndTerm);
+        setSchoolYears(endTerm)
+      }
+      
+
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchSchoolYear()
+    fetchUsers()
+    fetchArticles()
+  }, [])
+
   return (
     <Box bg="#d9e6d3" p={6} borderRadius="lg" boxShadow="xl">
       <Heading as="h3" size="lg" textAlign="center" mb={6} color="#1d4732">
@@ -85,23 +176,23 @@ export function Overview() {
           <Stat >
             <StatLabel fontSize='3xl'><Icon as={FaUser} mr={2} />Total accounts</StatLabel>
             <Link href='/Admin/Members'>
-              <StatNumber textDecoration='underline'>1,024</StatNumber>
+              <StatNumber textDecoration='underline'>{users.length}</StatNumber>
             </Link>
 
           </Stat>
           <Stat>
             <StatLabel fontSize='3xl'><Icon as={FaNewspaper} mr={2} />Total articles</StatLabel>
             <Link href='/Newsfeed'>
-              <StatNumber textDecoration='underline'>1,024</StatNumber>
+              <StatNumber textDecoration='underline'>{articles.length}</StatNumber>
             </Link>
           </Stat>
           <Stat>
-            <StatLabel fontSize='3xl'><Icon as={FaBell} mr={2} />Days until the end of the academic year</StatLabel>
-            <StatNumber>1,024</StatNumber>
+            <StatLabel fontSize='3xl'><Icon as={FaBell} mr={2} />Days until the end of Academic Year</StatLabel>
+            <StatNumber>{endTime}</StatNumber>
           </Stat>
           <Stat>
             <StatLabel fontSize='3xl'><Icon as={FaCalendarDay} mr={2} />Term end date</StatLabel>
-            <StatNumber>May 4th, 2024</StatNumber>
+            <StatNumber>{format(schoolYears, 'MMMM dd yyyy')}</StatNumber>
           </Stat>
         </VStack>
 
@@ -118,12 +209,12 @@ export function Overview() {
             </Button>
           </Link>
 
-          <Link href='/Admin/SendNotif'>
-            <Button leftIcon={<FaEnvelopeOpenText />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
-              Send notifications
+          <Link href='/Admin/CreateTopic'>
+            <Button leftIcon={<FaAtlas />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
+              Add an Account
             </Button>
           </Link>
-          <Link href='/MyAccount/1'>
+          <Link href='/MyAccount/'>
             <Button leftIcon={<FaUser />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
               My account
             </Button>
