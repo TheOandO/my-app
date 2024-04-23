@@ -39,6 +39,7 @@ export const generateTokens = async (user: any) => {
             email: user.email,
             roles: user.roles,
         };
+        console.log(payload);
 
         const access_token = JwtService.sign(payload, 'access');
         const refresh_token = JwtService.sign(payload, 'refresh');

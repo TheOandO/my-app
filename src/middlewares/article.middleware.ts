@@ -37,7 +37,7 @@ export class ArticleMiddleware {
 
     async checkExpireSchoolYear(req: Request, res: Response, next: NextFunction) {
         const { body } = req;
-        const school_year = body.school_year;
+        const school_year = body.school_year_id;
         const schoolYearInfo = await SchoolYear.findOne({
             _id: school_year
         });

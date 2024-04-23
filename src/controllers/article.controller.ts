@@ -8,6 +8,7 @@ import { article } from '../routes/article.route';
 import multer, { Multer } from 'multer';
 import { sendEmailCreatedArticle, sendEmailUpdateArticle } from '../services/email.service';
 import { User } from '../models/user.model';
+import { Faculty } from '../models/faculty.model';
 
 
 // model article : files: {
@@ -55,12 +56,12 @@ export const create = async (req: Request, res: Response) => {
             _id: student_id
         });
 
-        const facultyInfo = await User.findOne({
+        const facultyInfo = await Faculty.findOne({
             _id: studentInfo?.faculty_id
         });
         const marketingCoordinator = await User.findOne({
             role: roles.marketingCoordinator,
-            faculty_id: facultyInfo?.faculty_id
+            faculty_id: facultyInfo?._id
         });
          const newArticle = await Article.create({
             ...req.body,

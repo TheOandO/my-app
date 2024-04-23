@@ -5,7 +5,7 @@ interface IUser {
     username: string;
     password: string;
     email: string;
-    role: string;
+    roles: Array<string>;
     words: Array<any>;
     name: string;
     faculty_id: Schema.Types.ObjectId;
@@ -38,11 +38,17 @@ const UserSchema = new Schema<IUser>({
         type: String,
         required: true,
     },
-    role: {
-        type: String,
+    // role: {
+    //     type: String,
+    //     required: true,
+    //     enum: Object.values(roles),
+        
+    // },
+    roles: {
+        type: [String],
         required: true,
         enum: Object.values(roles),
-        
+        default: [roles.student],
     },
 }, {
     timestamps: true,
