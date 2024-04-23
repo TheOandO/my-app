@@ -64,8 +64,8 @@ interface User {
   name: string;
   email: string;
   password: string;
-  roles: string[];
-  facultyid: string;
+  roles: string;
+  faculty_id: string;
   username: string;
   createdAt: string
 }
@@ -166,7 +166,6 @@ function MemberTable() {
         }          
         }
       );
-      console.log(response.data)
       setUsers(response.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -178,7 +177,11 @@ function MemberTable() {
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
+        "http://localhost:3001/api/faculty/get-all", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       setFaculties(response.data.data);
     } catch (error) {
@@ -198,7 +201,7 @@ function MemberTable() {
           }          
         }
       );
-      setRoles(response.data);
+      setRoles(response.data.roles);
     } catch (error) {
       console.log("Error fetching Roles");
     }
@@ -263,19 +266,21 @@ function MemberTable() {
       name: '',
       email: '',
       password: '',
-      roles: [],
+      roles: '',
       facultyid: '',
       username: '',
     });
     const fetchUserById = async () => {
       try {
-        const response = await axios.get<User>(`http://localhost:3001/api/user/get-by-id/${userId}`,
+        const response = await axios.get(`http://localhost:3001/api/user/get-by-id/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        console.log(response.data.user)
         setUser(response.data);
+        setFormData(response.data.user);
         setIsOpen(true);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -296,7 +301,7 @@ function MemberTable() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          roles: roles,
+          roles: formData.roles,
           faculty_id: formData.facultyid,
         },
         {
@@ -404,22 +409,22 @@ function MemberTable() {
                       </Select>
                     </FormControl>
 
-                    {/* <FormControl id="role" isRequired>
+                    <FormControl id="roleId" isRequired>
                       <FormLabel>Change Role</FormLabel>
                       <Select
                         id="roleId"
-                        name="roleId"
+                        name="roleid"
                         value={formData.roles}
                         onChange={handleChange}
                       >
                         <option value="">Select Role</option>
                         {roles.map((role) => (
-                          <option key={role._id} value={role._id}>
+                          <option key={role.name} value={role._id}>
                             {role.name}
                           </option>
                         ))}
                       </Select>
-                    </FormControl> */}
+                    </FormControl>
 
                     <FormControl id="Email">
                       <FormLabel>Email</FormLabel>
@@ -589,7 +594,7 @@ function MemberTable() {
                     <Td>{user.email}</Td>
                     <Td>{truncate(user.password)}</Td>
                     <Td>{user.roles}</Td>
-                    <Td>{findFacultyName(user.facultyid)}</Td>
+                    <Td>{findFacultyName(user.faculty_id)}</Td>
                     <Td>{format(user.createdAt, 'MM-dd-yyyy')}</Td>
                     <Td>
                       <MemberModal userId={user._id}/>
