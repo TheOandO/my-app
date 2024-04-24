@@ -17,6 +17,16 @@ export function LoggedinHeader() {
   const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
   const studentId = userData ? userData._id : ''; // Extract ID from user data
   const [href, setHref] = useState('/');
+  const navigate = useNavigate()
+  const handleLogout = async () => {
+      try {
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('user')
+        navigate('/')     
+      } catch (error) {
+        console.log(error)
+      }
+  }
 
   useEffect(() => {
     const currentPath = window.location.pathname.toLowerCase();
@@ -52,15 +62,13 @@ export function LoggedinHeader() {
             Home
           </Link>
           
-          <Link href="/Newsfeed" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+          <Link href="/Newsfeed"  rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
             Newsfeed
           </Link>
 
-          <Link href="/Login" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
-            <Button>
+            <Button onClick={handleLogout} px="3" py="1" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
               Logout              
             </Button>
-          </Link>
 
           {/* Avatar for logged in account */}
           <Link href={`/MyAccount/${studentId}`}>
