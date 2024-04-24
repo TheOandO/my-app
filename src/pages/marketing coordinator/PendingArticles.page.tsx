@@ -6,14 +6,9 @@ import {
   Box,
   Text,
   Flex,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Input,
   Collapse,
   Heading,
-  Textarea,
   StackDivider,
   HStack,
   InputGroup,
@@ -24,20 +19,19 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaComment, FaFile, FaFilePdf, FaFileWord, FaNewspaper } from "react-icons/fa";
+import { FaFile, FaFilePdf, FaFileWord, FaNewspaper } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { LoggedinHeader } from "../admin/AdminHome.page";
-import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
-import { now } from "mongoose";
 import { Schema } from "mongoose";
 
 interface Comment {
+  _id: string
   text: string;
-  user_id: Schema.Types.ObjectId;
-  article_id: Schema.Types.ObjectId;
+  user_id: string;
+  article_id: string
 }
 interface CommentFormData {
   text: string;
@@ -116,22 +110,6 @@ export function MCSidebar() {
             View Pending Articles
           </Button>
         </Link>
-        <Link as={RouterLink} to="/MC/ViewComments">
-          <Button
-              bg={isActive("/MC/ViewComments") ? "whitesmoke" : "transparent"}
-              _hover={
-                isActive("/MC/ViewComments")
-                  ? {}
-                  : { bg: "#fff", color: "#2d4b12" }
-              }
-              leftIcon={<FaComment />}
-              color={isActive("/MC/ViewComments") ? "#2d4b12" : "whitesmoke"}
-              w="300px"
-              variant="outline"
-            >
-              View All Comments
-            </Button>
-          </Link>
 
       </VStack>
       {/* Footer */}
@@ -149,6 +127,30 @@ function ArticleList() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const accessToken = localStorage.getItem('access_token');
+  const toast = useToast();
+  const [comments, setComments] = useState<Comment[]>([]); // Placeholder for comments state
+  const [formData, setFormData] = useState<CommentFormData>({
+    text: "",
+    user_id: "",
+    article_id: "",
+  });
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/comment/get-all", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      console.log("Comments API Response:", response.data);
+      setComments(response.data);
+    } catch (error) {
+      setErrorMessage("Error fetching users");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
 
   const fetchUsers = async () => {
     try {
@@ -200,7 +202,7 @@ function ArticleList() {
   };
 
   useEffect(() => {
-    Promise.all([fetchUsers(), fetchEntries()])
+    Promise.all([fetchUsers(), fetchEntries(), fetchComments()])
       .then(() => fetchArticles())
       .catch(error => {
         console.error("Error fetching users and entries:", error);
@@ -253,35 +255,32 @@ function ArticleList() {
     return entry ? entry.name : 'Unknown Entry';
   };
 
-  const handleExpandClick = (article: Article) => {
-    setExpandedArticleId(
-      expandedArticleId === article._id ? null : article._id
-    );
-  
-    // If expanding the article, set the user_id and article_id in formData
+  const handleExpandClick = async (article: Article) => {
+    setExpandedArticleId(expandedArticleId === article._id ? null : article._id);
+    
+    // If expanding the article, fetch comments for the article
     if (expandedArticleId !== article._id) {
-      setFormData({
-        ...formData,
-        user_id: article.student_id,
-        article_id: article._id,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        user_id: "",
-        article_id: "",
-      });
+      try {
+        const response = await axios.get("http://localhost:3001/api/comment/get-all", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            article_id: article._id,
+          },
+        });
+        console.log("Comments API Response:", response.data);
+        setComments(response.data.data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+        setComments([]);
+      }
     }
-  }; 
+  };
   const [expandedArticleId, setExpandedArticleId] = useState<string | null>(
     null
   );
-  const [comments, setComments] = useState<Comment[]>([]); // Placeholder for comments state
-  const [formData, setFormData] = useState<CommentFormData>({
-    text: "",
-    user_id: "",
-    article_id: "",
-  });
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -291,8 +290,6 @@ function ArticleList() {
       [name]: value,
     }));
   };
-
-  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -309,12 +306,13 @@ function ArticleList() {
         duration: 9000,
         isClosable: true,
       });
-      setFormData({ ...formData, text: "" });      
+      setFormData({ ...formData, text: "" });     
+      window.location.reload()
     } catch (error: any) {
-      console.error("error adding comment", error.res.data);
+      console.error("Error adding comment");
       toast({
         title: "Error adding comment",
-        description: error.res.data,
+        description: "Error adding comment",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -427,7 +425,11 @@ function ArticleList() {
             {expandedArticleId === article._id && (
               <VStack align="stretch" p={5}>
                 <Box>
-                  {/* Add a textarea or input for comments here */}
+                {/* {comments.map((comment) => (
+                  <Box key={comment._id}>
+                    <Text>{comment.text}</Text>
+                  </Box>
+                ))} */}
                   <Input
                     type="text"
                     placeholder="Add your comments"
