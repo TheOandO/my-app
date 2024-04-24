@@ -10,11 +10,11 @@ user.post('/logout', userMiddleware.validateToken, controller.logout);
 user.post('/refresh', controller.refresh);
 user.post('/validate', controller.validate);
 user.get('/get-by-id/:id', userMiddleware.validateToken, controller.getById);
-user.get('/get-all', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.getAll);
-user.delete('/delete/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.deleteUser);
-user.put('/edit/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.editUser);
+user.get('/get-all', userMiddleware.validateToken, controller.getAll);
+user.delete('/delete/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.deleteUser);
+user.put('/edit/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.editUser);
 user.put('/change-password/:id', userMiddleware.validateToken, controller.changePassword);
 
-user.put('/change-role/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.changeRole);
-user.get('get-role/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.getRole);
-user.get('/get-all-role', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.getAllRole);
+user.put('/change-role/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.changeRole);
+user.get('get-role/:id', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.getRole);
+user.get('/get-all-role', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.getAllRole);
