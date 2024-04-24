@@ -48,7 +48,7 @@ interface Article {
   files: Array<string>;
   images: string;
   entry_id: string;
-  user_id: string;
+  student_id: string;
   faculty_id: string;
   school_year_id: string;
   term_condition: boolean;
@@ -303,12 +303,12 @@ function ArticleList() {
         <Box key={article._id}>
           <HStack p={5} spacing={4} align="center" borderBottomWidth="1px">
             <Avatar
-              name={article.user_id}
-              src={`path_to_author_avatar_based_on_${article.user_id}`}
+              name={article.student_id}
+              src={`path_to_author_avatar_based_on_${article.student_id}`}
             />
 
             <VStack align="flex-start" flex={1}>
-              <Text fontSize="xl">{article.user_id}</Text>
+              <Text fontSize="xl">{article.student_id}</Text>
             </VStack>
 
             <VStack align="flex-start" flex={4}>
