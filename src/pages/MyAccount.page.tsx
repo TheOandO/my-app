@@ -11,7 +11,7 @@ interface User{
   email: string,
   password: string,
   faculty_id: string,
-  role: string
+  roles: string
 }
 interface Faculty {
   _id: string;
@@ -26,7 +26,7 @@ function ProfileCard() {
     email: '',
     password: '',
     faculty_id: '',
-    role: ''
+    roles: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => setShowPassword(!showPassword);
@@ -119,7 +119,7 @@ function ProfileCard() {
           </HStack>
           <HStack justifyContent="space-between" w="full" fontSize="xl">
             <Text color="#fff">Role</Text>
-            <Text color="#fff">{user.role}</Text>
+            <Text color="#fff">{user.roles}</Text>
           </HStack>
           <HStack justifyContent="space-between" w="full" fontSize="xl">
             <Text color="#fff">Faculty</Text>
@@ -166,10 +166,6 @@ function ProfileCard() {
               {/* Your form fields for avatar, old password, new password, and confirm new password here */}
               <Stack spacing={4}>
                 <FormControl>
-                  <FormLabel>Upload Avatar</FormLabel>
-                  <Input type="file" accept="image/*" />
-                </FormControl>
-                <FormControl>
                   <FormLabel>Old Password</FormLabel>
                   <Input type="password" />
                 </FormControl>
@@ -201,7 +197,6 @@ function ProfileCard() {
   
 
 function MyAccount() {
-  const { id } = useParams();
 
     return(
         <Box>
