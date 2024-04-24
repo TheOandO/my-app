@@ -111,13 +111,8 @@ export const getById = async (req: Request, res: Response) => {
 
 export const getAll = async (req: Request, res: Response) => {
     try {
-        const token = await getTokenInfo({ req }) as any;
-        if (await token.user.roles.includes(roles.admin || roles.marketingManager)) {
-            const users = await User.find();
-            return res.status(200).json({ error: false, users });
-        } else {
-            return res.status(403).json({ error: true, message: 'Access Denied' });
-        }
+        const users = await User.find();
+        return res.status(200).json({ error: false, users });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
