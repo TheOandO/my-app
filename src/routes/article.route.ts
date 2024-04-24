@@ -27,7 +27,7 @@ article.post('/create', upload.fields([
     { name: 'images', maxCount: 5 },
 ]), userMiddleware.hasRole(roles.student), articleMiddleware.checkPermissionPostArticle, articleMiddleware.checkExpireSchoolYear, controller.create);
 article.get('/get-by-id/:id', controller.findOne);
-article.get('/get-all', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), controller.findAll);
+article.get('/get-all', userMiddleware.validateToken, userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.findAll);
 article.delete('/delete/:id', controller.remove);
 article.put('/edit/:id', upload.fields([
     { name: 'files', maxCount: 5 },
