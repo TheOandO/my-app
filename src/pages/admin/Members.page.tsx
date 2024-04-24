@@ -256,7 +256,7 @@ function MemberTable() {
       name: '',
       email: '',
       password: '',
-      roles: '',
+      role: '',
       facultyid: '',
       username: '',
     });
@@ -287,11 +287,9 @@ function MemberTable() {
       // Form submission logic here
       try {
         await axios.put(`http://localhost:3001/api/user/edit/${userId}`, {
-          name: formData.name,
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          roles: formData.roles,
           faculty_id: formData.facultyid,
         },
         {
@@ -300,6 +298,16 @@ function MemberTable() {
           },
         }
       );
+
+        await axios.put(`http://localhost:3001/api/user/change-role/${userId}`, {
+          roles: formData.role
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+
         toast({
           title: "User created.",
           description: "User edit successfully",
@@ -369,55 +377,6 @@ function MemberTable() {
               <ModalBody>
                 {user && (
                   <VStack as="form" onSubmit={handleEdit} spacing={6}>
-                    <FormControl id="user-name" isRequired>
-                      <FormLabel>Name</FormLabel>
-                      <Input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Name"
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                      />
-                    </FormControl>
-      
-                    <FormControl id="facultyId" isRequired>
-                      <FormLabel>Change Faculty</FormLabel>
-                      <Select
-                        id="facultyId"
-                        name="facultyid"
-                        value={formData.facultyid}
-                        onChange={handleChange}
-                      >
-                        <option value="">Select Faculty</option>
-                        {faculties.map((faculty) => (
-                          <option key={faculty._id} value={faculty._id}>
-                            {faculty.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-
-                    <FormControl id="role">
-                      <FormLabel>Role</FormLabel>
-                      <Select
-                        placeholder="Select role"
-                        id="role"
-                        name="role"
-                        value={formData.roles}
-                        onChange={handleChange}
-                      >
-                        <option value='student'>Student</option>
-                        <option value='marketingManager'>Marketing Manager</option>
-                        <option value='marketingCoordinator'>
-                          Marketing Coordinator
-                        </option>
-                        <option value='admin'>Administrator</option>
-                        <option value='guest'>Guest</option>
-                      </Select>
-                    </FormControl>
-
                     <FormControl id="Email">
                       <FormLabel>Email</FormLabel>
                       <Input
@@ -455,6 +414,41 @@ function MemberTable() {
                         onChange={handleChange}
                       />
                     </FormControl>
+                    <FormControl id="facultyId" isRequired>
+                      <FormLabel>Change Faculty</FormLabel>
+                      <Select
+                        id="facultyId"
+                        name="facultyid"
+                        value={formData.facultyid}
+                        onChange={handleChange}
+                      >
+                        <option value="">Select Faculty</option>
+                        {faculties.map((faculty) => (
+                          <option key={faculty._id} value={faculty._id}>
+                            {faculty.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormControl id="role">
+                      <FormLabel>Role</FormLabel>
+                      <Select
+                        placeholder="Select role"
+                        id="role"
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                      >
+                        <option value='student'>Student</option>
+                        <option value='marketingManager'>Marketing Manager</option>
+                        <option value='marketingCoordinator'>
+                          Marketing Coordinator
+                        </option>
+                        <option value='admin'>Administrator</option>
+                        <option value='guest'>Guest</option>
+                      </Select>
+                    </FormControl>
+
                   </VStack>
                 )}
               </ModalBody>
@@ -485,7 +479,14 @@ function MemberTable() {
   const toggleSortOrder = () => {
     setIsAscending(!isAscending);
   };
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // Function to filter users based on the search query
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <Box flex="1" bgGradient="linear(to-t, #e1f5dd, white)" p={5}>
       {showError && (
@@ -507,7 +508,12 @@ function MemberTable() {
               <InputLeftElement pointerEvents="none">
                 <FaSearch />
               </InputLeftElement>
-              <Input placeholder="Search an account" />
+              <Input
+                placeholder="Search a topic"
+                _placeholder={{ color: "gray.500" }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />            
             </InputGroup>
           </Flex>
 
@@ -569,7 +575,7 @@ function MemberTable() {
               </Thead>
               <Divider my={4} borderColor="#fff" />
               <Tbody>
-                {users?.map((user) => (
+                {filteredUsers.map((user) => (
                   <Tr
                     bg="rgba(137, 188, 93, 0.2)"
                     key={user._id}
