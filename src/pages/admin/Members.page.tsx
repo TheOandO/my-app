@@ -48,6 +48,7 @@ import { Link as RouterLink } from "react-router-dom";
 import axios from "axios";
 import { format } from "date-fns";
 import { EditIcon } from "@chakra-ui/icons";
+import React from "react";
 
 interface User {
   _id: string;
@@ -476,9 +477,39 @@ function MemberTable() {
       return password.substring(0, maxLength) + '...'; // Truncate the password and add ellipses
     }
   };
+  const [sortCriteria, setSortCriteria] = useState('name'); // Initialize sortCriteria state
+
   const toggleSortOrder = () => {
     setIsAscending(!isAscending);
+    sortUsers(users, sortCriteria, !isAscending);
   };
+
+  const sortUsers = (users:any, criteria:any, isAscending:any) => {
+    const sortedUsers = [...users].sort((a, b) => {
+      // Check if the criteria is a valid property of the users object
+      if (!(criteria in a) || !(criteria in b)) {
+        console.error(`Invalid criteria: ${criteria}`);
+        return 0;
+      }
+  
+      if (typeof a[criteria] === 'string') {
+        return isAscending
+          ? a[criteria].localeCompare(b[criteria])
+          : b[criteria].localeCompare(a[criteria]);
+      } else {
+        return isAscending ? a[criteria] - b[criteria] : b[criteria] - a[criteria];
+      }
+    });
+  
+    setUsers(sortedUsers);
+  };
+
+  // Function to handle changes in the sort criteria dropdown
+  const handleSortCriteriaChange = (e:any) => {
+    setSortCriteria(e.target.value);
+    sortUsers(users, e.target.value, isAscending);
+  };
+
   const [searchQuery, setSearchQuery] = useState("");
 
   // Function to filter users based on the search query
@@ -487,6 +518,7 @@ function MemberTable() {
     user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <Box flex="1" bgGradient="linear(to-t, #e1f5dd, white)" p={5}>
       {showError && (
@@ -527,20 +559,19 @@ function MemberTable() {
             overflowY="auto" 
           >
             <Flex gap={4}>
-              <Select placeholder="Role" boxShadow={boxShadowColor} width={40}>
-                <option value="student">Student</option>
-                <option value="MarketingManager">Marketing Manager</option>
-                <option value="MarketingCoordinator">Marketing Coordinator</option>
-                <option value="Admin">Administrator</option>
-                <option value="Guest">Guest</option>
-              </Select>
-              <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+              <Select
+                value={sortCriteria}
+                onChange={handleSortCriteriaChange}
+                placeholder="Sort by"
+                boxShadow={boxShadowColor}
+                width={40}
+              >
                 <option value="name">Name</option>
-                <option value="name">Username</option>
+                <option value="username">Username</option>
                 <option value="id">ID</option>
                 <option value="email">Email</option>
-                <option value="role">Role</option>
-                <option value="faculty">Faculty</option>
+                <option value="roles">Role</option>
+                <option value="faculty_id">Faculty</option>
               </Select>
               <Button
                 rightIcon={
