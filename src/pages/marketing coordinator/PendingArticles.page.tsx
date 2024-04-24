@@ -247,12 +247,12 @@ function ArticleList() {
 
   const findUserName = (userId: string): string => {
     const user = users.find((u) => u._id === userId);
-    return user ? user.username : 'Unknown User';
+    return user ? user.username : 'User';
   };
 
   const findEntryName = (entryId: string): string => {
     const entry = entries.find((e) => e._id === entryId);
-    return entry ? entry.name : 'Unknown Entry';
+    return entry ? entry.name : 'Entry';
   };
 
   const handleExpandClick = async (article: Article) => {

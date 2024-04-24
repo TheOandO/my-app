@@ -136,7 +136,7 @@ function ArticleList() {
   // Function to find faculty name by faculty id
   const findTopicName = (topicId: string): string => {
     const topic = topics.find((t) => t._id === topicId);
-    return topic ? topic.name : 'Unknown Entry';
+    return topic ? topic.name : 'Entry';
   };
 
 const [userRole, setUserRole] = useState('');
