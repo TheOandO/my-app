@@ -24,7 +24,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaFile, FaFilePdf, FaFileWord, FaNewspaper } from "react-icons/fa";
+import { FaComment, FaFile, FaFilePdf, FaFileWord, FaNewspaper } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { LoggedinHeader } from "../admin/AdminHome.page";
@@ -65,6 +65,14 @@ interface User {
   faculty_id: string;
   username: string;
   createdAt: string
+}
+
+interface Entry {
+  _id: string;
+  name: string;
+  dateline1: Date,
+  dateline2: Date,
+  faculty_id: Schema.Types.ObjectId
 }
 
 export function MCSidebar() {
@@ -108,6 +116,23 @@ export function MCSidebar() {
             View Pending Articles
           </Button>
         </Link>
+        <Link as={RouterLink} to="/MC/ViewComments">
+          <Button
+              bg={isActive("/MC/ViewComments") ? "whitesmoke" : "transparent"}
+              _hover={
+                isActive("/MC/ViewComments")
+                  ? {}
+                  : { bg: "#fff", color: "#2d4b12" }
+              }
+              leftIcon={<FaComment />}
+              color={isActive("/MC/ViewComments") ? "#2d4b12" : "whitesmoke"}
+              w="300px"
+              variant="outline"
+            >
+              View All Comments
+            </Button>
+          </Link>
+
       </VStack>
       {/* Footer */}
       <Text position="absolute" bottom={5} left={5} fontSize="sm">
@@ -118,13 +143,44 @@ export function MCSidebar() {
 }
 
 function ArticleList() {
-  type StatusType = "Waiting" | "Rejected" | "Overdue" | "Approved";
   const [pendingArticles, setArticles] = useState<Article[]>([]);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [userRole, setUserRole] = useState("");
+  const [entries, setEntries] = useState<Entry[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const accessToken = localStorage.getItem('access_token');
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/user/get-all", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      console.log("Users API Response:", response.data);
+      setUsers(response.data.users);
+    } catch (error) {
+      setErrorMessage("Error fetching users");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/entry/get-all", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      console.log("Entries API Response:", response.data);
+      setUsers(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching Entries");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
 
   const fetchArticles = async () => {
     try {
@@ -143,14 +199,16 @@ function ArticleList() {
     }
   };
 
-
-
   useEffect(() => {
-    fetchArticles();
+    Promise.all([fetchUsers(), fetchEntries()])
+      .then(() => fetchArticles())
+      .catch(error => {
+        console.error("Error fetching users and entries:", error);
+        setErrorMessage("Error fetching users and entries");
+        setShowError(true);
+        setTimeout(() => setShowError(false), 10000);
+      });
   }, []);
-
-  // const [pendingArticles, setArticles] = useState([
-  //   // {
   //   //   id: 1,
   //   //   title: "No alarms to no surprises",
   //   //   description:
@@ -185,9 +243,17 @@ function ArticleList() {
   //   // },
   // ]);
 
-  // Add a helper function to handle the article expansion
+  const findUserName = (userId: string): string => {
+    const user = users.find((u) => u._id === userId);
+    return user ? user.username : 'Unknown User';
+  };
+
+  const findEntryName = (entryId: string): string => {
+    const entry = entries.find((e) => e._id === entryId);
+    return entry ? entry.name : 'Unknown Entry';
+  };
+
   const handleExpandClick = (article: Article) => {
-    // If the clicked article is already expanded, collapse it, otherwise expand it
     setExpandedArticleId(
       expandedArticleId === article._id ? null : article._id
     );
@@ -200,7 +266,6 @@ function ArticleList() {
         article_id: article._id,
       });
     } else {
-      // If collapsing the article, clear the user_id and article_id from formData
       setFormData({
         ...formData,
         user_id: "",
@@ -226,13 +291,7 @@ function ArticleList() {
       [name]: value,
     }));
   };
-  // function trimText(text: any, limit: any) {
-  //   const words = text.split(" ");
-  //   if (words.length > limit) {
-  //     return words.slice(0, limit).join(" ") + "...";
-  //   }
-  //   return text;
-  // }
+
   const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -292,6 +351,12 @@ function ArticleList() {
       align="stretch"
       overflowY="auto"
     >
+      {showError && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          {errorMessage}
+        </Alert>
+      )}
       <Box bg="#F7FAFC" p={5}>
         <Heading size="lg" color="#2D3748">
           Pending Articles: {pendingArticles.length}
@@ -308,12 +373,12 @@ function ArticleList() {
         <Box key={article._id}>
           <HStack p={5} spacing={4} align="center" borderBottomWidth="1px">
             <Avatar
-              name={article.student_id}
-              src={`path_to_author_avatar_based_on_${article.student_id}`}
+              name={findUserName(article.student_id)}
             />
 
             <VStack align="flex-start" flex={1}>
-              <Text fontSize="xl">{article.student_id}</Text>
+              <Text fontSize="xl">{findUserName(article.student_id)}</Text>
+              <Text fontSize="xl" fontStyle='italic'>{findEntryName(article.entry_id)}</Text>
             </VStack>
 
             <VStack align="flex-start" flex={4}>
