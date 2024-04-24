@@ -21,7 +21,7 @@ import {
   Image,
   Avatar,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaNewspaper } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
@@ -29,14 +29,30 @@ import { LoggedinHeader } from "../admin/AdminHome.page";
 import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
+import { now } from "mongoose";
+import { Schema } from "mongoose";
 
 interface Comment {
   text: string;
+  student_id: Schema.Types.ObjectId;
+  article_id: Schema.Types.ObjectId;
 }
 interface CommentFormData {
   text: string;
+  student_id: string;
+  article_id: string;
 }
-
+interface Article {
+  _id: string;
+  text: string;
+  files: Array<string>;
+  images: string;
+  entry_id: string;
+  student_id: string;
+  faculty_id: string;
+  school_year_id: string;
+  term_condition: boolean;
+}
 export function MCSidebar() {
   const location = useLocation();
 
@@ -89,54 +105,79 @@ export function MCSidebar() {
 
 function ArticleList() {
   type StatusType = "Waiting" | "Rejected" | "Overdue" | "Approved";
+  const [pendingArticles, setArticles] = useState<Article[]>([]);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [userRole, setUserRole] = useState("");
 
-  const [pendingArticles, setArticles] = useState([
-    {
-      id: 1,
-      title: "No alarms to no surprises",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-      status: "Rejected" as StatusType,
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg",
-      authorId: "Mike Hawk",
-      timeSubmitted: new Date("2024-03-25T12:00:00Z"),
-    },
-    {
-      id: 2,
-      title: "There could be hell below, below",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-      status: "Overdue" as StatusType,
-      image:
-        "https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg",
-      authorId: "Mike Hawk",
-      timeSubmitted: new Date("2024-03-26T12:00:00Z"),
-    },
-    {
-      id: 3,
-      title: "Mother Earth is pregnant for the third time",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-      status: "Waiting" as StatusType,
-      image:
-        "https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg",
-      authorId: "Mike Hawk",
-      timeSubmitted: new Date("2024-03-27T12:00:00Z"),
-    },
-  ]);
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/article/get-all"
+      );
+      console.log("Faculty API Response:", response.data);
+      setArticles(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching faculties");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  // const [pendingArticles, setArticles] = useState([
+  //   // {
+  //   //   id: 1,
+  //   //   title: "No alarms to no surprises",
+  //   //   description:
+  //   //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+  //   //   status: "Rejected" as StatusType,
+  //   //   image:
+  //   //     "https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg",
+  //   //   authorId: "Mike Hawk",
+  //   //   timeSubmitted: new Date("2024-03-25T12:00:00Z"),
+  //   // },
+  //   // {
+  //   //   id: 2,
+  //   //   title: "There could be hell below, below",
+  //   //   description:
+  //   //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+  //   //   status: "Overdue" as StatusType,
+  //   //   image:
+  //   //     "https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg",
+  //   //   authorId: "Mike Hawk",
+  //   //   timeSubmitted: new Date("2024-03-26T12:00:00Z"),
+  //   // },
+  //   // {
+  //   //   id: 3,
+  //   //   title: "Mother Earth is pregnant for the third time",
+  //   //   description:
+  //   //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+  //   //   status: "Waiting" as StatusType,
+  //   //   image:
+  //   //     "https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg",
+  //   //   authorId: "Mike Hawk",
+  //   //   timeSubmitted: new Date("2024-03-27T12:00:00Z"),
+  //   // },
+  // ]);
 
   // Add a helper function to handle the article expansion
-  const handleExpandClick = (articleId: number) => {
+  const handleExpandClick = (pendingArticlesID: Article["_id"]) => {
     // If the clicked article is already expanded, collapse it, otherwise expand it
-    setExpandedArticleId(expandedArticleId === articleId ? null : articleId);
+    setExpandedArticleId(
+      expandedArticleId === pendingArticlesID ? null : pendingArticlesID
+    );
   };
-  const [expandedArticleId, setExpandedArticleId] = useState<number | null>(
+  const [expandedArticleId, setExpandedArticleId] = useState<string | null>(
     null
   );
   const [comments, setComments] = useState<Comment[]>([]); // Placeholder for comments state
   const [formData, setFormData] = useState<CommentFormData>({
     text: "",
+    student_id: "",
+    article_id: "",
   });
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -147,21 +188,21 @@ function ArticleList() {
       [name]: value,
     }));
   };
-  function trimText(text: any, limit: any) {
-    const words = text.split(" ");
-    if (words.length > limit) {
-      return words.slice(0, limit).join(" ") + "...";
-    }
-    return text;
-  }
+  // function trimText(text: any, limit: any) {
+  //   const words = text.split(" ");
+  //   if (words.length > limit) {
+  //     return words.slice(0, limit).join(" ") + "...";
+  //   }
+  //   return text;
+  // }
   const toast = useToast();
 
   const handleStatusChange = (
-    id: number,
+    _id: string,
     newStatus: "Approved" | "Rejected" | "Waiting"
   ) => {
     const updatedArticles = pendingArticles.map((article) => {
-      if (article.id === id) {
+      if (article._id === _id) {
         return { ...article, status: newStatus };
       }
       return article;
@@ -194,7 +235,7 @@ function ArticleList() {
     // After submission clear the form
   };
 
-  const StatusButton: React.FC<{ articleId: number; status: StatusType }> = ({
+  const StatusButton: React.FC<{ articleId: string; status: StatusType }> = ({
     articleId,
     status,
   }) => {
@@ -259,49 +300,43 @@ function ArticleList() {
       </Box>
       {/* Map through pending articles */}
       {pendingArticles.map((article) => (
-        <Box key={article.id}>
+        <Box key={article._id}>
           <HStack p={5} spacing={4} align="center" borderBottomWidth="1px">
             <Avatar
-              name={article.authorId}
-              src={`path_to_author_avatar_based_on_${article.authorId}`}
+              name={article.student_id}
+              src={`path_to_author_avatar_based_on_${article.student_id}`}
             />
 
             <VStack align="flex-start" flex={1}>
-              <Text fontSize="xl">{article.authorId}</Text>
-              <Text fontSize="sm" color="gray.400" fontStyle="italic">
-                Submitted{" "}
-                {formatDistanceToNow(new Date(article.timeSubmitted), {
-                  addSuffix: true,
-                })}
-              </Text>
+              <Text fontSize="xl">{article.student_id}</Text>
             </VStack>
 
             <VStack align="flex-start" flex={4}>
-              <Heading fontSize="3xl">{article.title}</Heading>
+              <Heading fontSize="3xl">{article.text}</Heading>
               <Text fontSize="xl" color="gray.500">
-                {expandedArticleId === article.id
-                  ? article.description
-                  : trimText(article.description, 15)}
+                {expandedArticleId === article._id
+                  ? article.files
+                  : article.text}
               </Text>
             </VStack>
 
-            {article.image && (
+            {article.images && (
               <Image
                 borderRadius="md"
                 boxSize="150px"
-                src={article.image}
-                alt={article.title}
+                src={article.images}
+                alt={article.text}
               />
             )}
 
-            <StatusButton articleId={article.id} status={article.status} />
+            <StatusButton articleId={article._id} status="Approved" />
             <Button
               aria-label="Expand article"
-              onClick={() => handleExpandClick(article.id)}
+              onClick={() => handleExpandClick(article._id)}
               variant="ghost"
             >
-              {expandedArticleId === article.id ? "Collapse" : "Expand"}{" "}
-              {expandedArticleId === article.id ? (
+              {expandedArticleId === article._id ? "Collapse" : "Expand"}{" "}
+              {expandedArticleId === article._id ? (
                 <ChevronUpIcon />
               ) : (
                 <ChevronDownIcon />
@@ -310,11 +345,11 @@ function ArticleList() {
           </HStack>
 
           <Collapse
-            in={expandedArticleId === article.id}
+            in={expandedArticleId === article._id}
             animateOpacity
             unmountOnExit
           >
-            {expandedArticleId === article.id && (
+            {expandedArticleId === article._id && (
               <VStack align="stretch" p={5}>
                 <Box>
                   {/* Add a textarea or input for comments here */}
