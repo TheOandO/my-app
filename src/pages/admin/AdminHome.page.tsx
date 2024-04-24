@@ -56,11 +56,11 @@ export function LoggedinHeader() {
             Newsfeed
           </Link>
 
-          <Select placeholder="Language" width="auto" mr="20">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            {/* More languages */}
-          </Select>
+          <Link href="/Login" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+            <Button>
+              Logout              
+            </Button>
+          </Link>
 
           {/* Avatar for logged in account */}
           <Link href={`/MyAccount/${studentId}`}>

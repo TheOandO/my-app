@@ -228,16 +228,7 @@ const AddForm: React.FC = () => {
             <option value={UserRole.Guest}>Guest</option>
           </Select>
         </FormControl>
-        <FormControl>
-          <FormLabel>
-            <Select placeholder="Select Major">
-              <option value="Photography">Photography</option>
-              <option value="CompScience">CompScience</option>
-              <option value="Design">Design</option>
-              <option value="None">None</option>
-            </Select>
-          </FormLabel>
-        </FormControl>
+
         <FormControl id="faculty">
           <FormLabel>Faculty</FormLabel>
           <Select
