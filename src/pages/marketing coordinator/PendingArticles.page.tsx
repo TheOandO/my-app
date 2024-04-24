@@ -24,7 +24,7 @@ import {
   AlertIcon,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaNewspaper } from "react-icons/fa";
+import { FaFile, FaFilePdf, FaFileWord, FaNewspaper } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { LoggedinHeader } from "../admin/AdminHome.page";
@@ -55,6 +55,18 @@ interface Article {
   school_year_id: string;
   term_condition: boolean;
 }
+
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  roles: string;
+  faculty_id: string;
+  username: string;
+  createdAt: string
+}
+
 export function MCSidebar() {
   const location = useLocation();
 
@@ -111,12 +123,17 @@ function ArticleList() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userRole, setUserRole] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const accessToken = localStorage.getItem('access_token');
 
   const fetchArticles = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/article/get-all"
-      );
+        `http://localhost:3001/api/article/get-all`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          } 
+        });
       console.log("Faculty API Response:", response.data);
       setArticles(response.data.data);
     } catch (error) {
@@ -125,6 +142,9 @@ function ArticleList() {
       setTimeout(() => setShowError(false), 10000);
     }
   };
+
+
+
   useEffect(() => {
     fetchArticles();
   }, []);
@@ -166,12 +186,28 @@ function ArticleList() {
   // ]);
 
   // Add a helper function to handle the article expansion
-  const handleExpandClick = (pendingArticlesID: Article["_id"]) => {
+  const handleExpandClick = (article: Article) => {
     // If the clicked article is already expanded, collapse it, otherwise expand it
     setExpandedArticleId(
-      expandedArticleId === pendingArticlesID ? null : pendingArticlesID
+      expandedArticleId === article._id ? null : article._id
     );
-  };
+  
+    // If expanding the article, set the user_id and article_id in formData
+    if (expandedArticleId !== article._id) {
+      setFormData({
+        ...formData,
+        user_id: article.student_id,
+        article_id: article._id,
+      });
+    } else {
+      // If collapsing the article, clear the user_id and article_id from formData
+      setFormData({
+        ...formData,
+        user_id: "",
+        article_id: "",
+      });
+    }
+  }; 
   const [expandedArticleId, setExpandedArticleId] = useState<string | null>(
     null
   );
@@ -199,24 +235,22 @@ function ArticleList() {
   // }
   const toast = useToast();
 
-  const handleStatusChange = (
-    _id: string,
-    newStatus: "Approved" | "Rejected" | "Waiting"
-  ) => {
-    const updatedArticles = pendingArticles.map((article) => {
-      if (article._id === _id) {
-        return { ...article, status: newStatus };
-      }
-      return article;
-    });
-    setArticles(updatedArticles);
-  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:3001/api/comment/create", {
         text: formData.text,
+        user_id: formData.user_id,
+        article_id: formData.article_id
       });
+      toast({
+        title: "Comment created.",
+        description: "We've created your comment for you.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      setFormData({ ...formData, text: "" });      
     } catch (error: any) {
       console.error("error adding comment", error.res.data);
       toast({
@@ -227,57 +261,26 @@ function ArticleList() {
         isClosable: true,
       });
     }
-    toast({
-      title: "Comment created.",
-      description: "We've created your comment for you.",
-      status: "success",
-      duration: 9000,
-      isClosable: true,
-    });
-    // After submission clear the form
+
   };
 
-  const StatusButton: React.FC<{ articleId: string; status: StatusType }> = ({
-    articleId,
-    status,
-  }) => {
-    let color = "gray";
-    if (status === "Approved") color = "#246B1F";
-    if (status === "Rejected") color = "#6B1F1F";
-    if (status === "Waiting") color = "#246B1F";
-    return (
-      <Menu>
-        <MenuButton
-          as={Button}
-          bg={color}
-          color="white"
-          borderRadius="20px"
-          rightIcon={<ChevronDownIcon />}
-        >
-          {status}
-        </MenuButton>
-        <MenuList>
-          <MenuItem
-            onClick={() => handleStatusChange(articleId, "Approved")}
-            color="#426b1f"
-          >
-            Approve
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleStatusChange(articleId, "Rejected")}
-            color="#6B1F1F"
-          >
-            Deny
-          </MenuItem>
-          <MenuItem
-            onClick={() => handleStatusChange(articleId, "Waiting")}
-            color="gray"
-          >
-            Waiting
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    );
+  const stripHtmlTags = (html: string) => {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  const getFileIcon = (fileName:any) => {
+    const fileExtension = fileName.split('.').pop().toLowerCase();
+    switch (fileExtension) {
+      case 'pdf':
+        return <FaFilePdf style={{ fontSize: '4em' }} />;
+      case 'doc':
+      case 'docx':
+        return <FaFileWord style={{ fontSize: '4em' }} />;
+      default:
+        return <FaFile style={{ fontSize: '4em' }} />;
+    }
   };
 
   return (
@@ -314,12 +317,7 @@ function ArticleList() {
             </VStack>
 
             <VStack align="flex-start" flex={4}>
-              <Heading fontSize="3xl">{article.text}</Heading>
-              <Text fontSize="xl" color="gray.500">
-                {expandedArticleId === article._id
-                  ? article.files
-                  : article.text}
-              </Text>
+              <Heading fontSize="3xl">{stripHtmlTags(article.text)}</Heading>
             </VStack>
 
             {article.images && (
@@ -327,14 +325,24 @@ function ArticleList() {
                 borderRadius="md"
                 boxSize="150px"
                 src={article.images}
-                alt={article.text}
+                alt='image'
               />
             )}
 
-            <StatusButton articleId={article._id} status="Approved" />
+            {article.files && Array.isArray(article.files) &&(
+              <Flex alignItems="center">
+                {article.files.map((file, index) => (
+                  <Box key={index} mx={4}>
+                    {getFileIcon(file)} {/* Function to get file icon based on file type */}
+                    <Text>{file}</Text> {/* Display filename */}
+                  </Box>
+                ))}
+              </Flex>
+            )}
+
             <Button
               aria-label="Expand article"
-              onClick={() => handleExpandClick(article._id)}
+              onClick={() => handleExpandClick(article)}
               variant="ghost"
             >
               {expandedArticleId === article._id ? "Collapse" : "Expand"}{" "}
@@ -425,7 +433,7 @@ function PendingArticles() {
     }
     checkTokenValidity()
   }, [])
-  
+
   return (
     <Box>
       {showError && (
