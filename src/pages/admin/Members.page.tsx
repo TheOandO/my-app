@@ -568,10 +568,11 @@ function MemberTable() {
               >
                 <option value="name">Name</option>
                 <option value="username">Username</option>
-                <option value="id">ID</option>
+                <option value="_id">ID</option>
                 <option value="email">Email</option>
                 <option value="roles">Role</option>
                 <option value="faculty_id">Faculty</option>
+                <option value="createdAt">Date</option>
               </Select>
               <Button
                 rightIcon={
@@ -635,7 +636,7 @@ function MemberTable() {
             </Table>
           </Box>
 
-          <Link href="/Admin/Add">
+          {/* <Link href="/Admin/Add">
             <Button
               leftIcon={<FaUserPlus />}
               bg="#2d4b12"
@@ -649,7 +650,7 @@ function MemberTable() {
             >
               Add an account
             </Button>
-          </Link>
+          </Link> */}
         </>
       )}
     </Box>

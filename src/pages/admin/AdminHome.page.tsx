@@ -217,9 +217,9 @@ export function Overview() {
             </Button>
           </Link>
 
-          <Link href='/Admin/Add'>
+          <Link href='/Admin/CreateTopic'>
             <Button leftIcon={<FaAtlas />} bg="#869876" color='#fff' variant="ghost" colorScheme='green' _hover={{ bg: "#fff", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} h={50} w={250} mb={5} borderRadius={12} fontSize='xl'>
-              Add an Account
+              Add a Topic
             </Button>
           </Link>
           <Link href='/MyAccount/'>
