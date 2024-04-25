@@ -70,6 +70,8 @@ export const login = async (req: Request, res: Response) => {
                 email: user.email,
                 roles: user.roles,
                 _id: user._id,
+                faculty_id: user.faculty_id,
+                name: user.name
             },
         });
     } catch (error) {
