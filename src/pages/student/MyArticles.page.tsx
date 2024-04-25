@@ -20,8 +20,9 @@ import {
   ModalOverlay,
   Alert,
   AlertIcon,
+  Textarea,
 } from "@chakra-ui/react";
-import { FaFile, FaFilePdf, FaFileWord, FaNewspaper } from "react-icons/fa";
+import { FaFile, FaFilePdf, FaFileWord, FaNewspaper, FaTrash } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { LoggedinHeader } from "../admin/AdminHome.page";
@@ -104,8 +105,10 @@ function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedComment, setSelectedComment] = useState(null);
   const toast = useToast();
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   const handleClick = (article: any) => {
+    setSelectedArticle(article);
     if (article.comment) {
       setSelectedComment(article.comment); // Assuming comment is always a string
     } else {
@@ -152,6 +155,30 @@ function ArticleList() {
       setErrorMessage("Error fetching entries");
       setShowError(true);
       setTimeout(() => setShowError(false), 10000);
+    }
+  };
+  const handleDelete = async (articleId: string) => {
+    try {
+      await axios.delete(
+        `http://localhost:3001/api/article/delete/${articleId}`
+      );
+      toast({
+        title: "Articcle deleted.",
+        description: "The article has been successfully deleted.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      toast({
+        title: "Error deleting article.",
+        description: "An error occurred while deleting the article.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   };
 
@@ -208,100 +235,6 @@ function ArticleList() {
     fetchEntries();
     fetchArticles();
   }, []);
-  function ArticleModal({ articleId }: { articleId: string }) {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [article, setArticle] = useState<Article | null>(null);
-    const [formData, setFormData] = useState({
-      _id: "",
-      text: "",
-      files: [],
-      images: [],
-      entry_id: "",
-      student_id: "",
-      schoolyear_id: "",
-    });
-    const fetchArticleById = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3001/api/article/get-by-id/${articleId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        console.log(response.data.article);
-        setArticle(response.data);
-        setFormData(response.data.article);
-        setIsOpen(true);
-      } catch (error) {
-        console.error("Error fetching article:", error);
-      }
-    };
-
-    const handleClose = () => {
-      setIsOpen(false);
-      setArticle(null);
-    };
-
-    const handleEdit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      // Form submission logic here
-      try {
-        await axios.put(`http://localhost:3001/api/article/edit/${articleId}`, {
-          text: formData.text,
-          files: formData.files,
-          images: formData.images,
-          entry_id: formData.entry_id,
-          student_id: formData.student_id,
-          schoolyear_id: formData.schoolyear_id,
-        });
-        toast({
-          title: "Article Edited.",
-          description: "We've edited your article for you.",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        window.location.reload();
-      } catch (error: any) {
-        console.error("Error editing article", error.res.data);
-        toast({
-          title: "Error editing article.",
-          description: error.res.data,
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    };
-
-    const handleDelete = async (e: React.FormEvent) => {
-      try {
-        await axios.delete(
-          `http://localhost:3001/api/article/delete/${articleId}`
-        );
-        toast({
-          title: "Articcle deleted.",
-          description: "The article has been successfully deleted.",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
-        setIsOpen(false);
-        window.location.reload();
-      } catch (error) {
-        console.error("Error deleting article:", error);
-        toast({
-          title: "Error deleting article.",
-          description: "An error occurred while deleting the article.",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    };
-  }
 
   const stripHtmlTags = (html: string) => {
     const tmp = document.createElement("div");
@@ -417,38 +350,20 @@ function ArticleList() {
                   View comment
                 </Button>
                 <Button
-                  rightIcon={<EditIcon />}
+                  rightIcon={<FaTrash />}
                   bg="#fff"
                   color="#426b1f"
                   variant="solid"
                   size="xl"
                   p="4"
                   fontSize="lg"
+                  onClick={() => handleDelete(article._id)}
                 >
-                  Edit
+                  Delete
                 </Button>
               </VStack>
             </HStack>
           ))}
-
-          {/* Comment modal */}
-          <Modal
-            isOpen={!!selectedComment}
-            onClose={() => setSelectedComment(null)}
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Comment</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody p={4}>
-                {selectedComment ? (
-                  <Text>{selectedComment}</Text>
-                ) : (
-                  <Text>No comment yet!</Text>
-                )}
-              </ModalBody>
-            </ModalContent>
-          </Modal>
         </>
       )}
     </VStack>

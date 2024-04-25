@@ -216,7 +216,7 @@ const CreateTopic: React.FC = () => {
 
             <FormControl id="facultyId" isRequired>
               <FormLabel>Select Faculty</FormLabel>
-              <select
+              <Select
                 id="facultyId"
                 name="facultyId"
                 value={formData.facultyId}
@@ -228,7 +228,7 @@ const CreateTopic: React.FC = () => {
                     {faculty.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </FormControl>
             <FormControl id="SDate">
               <FormLabel>Start date</FormLabel>
