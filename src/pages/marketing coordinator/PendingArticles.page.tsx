@@ -128,29 +128,12 @@ function ArticleList() {
   const [users, setUsers] = useState<User[]>([]);
   const accessToken = localStorage.getItem('access_token');
   const toast = useToast();
-  const [comments, setComments] = useState<Comment[]>([]); // Placeholder for comments state
+  const [comments, setComments] = useState<Comment[]>([]); 
   const [formData, setFormData] = useState<CommentFormData>({
     text: "",
     user_id: "",
     article_id: "",
   });
-
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get("http://localhost:3001/api/comment/get-all", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      console.log("Comments API Response:", response.data);
-      setComments(response.data);
-    } catch (error) {
-      setErrorMessage("Error fetching users");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
-    }
-  };
-
 
   const fetchUsers = async () => {
     try {
@@ -176,7 +159,7 @@ function ArticleList() {
         },
       })
       console.log("Entries API Response:", response.data);
-      setUsers(response.data.data);
+      setEntries(response.data.data);
     } catch (error) {
       setErrorMessage("Error fetching Entries");
       setShowError(true);
@@ -192,7 +175,7 @@ function ArticleList() {
             Authorization: `Bearer ${accessToken}`
           } 
         });
-      console.log("Faculty API Response:", response.data);
+      console.log("Article API Response:", response.data);
       setArticles(response.data.data);
     } catch (error) {
       setErrorMessage("Error fetching faculties");
@@ -204,7 +187,6 @@ function ArticleList() {
   useEffect(() => {
     fetchUsers()
     fetchEntries()
-    fetchComments()
     fetchArticles()
   }, []);
   //   //   id: 1,
@@ -428,11 +410,14 @@ function ArticleList() {
             {expandedArticleId === article._id && (
               <VStack align="stretch" p={5}>
                 <Box>
-                {/* {comments.map((comment) => (
-                  <Box key={comment._id}>
-                    <Text>{comment.text}</Text>
-                  </Box>
-                ))} */}
+                <Text my='6'>Previous comments:</Text>
+                {comments
+                  .filter(comment => comment.article_id === article._id)
+                  .map((comment) => (
+                    <Box key={comment._id}>
+                      <Text fontSize='xl' fontStyle='italic' color='gray'my='6'>{comment.text}</Text>
+                    </Box>
+                ))}
                   <Input
                     type="text"
                     placeholder="Add your comments"

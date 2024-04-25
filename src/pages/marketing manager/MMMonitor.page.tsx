@@ -367,7 +367,6 @@ function MemberTable() {
                 <Th fontSize="3xl">Name</Th>
                 <Th fontSize="3xl">Email</Th>
                 <Th fontSize="3xl">Role</Th>
-                <Th fontSize="3xl">Major</Th>
                 <Th fontSize="3xl">Faculty</Th>
               </Tr>
             </Thead>
@@ -386,7 +385,6 @@ function MemberTable() {
                   <Td>{member.name}</Td>
                   <Td>{member.email}</Td>
                   <Td>{member.role}</Td>
-                  <Td>{member.major}</Td>
                   <Td>{member.faculty}</Td>
                   <Divider my={4} borderColor="#426B1F" width='100%'/>
                 </Tr>

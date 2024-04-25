@@ -234,7 +234,7 @@ return (
               {article.images && Array.isArray(article.images) && (
                 <>
                   {article.images.map((image, index) => (
-                    <Image key={index} borderRadius="md" boxSize="100px" src={`http://localhost:3001/assets/uploads/${image}`} alt="image" />
+                    <Image key={index} borderRadius="md" boxSize="100px" src={`http://localhost:3001/src/assets/uploads/${image}`} alt="image" />
                   ))}
                 </>
               )}
