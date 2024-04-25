@@ -202,14 +202,10 @@ function ArticleList() {
   };
 
   useEffect(() => {
-    Promise.all([fetchUsers(), fetchEntries(), fetchComments()])
-      .then(() => fetchArticles())
-      .catch(error => {
-        console.error("Error fetching users and entries:", error);
-        setErrorMessage("Error fetching users and entries");
-        setShowError(true);
-        setTimeout(() => setShowError(false), 10000);
-      });
+    fetchUsers()
+    fetchEntries()
+    fetchComments()
+    fetchArticles()
   }, []);
   //   //   id: 1,
   //   //   title: "No alarms to no surprises",
@@ -247,7 +243,7 @@ function ArticleList() {
 
   const findUserName = (userId: string): string => {
     const user = users.find((u) => u._id === userId);
-    return user ? user.username : 'User';
+    return user ? user.username : 'User ';
   };
 
   const findEntryName = (entryId: string): string => {
@@ -269,8 +265,14 @@ function ArticleList() {
             article_id: article._id,
           },
         });
+        setFormData(prevState => ({
+          ...prevState,
+          user_id: article.student_id,
+          article_id: article._id
+        }));
         console.log("Comments API Response:", response.data);
         setComments(response.data.data);
+
       } catch (error) {
         console.error("Error fetching comments:", error);
         setComments([]);
@@ -306,7 +308,8 @@ function ArticleList() {
         duration: 9000,
         isClosable: true,
       });
-      setFormData({ ...formData, text: "" });     
+      setFormData({ ...formData, text: "" });
+          
       window.location.reload()
     } catch (error: any) {
       console.error("Error adding comment");
