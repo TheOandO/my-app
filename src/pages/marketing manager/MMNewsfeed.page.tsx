@@ -58,14 +58,14 @@ interface Article {
   text: string;
   student_id: Schema.Types.ObjectId;
   student_name: string;
-  submitDate: Date | number | string; // or
+  submitDate: Date | number | string;
   description: string;
   images: string;
   avatarURL: string;
   entry_id: Schema.Types.ObjectId;
   // Add any other properties as needed
 }
-// const articles: Article[] = [
+
 //   // Replace with your actual article data (including author name, avatar URL, and submit date)
 //   {
 //     title: "Mother Earth is pregnant for the third time",
@@ -240,14 +240,9 @@ function ArticleList() {
     }
   };
   useEffect(() => {
-    Promise.all([fetchUsers(), fetchEntries()])
-      .then(() => fetchArticles())
-      .catch((error) => {
-        console.error("Error fetching users and entries:", error);
-        setErrorMessage("Error fetching users and entries");
-        setShowError(true);
-        setTimeout(() => setShowError(false), 10000);
-      });
+    fetchUsers()
+    fetchEntries()
+    fetchArticles()
   }, []);
   const handleDownload = async () => {
     try {
@@ -259,13 +254,26 @@ function ArticleList() {
               Authorization: `Bearer ${accessToken}`,
             },
           }
-        );        
+        );
+        
+      } else {
+        toast({
+          title: "No article selected",
+          description: "Please select an article to download.",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
       }
-
     } catch (error) {
-      setErrorMessage("Error downloading articles");
-      setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
+      console.error("Error downloading article:", error);
+      toast({
+        title: "Error",
+        description: "Error downloading article. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -427,7 +435,7 @@ function ArticleList() {
                     <Image
                       objectFit="cover"
                       src={entry.image}
-                      alt={entry.name}
+                      alt='img'
                       mr={2}
                       w="40px"
                       h="40px"

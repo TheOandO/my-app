@@ -47,20 +47,7 @@ export function LoggedinHeader() {
         setHref('/');
         break;
     }
-    const currentPath = window.location.pathname.toLowerCase();
-    if (currentPath.includes('/mm')) {
-      setHref('/mm');
-    } else if (currentPath.includes('/admin')) {
-      setHref('/admin');
-    } else if (currentPath.includes('/mc')) {
-      setHref('/mc');
-    } else if (currentPath.includes('/')) {
-      setHref('/');
-    } else if (currentPath.includes('/student')) {
-      setHref('/student');
-    } else {
-      setHref('/');
-    }
+
   }, []);
 
   return (
