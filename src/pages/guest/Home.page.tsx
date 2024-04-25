@@ -50,9 +50,6 @@ export function Header() {
         <Box display="flex" alignItems="center">
           {/* This container will group the navigation links, language selector, and login button */}
 
-          <Link href="/Newsfeed" px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
-            Newsfeed
-          </Link>
           <Text px="3" py="1" rounded="md" _hover={{ textDecoration: 'revert-layer', bg: 'gray.100' }} mr={20} onClick={scrollToBottom}>
             Contact
           </Text>
@@ -303,7 +300,7 @@ export function DiscussionPage() {
         {/* 'Discussions & Articles' header box */}
         <Flex justifyContent="space-between" p={4} bg="#fff" borderRadius="lg" boxShadow="md" mb="5">
           <Text fontSize="3xl" fontWeight="bold" color="#426B1F" alignSelf="center">Discussions <br/>& Articles</Text>
-          <Link href='/Newsfeed' color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
+          <Link href='/' color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
         </Flex>
         {/* 'View all discussions' header box */}
     

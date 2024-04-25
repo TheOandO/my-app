@@ -62,14 +62,10 @@ export function LoggedinHeader() {
           <Link href={href} px="3" py="1" rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
             Home
           </Link>
-          
-          <Link href="/Newsfeed"  rounded="md" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
-            Newsfeed
-          </Link>
 
-            <Button onClick={handleLogout} px="3" py="1" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
-              Logout              
-            </Button>
+          <Button onClick={handleLogout} px="3" py="1" _hover={{ textDecoration: 'none', bg: 'gray.100' }} mr={20}>
+            Logout              
+          </Button>
 
           {/* Avatar for logged in account */}
           <Link href={`/MyAccount/${userId}`}>
@@ -191,9 +187,7 @@ export function Overview() {
           </Stat>
           <Stat>
             <StatLabel fontSize='3xl'><Icon as={FaNewspaper} mr={2} />Total articles</StatLabel>
-            <Link href='/Newsfeed'>
               <StatNumber textDecoration='underline'>{articles.length}</StatNumber>
-            </Link>
           </Stat>
           <Stat>
             <StatLabel fontSize='3xl'><Icon as={FaBell} mr={2} />Days until the end of Academic Year</StatLabel>
