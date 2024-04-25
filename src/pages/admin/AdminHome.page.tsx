@@ -178,10 +178,17 @@ export function Overview() {
       <SimpleGrid columns={2} spacing={10}>
         {/* Statistics column */}
         <VStack spacing={4} align="stretch">
+<<<<<<< Updated upstream
           <Stat >
             <StatLabel fontSize='3xl'><Icon as={FaUser} mr={2} />Total accounts</StatLabel>
             <Link href='/Admin/Members'>
               <StatNumber textDecoration='underline'>{users.length}</StatNumber>
+=======
+          <Stat>
+            <StatLabel><Icon as={FaUser} mr={2} />Total accounts</StatLabel>
+            <Link href='/Members'>
+              <StatNumber textDecoration='underline'>1</StatNumber>
+>>>>>>> Stashed changes
             </Link>
 
           </Stat>
