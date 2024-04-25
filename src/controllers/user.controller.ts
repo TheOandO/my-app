@@ -21,20 +21,20 @@ export const signup = async (req: Request, res: Response) => {
 
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(body.password, salt);
-        const new_user = await User.create({ ...body, password: hashedPassword, roles: [roles.student]});
+        const new_user = await User.create({ ...body, password: hashedPassword, roles: [roles.student] });
 
         return res.status(201).json({
             error: false, message: 'User created successfully', user: {
                 username: new_user.username,
                 email: new_user.email,
                 // role: new_user.role,
-                  roles: [roles.student],
+                roles: [roles.student],
                 _id: new_user._id,
             }
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 };
 
@@ -76,7 +76,7 @@ export const login = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 };
 
@@ -86,12 +86,12 @@ export const getById = async (req: Request, res: Response) => {
         const token = await getTokenInfo({ req }) as any;
         const { id } = req.params;
         // if (await token.user.roles.includes(roles.admin || roles.marketingManager)) {
-            const user = await User.findById(id);
-            if (!user) {
-                return res.status(404).json({ error: true, message: 'User not found' });
-            } else {
-                return res.status(200).json({ error: false, user });
-            }
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: true, message: 'User not found' });
+        } else {
+            return res.status(200).json({ error: false, user });
+        }
         // } else {
         //     if (token.user._id === id) {
         //         const user = await User.findById(id);
@@ -107,7 +107,7 @@ export const getById = async (req: Request, res: Response) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 };
 
@@ -117,7 +117,7 @@ export const getAll = async (req: Request, res: Response) => {
         return res.status(200).json({ error: false, users });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 }
 
@@ -137,7 +137,7 @@ export const deleteUser = async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 }
 
@@ -186,7 +186,7 @@ export const editUser = async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 }
 
@@ -199,7 +199,7 @@ export const logout = async (req: Request, res: Response) => {
         res.status(200).json({ error: false, message: 'User logged out successfully' });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 };
 
@@ -208,7 +208,7 @@ export const changePassword = async (req: Request, res: Response) => {
         const token = await getTokenInfo({ req }) as any;
         const { id } = req.params;
         const { body } = req;
-        const user = await User.findById(id); 
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ error: true, message: 'User not found' });
         }
@@ -228,9 +228,9 @@ export const changePassword = async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
-    
+
 }
 
 
@@ -262,7 +262,7 @@ export const refresh = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 };
 
@@ -285,17 +285,31 @@ export const validate = async (req: Request, res: Response) => {
 export const changeRole = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { role } = req.body;
-        const user = await User.findByIdAndUpdate (id, { role
+        const { roles } = req.body;
+        if (!Array.isArray(roles)) {
+            return res.status(400).json({ error: true, message: 'Roles should be a string array' });
+        }
+        if (roles.length === 0) {
+            return res.status(400).json({ error: true, message: 'Roles should not be empty' });
+        }
+        if (roles.length > 1) {
+            return res.status(400).json({ error: true, message: 'Only one role is allowed' });
+        }
+
+        const user = await User.findByIdAndUpdate(id, {
+            roles
         }, { new: true });
         if (!user) {
             return res.status(404).json({ error: true, message: 'User not found' });
         } else {
             return res.status(200).json({ error: false, user, message: 'Role updated successfully' });
         }
+
+
+
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 }
 
@@ -304,7 +318,7 @@ export const getRole = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const user
-        = await User.findById(id);
+            = await User.findById(id);
         if (!user) {
             return res.status(404).json({ error: true, message: 'User not found' });
         } else {
@@ -312,7 +326,7 @@ export const getRole = async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 }
 
@@ -328,7 +342,7 @@ export const getAllRole = async (req: Request, res: Response) => {
         return res.status(200).json({ error: false, roles });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: true, message: 'Internal Server Error', info : error });
+        res.status(500).json({ error: true, message: 'Internal Server Error', info: error });
     }
 }
 
