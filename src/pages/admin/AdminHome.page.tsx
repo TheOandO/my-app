@@ -14,8 +14,9 @@ import axios from 'axios';
 import { differenceInDays, format } from 'date-fns';
 export function LoggedinHeader() {
   const userDataString = localStorage.getItem('user');
-  const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
-  const studentId = userData ? userData._id : ''; // Extract ID from user data
+  const userData = userDataString ? JSON.parse(userDataString) : null; 
+  const userId = userData ? userData._id : ''; // Extract ID from user data
+  const role = userData ? userData.role : ''; // Extract role from user data
   const [href, setHref] = useState('/');
   const navigate = useNavigate()
   const handleLogout = async () => {
@@ -29,6 +30,23 @@ export function LoggedinHeader() {
   }
 
   useEffect(() => {
+    switch (role) {
+      case 'admin':
+        setHref('/admin');
+        break;
+      case 'marketingManager':
+        setHref('/mm');
+        break;
+      case 'student':
+        setHref('/student');
+        break;
+      case 'marketingCoordinator':
+        setHref('/mc');
+        break;
+      default:
+        setHref('/');
+        break;
+    }
     const currentPath = window.location.pathname.toLowerCase();
     if (currentPath.includes('/mm')) {
       setHref('/mm');
@@ -71,7 +89,7 @@ export function LoggedinHeader() {
             </Button>
 
           {/* Avatar for logged in account */}
-          <Link href={`/MyAccount/${studentId}`}>
+          <Link href={`/MyAccount/${userId}`}>
             <Avatar name="My Account" src="path-to-admin-avatar.jpg" size="md" />
           </Link>
           
