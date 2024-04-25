@@ -224,7 +224,13 @@ function ArticleList() {
     try {
       const response = await axios.get(
         "http://localhost:3001/api/user/get-all"
-      );
+      ,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      },
+    );
       console.log("Users API Response:", response.data);
       setUsers(response.data.users);
     } catch (error) {
@@ -245,14 +251,17 @@ function ArticleList() {
   }, []);
   const handleDownload = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/download/article/{:_id}/zip",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      if (selectedArticle) {
+        await axios.get(
+          `http://localhost:3001/api/download/article/${selectedArticle._id}/zip`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );        
+      }
+
     } catch (error) {
       setErrorMessage("Error downloading articles");
       setShowError(true);
@@ -287,6 +296,12 @@ function ArticleList() {
   const closeModal = () => {
     setSelectedArticle(null);
   };
+
+  const stripHtmlTags = (html: string) => {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+};
   return (
     <VStack spacing={4} overflowY="auto">
       <Heading fontSize="4xl" color="#426b1f">
@@ -330,7 +345,7 @@ function ArticleList() {
               .slice(0, 5)
               .map((article) => (
                 <div className="dropdown-row" style={{ textAlign: "start" }}>
-                  <a href="#">{article.text}</a>
+                  <a href="#">{stripHtmlTags(article.text)}</a>
                 </div>
               ))}
           </div>
@@ -340,8 +355,6 @@ function ArticleList() {
           <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
             <option value="date">Date</option>
             <option value="name">Name</option>
-            <option value="topic">Topic</option>
-            <option value="major">Major</option>
             <option value="faculty">Faculty</option>
           </Select>
           <Button
@@ -439,7 +452,7 @@ function ArticleList() {
               </VStack>
             </HStack>
             <Heading fontSize="3xl" mt={4}>
-              {article.text}
+              {stripHtmlTags(article.text)}
             </Heading>
             <Text fontSize="md" color="gray.500">
               {article.description}
@@ -449,7 +462,7 @@ function ArticleList() {
               mt={4}
               boxSize="300px"
               src={article.images}
-              alt={article.text}
+              alt={stripHtmlTags(article.text)}
               mx="auto"
               maxW="300px"
               maxH="300px"
