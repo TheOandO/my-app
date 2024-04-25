@@ -1,8 +1,7 @@
-import { Avatar, Box, Button, Flex, HStack, VStack, Text, InputGroup, Input, InputRightElement, FormControl, FormLabel, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter, useDisclosure, useToast } from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, HStack, VStack, Text, InputGroup, Input, InputRightElement, useToast } from "@chakra-ui/react";
 import { LoggedinHeader } from "./admin/AdminHome.page";
-import { EditIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
   
 interface User{
@@ -31,7 +30,6 @@ function ProfileCard() {
   const [showPassword, setShowPassword] = useState(false);
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const userDataString = localStorage.getItem('user');
   const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
@@ -141,55 +139,8 @@ function ProfileCard() {
               </InputRightElement>
             </InputGroup>
           </VStack>
-
-
-          <Button
-            rightIcon={<EditIcon />}
-            bg="#fff"
-            color='#426b1f'
-            variant="solid"
-            size="xl"
-            p="4"
-            fontSize="lg"
-            onClick={onOpen}
-          >
-            Edit
-          </Button>
         </VStack>
-        {/* Edit Profile Modal */}
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Edit Profile</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {/* Your form fields for avatar, old password, new password, and confirm new password here */}
-              <Stack spacing={4}>
-                <FormControl>
-                  <FormLabel>Old Password</FormLabel>
-                  <Input type="password" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>New Password</FormLabel>
-                  <Input type="password" />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>Confirm New Password</FormLabel>
-                  <Input type="password" />
-                </FormControl>
-              </Stack>
-            </ModalBody>
 
-            <ModalFooter>
-              <Button bg='whitesmoke' color='#426b1f' variant="outline" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button bg='#426b1f' color='whitesmoke' variant="ghost" colorScheme="green" _hover={{ bg: "whitesmoke", color: '#2d4b12' }} _focus={{ boxShadow: "none" }} transition="background-color 0.2s, box-shadow 0.2s">
-                Update
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
       </Box>
     </VStack>
   );
