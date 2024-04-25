@@ -424,7 +424,6 @@ function ArticleList() {
                   size="xl"
                   p="4"
                   fontSize="lg"
-                  onClick={}
                 >
                   Edit
                 </Button>
