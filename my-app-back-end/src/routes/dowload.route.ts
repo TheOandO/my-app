@@ -1,0 +1,16 @@
+import { Router } from 'express';
+import * as controller from '../controllers/dowload.controller';
+import { UserMiddleware } from '../middlewares';
+import { roles } from '../utils';
+import multer, { Multer } from 'multer';
+import path from 'path';
+import { ArticleMiddleware } from '../middlewares/article.middleware';
+import { DowloadZipMiddleware } from '../middlewares/dowload.middleware';
+export const dowload = Router();
+const dowloadZipMiddleware = new DowloadZipMiddleware();
+const userMiddleware = new UserMiddleware();
+dowload.get('/entry/:id/zip', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), dowloadZipMiddleware.checkExpireEntry,  controller.dowloadContributionsZipByEntryId);
+dowload.get('/student/:id/zip', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), dowloadZipMiddleware.checkStudentExist,  controller.dowloadContributionsZipByStudentId);
+dowload.get('/school-year/:id/zip', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), dowloadZipMiddleware.checkSchoolYearExist,  controller.dowloadContributionsZipBySchoolYearId);
+dowload.get('/article/:id/zip',userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]),  controller.dowloadContributionsZipByArticleId);
+dowload.get('/save/:fileName', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager, roles.marketingCoordinator]), controller.saveFile);

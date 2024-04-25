@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import * as controller from '../controllers/comment.controller';
+import { UserMiddleware } from '../middlewares';
+import { roles } from '../utils';
+export const comment = Router();
+// const userMiddleware = new UserMiddleware();
+comment.post('/create', controller.createComment);
+comment.get('/get-by-id/:id', controller.findOne);
+comment.get('/get-all', controller.findAll);
+comment.delete('/delete/:id', controller.remove);
+comment.put('/edit/:id', controller.update);
