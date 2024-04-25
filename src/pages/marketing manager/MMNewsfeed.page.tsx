@@ -29,130 +29,237 @@ import meat from "../../assets/contains-meat.png";
 import vegetable from "../../assets/vegetable.png";
 import family from "../../assets/family.png";
 import woman from "../../assets/women.png";
-import { formatDistanceToNow } from "date-fns";
 import { FaSearch, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 import { Footer } from "../guest/Home.page";
+import { Schema } from "mongoose";
+import axios from "axios";
+import { useToast } from "@chakra-ui/react";
+import { useEffect } from "react";
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  roles: string;
+  faculty_id: string;
+  username: string;
+  createdAt: string;
+}
+interface Entry {
+  _id: string;
+  name: string;
+  dateline1: Date;
+  dateline2: Date;
+  faculty_id: Schema.Types.ObjectId;
+  image: string;
+}
 interface Article {
-  title: string;
-  author: string;
+  _id: string;
+  text: string;
+  student_id: Schema.Types.ObjectId;
+  student_name: string;
   submitDate: Date | number | string; // or
   description: string;
-  image: string;
+  images: string;
   avatarURL: string;
-  topicId: number;
+  entry_id: Schema.Types.ObjectId;
   // Add any other properties as needed
 }
-const articles: Article[] = [
-  // Replace with your actual article data (including author name, avatar URL, and submit date)
-  {
-    title: "Mother Earth is pregnant for the third time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    image:
-      "https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg",
-    author: "Nicky Nicknack",
-    topicId: 2,
-    avatarURL: "https://via.placeholder.com/50", // Replace with placeholder or actual avatar URL
-    submitDate: new Date("2024-03-25T12:00:00Z"),
-  },
-  {
-    title: "Sectoral heterochromia",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    image: "https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg",
-    author: "Mandy Chow",
-    topicId: 1,
-    avatarURL: "", // Replace with placeholder or actual avatar URL
-    submitDate: new Date("2024-03-25T12:00:00Z"),
-  },
-  {
-    title: `Cause I'm as free as a bird now`,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    image: "https://i.scdn.co/image/ab67616d0000b273128450651c9f0442780d8eb8",
-    author: "Kaling Bling",
-    topicId: 4,
-    avatarURL: "", // Replace with placeholder or actual avatar URL
-    submitDate: new Date("2024-03-25T12:00:00Z"),
-  },
-  {
-    title: "There could be hell below, below",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    image:
-      "https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg",
-    author: "Mandy Chow",
-    topicId: 3,
-    avatarURL: "", // Replace with placeholder or actual avatar URL
-    submitDate: new Date("2024-03-25T12:00:00Z"),
-  },
-  {
-    title: "No alarms to no surprises",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    image:
-      "https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg",
-    author: "Nicky Nicknack",
-    topicId: 2,
-    avatarURL: "", // Replace with placeholder or actual avatar URL
-    submitDate: new Date("2024-03-25T12:00:00Z"),
-  },
-  {
-    title: "Sectoral heterochromia",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    image: "https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg",
-    author: "Kaling Bling",
-    topicId: 1,
-    avatarURL: "", // Replace with placeholder or actual avatar URL
-    submitDate: new Date("2024-03-25T12:00:00Z"),
-  },
-  // ... more articles
-];
+// const articles: Article[] = [
+//   // Replace with your actual article data (including author name, avatar URL, and submit date)
+//   {
+//     title: "Mother Earth is pregnant for the third time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     image:
+//       "https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg",
+//     author: "Nicky Nicknack",
+//     topicId: 2,
+//     avatarURL: "https://via.placeholder.com/50", // Replace with placeholder or actual avatar URL
+//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//   },
+//   {
+//     title: "Sectoral heterochromia",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     image: "https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg",
+//     author: "Mandy Chow",
+//     topicId: 1,
+//     avatarURL: "", // Replace with placeholder or actual avatar URL
+//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//   },
+//   {
+//     title: `Cause I'm as free as a bird now`,
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     image: "https://i.scdn.co/image/ab67616d0000b273128450651c9f0442780d8eb8",
+//     author: "Kaling Bling",
+//     topicId: 4,
+//     avatarURL: "", // Replace with placeholder or actual avatar URL
+//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//   },
+//   {
+//     title: "There could be hell below, below",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     image:
+//       "https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg",
+//     author: "Mandy Chow",
+//     topicId: 3,
+//     avatarURL: "", // Replace with placeholder or actual avatar URL
+//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//   },
+//   {
+//     title: "No alarms to no surprises",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     image:
+//       "https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg",
+//     author: "Nicky Nicknack",
+//     topicId: 2,
+//     avatarURL: "", // Replace with placeholder or actual avatar URL
+//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//   },
+//   {
+//     title: "Sectoral heterochromia",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     image: "https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg",
+//     author: "Kaling Bling",
+//     topicId: 1,
+//     avatarURL: "", // Replace with placeholder or actual avatar URL
+//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//   },
+//   // ... more articles
+// ];
 
-const topics = [
-  {
-    id: 1,
-    title: "Take pics of your meat",
-    image: meat,
-    timeLeft: "2 days remaining",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    status: "In progress",
-  },
-  {
-    id: 2,
-    title: "Vegetable day !?!",
-    image: vegetable,
-    timeLeft: "4 days ago",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    status: "Expired",
-  },
-  {
-    id: 3,
-    title: "Where’s your family ?",
-    image: family,
-    timeLeft: "In 1 week",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    status: "Upcoming",
-  },
-  {
-    id: 4,
-    title: "Mother’s day bonanza",
-    image: woman,
-    timeLeft: "In 1 month",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-    status: "Upcoming",
-  },
-];
+// const topics = [
+//   {
+//     id: 1,
+//     title: "Take pics of your meat",
+//     image: meat,
+//     timeLeft: "2 days remaining",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     status: "In progress",
+//   },
+//   {
+//     id: 2,
+//     title: "Vegetable day !?!",
+//     image: vegetable,
+//     timeLeft: "4 days ago",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     status: "Expired",
+//   },
+//   {
+//     id: 3,
+//     title: "Where’s your family ?",
+//     image: family,
+//     timeLeft: "In 1 week",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     status: "Upcoming",
+//   },
+//   {
+//     id: 4,
+//     title: "Mother’s day bonanza",
+//     image: woman,
+//     timeLeft: "In 1 month",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
+//     status: "Upcoming",
+//   },
+// ];
 
-function ArticleList({ articles }: { articles: Article[] }) {
+function ArticleList() {
   const [articlesToShow, setArticlesToShow] = useState(4);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [value, setValue] = useState("");
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const accessToken = localStorage.getItem("access_token");
+  const toast = useToast();
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/api/article/get-all`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log("Faculty API Response:", response.data);
+      setArticles(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching faculties");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/entry/get-all",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log("Entries API Response:", response.data);
+      setUsers(response.data.data);
+    } catch (error) {
+      setErrorMessage("Error fetching Entries");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/user/get-all"
+      );
+      console.log("Users API Response:", response.data);
+      setUsers(response.data.users);
+    } catch (error) {
+      setErrorMessage("Error fetching users");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+  useEffect(() => {
+    Promise.all([fetchUsers(), fetchEntries()])
+      .then(() => fetchArticles())
+      .catch((error) => {
+        console.error("Error fetching users and entries:", error);
+        setErrorMessage("Error fetching users and entries");
+        setShowError(true);
+        setTimeout(() => setShowError(false), 10000);
+      });
+  }, []);
+  const handleDownload = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/download/article/{:_id}/zip",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      setErrorMessage("Error downloading articles");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+    }
+  };
+
   const handleLoadMore = () => {
     setArticlesToShow(articlesToShow + 4); // Increase the number of articles to show
   };
@@ -172,14 +279,6 @@ function ArticleList({ articles }: { articles: Article[] }) {
   const toggleSortOrder = () => {
     setIsAscending(!isAscending);
   };
-
-  function trimText(text: any, limit: any) {
-    const words = text.split(" ");
-    if (words.length > limit) {
-      return words.slice(0, limit).join(" ") + "...";
-    }
-    return text;
-  }
 
   const openModal = (article: Article) => {
     setSelectedArticle(article);
@@ -223,7 +322,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
                 if (value === "") {
                   return "";
                 } else if (
-                  article.title.toLowerCase().includes(value.toLowerCase())
+                  article.text.toLowerCase().includes(value.toLowerCase())
                 ) {
                   return article;
                 }
@@ -231,7 +330,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
               .slice(0, 5)
               .map((article) => (
                 <div className="dropdown-row" style={{ textAlign: "start" }}>
-                  <a href="#">{article.title}</a>
+                  <a href="#">{article.text}</a>
                 </div>
               ))}
           </div>
@@ -282,7 +381,7 @@ function ArticleList({ articles }: { articles: Article[] }) {
       >
         {articles.slice(0, articlesToShow).map((article) => (
           <Box
-            key={article.title}
+            key={article._id}
             bg="#F7FAFC"
             p={5}
             boxShadow={boxShadowColor}
@@ -293,41 +392,36 @@ function ArticleList({ articles }: { articles: Article[] }) {
             mb={10}
           >
             <HStack spacing={4}>
-              <Avatar src={article.avatarURL} name={article.author} />
+              <Avatar src={article.avatarURL} name={article.student_name} />
               <VStack>
                 <Text fontSize="lg" fontWeight="bold">
-                  {article.author}
+                  {article.student_name}
                 </Text>
                 <Text fontSize="sm" color="gray.400" fontStyle="italic">
                   Submitted{" "}
-                  {formatDistanceToNow(new Date(article.submitDate), {
-                    addSuffix: true,
-                  })}
                 </Text>
               </VStack>
               <Spacer /> {/* Add spacer to push topic to the right */}
               <VStack>
-                {topics.map(
-                  (topics) =>
-                    topics.id === article.topicId && (
-                      <Tag
-                        variant="solid"
-                        colorScheme={getRandomColorScheme()}
-                        borderRadius="full"
-                        minW={60}
-                      >
-                        <Image
-                          objectFit="cover"
-                          src={topics.image}
-                          alt={topics.title}
-                          mr={2}
-                          w="40px"
-                          h="40px"
-                        />
-                        {topics.title}
-                      </Tag>
-                    )
-                )}
+                {entries.map((entry) => (
+                  <Tag
+                    key={entry._id}
+                    variant="solid"
+                    colorScheme={getRandomColorScheme()}
+                    borderRadius="full"
+                    minW={60}
+                  >
+                    <Image
+                      objectFit="cover"
+                      src={entry.image}
+                      alt={entry.name}
+                      mr={2}
+                      w="40px"
+                      h="40px"
+                    />
+                    {entry.name}
+                  </Tag>
+                ))}
                 <Button
                   bg="#426b1f"
                   color="whitesmoke"
@@ -345,17 +439,17 @@ function ArticleList({ articles }: { articles: Article[] }) {
               </VStack>
             </HStack>
             <Heading fontSize="3xl" mt={4}>
-              {article.title}
+              {article.text}
             </Heading>
             <Text fontSize="md" color="gray.500">
-              {trimText(article.description, 15)}
+              {article.description}
             </Text>
             <Image
               display="flex"
               mt={4}
               boxSize="300px"
-              src={article.image}
-              alt={article.title}
+              src={article.images}
+              alt={article.text}
               mx="auto"
               maxW="300px"
               maxH="300px"
@@ -379,11 +473,11 @@ function ArticleList({ articles }: { articles: Article[] }) {
                   <Avatar
                     size="xl"
                     src={selectedArticle?.avatarURL}
-                    name={selectedArticle?.author}
+                    name={selectedArticle?.student_name}
                   />
                   <VStack alignItems="flex-start">
                     <Text fontSize="xl" fontWeight="bold">
-                      {selectedArticle?.author}
+                      {selectedArticle?.student_name}
                     </Text>
                     <Text fontSize="lg" color="gray.400" fontStyle="italic">
                       {selectedArticle?.submitDate
@@ -392,30 +486,28 @@ function ArticleList({ articles }: { articles: Article[] }) {
                     </Text>
                   </VStack>
                   <Spacer /> {/* Add spacer to push topic to the right */}
-                  {topics.map(
-                    (topics) =>
-                      topics.id === selectedArticle?.topicId && (
-                        <Tag
-                          variant="solid"
-                          colorScheme={getRandomColorScheme()}
-                          borderRadius="full"
-                          minW={54}
-                        >
-                          <Image
-                            objectFit="cover"
-                            src={topics.image}
-                            alt={topics.title}
-                            mr={2}
-                            w="45px"
-                            h="45px"
-                          />
-                          {topics.title}
-                        </Tag>
-                      )
-                  )}
+                  {entries.map((entry) => (
+                    <Tag
+                      key={entry._id}
+                      variant="solid"
+                      colorScheme={getRandomColorScheme()}
+                      borderRadius="full"
+                      minW={54}
+                    >
+                      <Image
+                        objectFit="cover"
+                        src={entry.image}
+                        alt={entry.name}
+                        mr={2}
+                        w="45px"
+                        h="45px"
+                      />
+                      {entry.name}
+                    </Tag>
+                  ))}
                 </HStack>
                 <Heading fontSize="4xl" fontStyle="bold" mb={6}>
-                  {selectedArticle?.title}
+                  {selectedArticle?.text}
                 </Heading>
                 <Text fontSize="xl" color="gray.500">
                   {selectedArticle?.description}
@@ -434,6 +526,8 @@ function ArticleList({ articles }: { articles: Article[] }) {
                   minH={14}
                   mt={10}
                   alignItems="center"
+                  value={selectedArticle?._id}
+                  onClick={handleDownload}
                 >
                   Download
                 </Button>
@@ -449,8 +543,8 @@ function ArticleList({ articles }: { articles: Article[] }) {
                 display="flex"
                 mt={4}
                 boxSize="400px"
-                src={selectedArticle?.image}
-                alt={selectedArticle?.title}
+                src={selectedArticle?.images}
+                alt={selectedArticle?.text}
                 mx="auto"
                 maxW="500px"
                 maxH="500px"
@@ -485,7 +579,7 @@ function MMNewsfeed() {
   return (
     <Box>
       <LoggedinHeader />
-      <ArticleList articles={articles} />
+      <ArticleList />
       <Footer />
     </Box>
   );
