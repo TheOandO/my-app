@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import * as controller from '../controllers/anaysis.controller';
+import { UserMiddleware } from '../middlewares';
+import { roles } from '../utils';
+import multer, { Multer } from 'multer';
+import path from 'path';
+import { ArticleMiddleware } from '../middlewares/article.middleware';
+import { DowloadZipMiddleware } from '../middlewares/dowload.middleware';
+import { AnalysisMiddleware } from '../middlewares/analysis.middleware';
+export const analysis = Router();
+const analysisMiddleware = new AnalysisMiddleware();
+const userMiddleware = new UserMiddleware();
+analysis.get('/school-year/:id/contribute', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), analysisMiddleware.checkAnalysisBySchoolYear,  controller.analysisContributeBySchoolYear);
+analysis.get('/faculty/:id/rate', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), analysisMiddleware.checkAnalysisBySchoolYear,  controller.analysisContributeByRate);
+analysis.get('/student/:id/number', userMiddleware.hasAnyRole([roles.admin, roles.marketingManager]), analysisMiddleware.checkAnalysisBySchoolYear,  controller.numberStudentContributeInFaculty);
