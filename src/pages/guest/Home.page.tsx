@@ -78,9 +78,9 @@ export function Quote() {
         <Text fontSize="2xl" mb={4}>
           Push <em>harder</em> than yesterday<br /> if you want a <em>different</em> tomorrow.
         </Text>
-        <Link href='/Newsfeed'>
+        <Link href='/About'>
           <Button bg="#426B1F" color="#FFF" variant="solid" size="lg" _hover={{ bg: "#e0e0e0", color: "#426B1F" }}>
-            Browse Newsfeed
+            Join Us !
           </Button>
         </Link>
 

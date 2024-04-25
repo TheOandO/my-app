@@ -16,7 +16,7 @@ export function LoggedinHeader() {
   const userDataString = localStorage.getItem('user');
   const userData = userDataString ? JSON.parse(userDataString) : null; 
   const userId = userData ? userData._id : ''; // Extract ID from user data
-  const role = userData ? userData.role : ''; // Extract role from user data
+  const role = userData ? userData.roles : ''; // Extract role from user data
   const [href, setHref] = useState('/');
   const navigate = useNavigate()
   const handleLogout = async () => {
@@ -30,24 +30,20 @@ export function LoggedinHeader() {
   }
 
   useEffect(() => {
-    switch (role) {
-      case 'admin':
-        setHref('/admin');
-        break;
-      case 'marketingManager':
-        setHref('/mm');
-        break;
-      case 'student':
-        setHref('/student');
-        break;
-      case 'marketingCoordinator':
-        setHref('/mc');
-        break;
-      default:
-        setHref('/');
-        break;
+    const currentPath = window.location.pathname.toLowerCase();
+    if (currentPath.includes('/mm')) {
+      setHref('/mm');
+    } else if (currentPath.includes('/admin')) {
+      setHref('/admin');
+    } else if (currentPath.includes('/mc')) {
+      setHref('/mc');
+    } else if (currentPath.includes('/')) {
+      setHref('/');
+    } else if (currentPath.includes('/student')) {
+      setHref('/student');
+    } else {
+      setHref('/');
     }
-
   }, []);
 
   return (
