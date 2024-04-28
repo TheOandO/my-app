@@ -25,10 +25,6 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { LoggedinHeader } from "../admin/AdminHome.page";
-import meat from "../../assets/contains-meat.png";
-import vegetable from "../../assets/vegetable.png";
-import family from "../../assets/family.png";
-import woman from "../../assets/women.png";
 import { FaSearch, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 import { Footer } from "../guest/Home.page";
 import { Schema } from "mongoose";
@@ -56,14 +52,11 @@ interface Entry {
 interface Article {
   _id: string;
   text: string;
-  student_id: Schema.Types.ObjectId;
-  student_name: string;
-  submitDate: Date | number | string;
-  description: string;
+  student_id: string;
+  createdAt: string;
   images: string;
   avatarURL: string;
   entry_id: Schema.Types.ObjectId;
-  // Add any other properties as needed
 }
 
 //   // Replace with your actual article data (including author name, avatar URL, and submit date)
@@ -76,7 +69,7 @@ interface Article {
 //     author: "Nicky Nicknack",
 //     topicId: 2,
 //     avatarURL: "https://via.placeholder.com/50", // Replace with placeholder or actual avatar URL
-//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//     createdAt: new Date("2024-03-25T12:00:00Z"),
 //   },
 //   {
 //     title: "Sectoral heterochromia",
@@ -86,7 +79,7 @@ interface Article {
 //     author: "Mandy Chow",
 //     topicId: 1,
 //     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//     createdAt: new Date("2024-03-25T12:00:00Z"),
 //   },
 //   {
 //     title: `Cause I'm as free as a bird now`,
@@ -96,7 +89,7 @@ interface Article {
 //     author: "Kaling Bling",
 //     topicId: 4,
 //     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//     createdAt: new Date("2024-03-25T12:00:00Z"),
 //   },
 //   {
 //     title: "There could be hell below, below",
@@ -107,7 +100,7 @@ interface Article {
 //     author: "Mandy Chow",
 //     topicId: 3,
 //     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//     createdAt: new Date("2024-03-25T12:00:00Z"),
 //   },
 //   {
 //     title: "No alarms to no surprises",
@@ -118,7 +111,7 @@ interface Article {
 //     author: "Nicky Nicknack",
 //     topicId: 2,
 //     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//     createdAt: new Date("2024-03-25T12:00:00Z"),
 //   },
 //   {
 //     title: "Sectoral heterochromia",
@@ -128,7 +121,7 @@ interface Article {
 //     author: "Kaling Bling",
 //     topicId: 1,
 //     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     submitDate: new Date("2024-03-25T12:00:00Z"),
+//     createdAt: new Date("2024-03-25T12:00:00Z"),
 //   },
 //   // ... more articles
 // ];
@@ -305,11 +298,15 @@ function ArticleList() {
     setSelectedArticle(null);
   };
 
+  const findUserName = (userId: string): string => {
+    const user = users.find((u) => u._id === userId);
+    return user ? user.username : 'User';
+  };
   const stripHtmlTags = (html: string) => {
     const tmp = document.createElement("div");
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
-};
+  };
   return (
     <VStack spacing={4} overflowY="auto">
       <Heading fontSize="4xl" color="#426b1f">
@@ -413,13 +410,13 @@ function ArticleList() {
             mb={10}
           >
             <HStack spacing={4}>
-              <Avatar src={article.avatarURL} name={article.student_name} />
-              <VStack>
+              <Avatar src={article.avatarURL} name={findUserName(article.student_id)} />
+              <VStack  alignItems="flex-start">
                 <Text fontSize="lg" fontWeight="bold">
-                  {article.student_name}
+                  {findUserName(article.student_id)}
                 </Text>
                 <Text fontSize="sm" color="gray.400" fontStyle="italic">
-                  Submitted{" "}
+                  Submitted {article.createdAt}
                 </Text>
               </VStack>
               <Spacer /> {/* Add spacer to push topic to the right */}
@@ -432,15 +429,7 @@ function ArticleList() {
                     borderRadius="full"
                     minW={60}
                   >
-                    <Image
-                      objectFit="cover"
-                      src={entry.image}
-                      alt='img'
-                      mr={2}
-                      w="40px"
-                      h="40px"
-                    />
-                    {entry.name}
+                    {entry._id}
                   </Tag>
                 ))}
                 <Button
@@ -462,9 +451,6 @@ function ArticleList() {
             <Heading fontSize="3xl" mt={4}>
               {stripHtmlTags(article.text)}
             </Heading>
-            <Text fontSize="md" color="gray.500">
-              {article.description}
-            </Text>
             <Image
               display="flex"
               mt={4}
@@ -493,16 +479,15 @@ function ArticleList() {
                 <HStack spacing={10} mb={6}>
                   <Avatar
                     size="xl"
-                    src={selectedArticle?.avatarURL}
-                    name={selectedArticle?.student_name}
+                    src={selectedArticle?.student_id}
                   />
                   <VStack alignItems="flex-start">
                     <Text fontSize="xl" fontWeight="bold">
-                      {selectedArticle?.student_name}
+                      {findUserName(selectedArticle?.student_id ?? 'Searching Username...')}
                     </Text>
                     <Text fontSize="lg" color="gray.400" fontStyle="italic">
-                      {selectedArticle?.submitDate
-                        ? selectedArticle.submitDate.toLocaleString()
+                      {selectedArticle?.createdAt
+                        ? selectedArticle.createdAt.toLocaleString()
                         : "No submit date"}
                     </Text>
                   </VStack>
@@ -530,9 +515,6 @@ function ArticleList() {
                 <Heading fontSize="4xl" fontStyle="bold" mb={6}>
                   {selectedArticle?.text}
                 </Heading>
-                <Text fontSize="xl" color="gray.500">
-                  {selectedArticle?.description}
-                </Text>
                 <Button
                   fontSize="2xl"
                   bg="#426b1f"
