@@ -32,6 +32,7 @@ import {
   useToast,
   Alert,
   AlertIcon,
+  MenuItemOption,
 } from "@chakra-ui/react";
 import {
   FaUserPlus,
@@ -411,17 +412,6 @@ function MemberTable() {
                       />
                     </FormControl>
 
-                    <FormControl id="Password">
-                      <FormLabel>Password</FormLabel>
-                      <Input
-                        type="text"
-                        id="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                      />
-                    </FormControl>
                     <FormControl id="facultyId" isRequired>
                       <FormLabel>Change Faculty</FormLabel>
                       <Select
@@ -440,8 +430,7 @@ function MemberTable() {
                     </FormControl>
                     <FormControl id="role">
                       <FormLabel>Role</FormLabel>
-                      <Select
-                        placeholder="Select role"
+                      <select
                         id="role"
                         name="role"
                         value={formData.role}
@@ -455,7 +444,7 @@ function MemberTable() {
                         </option>
                         <option value='admin'>Administrator</option>
                         <option value='guest'>Guest</option>
-                      </Select>
+                      </select>
                     </FormControl>
 
                   </VStack>
