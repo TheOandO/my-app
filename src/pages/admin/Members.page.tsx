@@ -139,7 +139,6 @@ export function AdminSidebar() {
 
 function MemberTable() {
   const [users, setUsers] = useState<User[]>([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isAscending, setIsAscending] = useState(true);
   const boxShadowColor = useColorModeValue(
     "0px 2px 12px rgba(130,148,116,0.8)",
@@ -204,7 +203,6 @@ function MemberTable() {
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {
-        // Make a request to the /validate endpoint to check token validity
         await axios.post("http://localhost:3001/api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
@@ -218,7 +216,6 @@ function MemberTable() {
   
       } catch (error) {
         console.error("Error validating token:", error);
-        // If token is invalid or expired, attempt to refresh it
         try {
           const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
             user: localStorage.getItem('user'),
@@ -318,10 +315,10 @@ function MemberTable() {
         });
         window.location.reload();
       } catch (error: any) {
-        console.error("Error editing user", error.res.data);
+        console.error("Error editing user", error.data);
         toast({
           title: "Error editing user",
-          description: error.res.data,
+          description: "Something went wrong :<",
           status: "error",
           duration: 9000,
           isClosable: true,
@@ -359,11 +356,21 @@ function MemberTable() {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value } = e.target;
-      setFormData(prevForm => ({
-        ...prevForm,
-        [name]: value,
-      }));
+      const { name, value, type } = e.target;
+    
+      if (type === 'select-multiple') {
+        const selectElement = e.target as HTMLSelectElement;
+        const selectedValues = Array.from(selectElement.selectedOptions).map(option => option.value);
+        setFormData(prevForm => ({
+          ...prevForm,
+          [name]: selectedValues,
+        }));
+      } else {
+        setFormData(prevForm => ({
+          ...prevForm,
+          [name]: value,
+        }));
+      }
     };
   
     return (
@@ -439,6 +446,7 @@ function MemberTable() {
                         name="role"
                         value={formData.role}
                         onChange={handleChange}
+                        multiple
                       >
                         <option value='student'>Student</option>
                         <option value='marketingManager'>Marketing Manager</option>
