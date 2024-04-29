@@ -56,7 +56,7 @@ interface Article {
   createdAt: string;
   images: string;
   avatarURL: string;
-  entry_id: Schema.Types.ObjectId;
+  entry_id: string;
 }
 
 //   // Replace with your actual article data (including author name, avatar URL, and submit date)
@@ -302,6 +302,12 @@ function ArticleList() {
     const user = users.find((u) => u._id === userId);
     return user ? user.username : 'User';
   };
+
+  const findEntryName = (entryId: string): string => {
+    const entry = entries.find((e) => e._id === entryId);
+    return entry ? entry.name : 'Entry';
+  };
+
   const stripHtmlTags = (html: string) => {
     const tmp = document.createElement("div");
     tmp.innerHTML = html;
@@ -421,17 +427,16 @@ function ArticleList() {
               </VStack>
               <Spacer /> {/* Add spacer to push topic to the right */}
               <VStack>
-                {entries.map((entry) => (
                   <Tag
-                    key={entry._id}
+                    key={article.entry_id}
                     variant="solid"
                     colorScheme={getRandomColorScheme()}
                     borderRadius="full"
                     minW={60}
+                    minH={10}
                   >
-                    {entry._id}
+                    {findEntryName(article.entry_id)}
                   </Tag>
-                ))}
                 <Button
                   bg="#426b1f"
                   color="whitesmoke"
