@@ -79,9 +79,7 @@ function Login() {
     <LoginPageContainer>
       <LoginImageContainer />
       <LoginFormContainer>
-        <a href="/">
           <Logo src={logo} alt="Logo" />
-        </a>
 
         <form onSubmit={handleLogin}>
           {showError && (
@@ -110,24 +108,6 @@ function Login() {
 
           <SubmitButton type="submit">Sign in</SubmitButton>
 
-          <Divider>Or sign in with</Divider>
-
-          <SocialIconsContainer>
-            <SocialIconsLink
-              href="https://www.facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <SocialIcons src="../FB.png" alt="Facebook" />
-            </SocialIconsLink>
-            <SocialIconsLink
-              href="https://www.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <SocialIcons src="../mail.png" alt="Google" />
-            </SocialIconsLink>
-          </SocialIconsContainer>
         </form>
         <SignUpText>Don't have an account?</SignUpText>
         <SignUpLink href="/register">Sign up</SignUpLink>

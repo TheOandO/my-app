@@ -12,7 +12,7 @@ import {
   SignUpLink,
   SignUpText,
 } from "../../components/Login.styles";
-import { Alert, AlertIcon } from "@chakra-ui/react";
+import { Alert, AlertIcon, Select } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -89,6 +89,24 @@ const Register: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+        // Ensure password matches constraints
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+    if (!passwordRegex.test(formData.password)) {
+      setErrorMessage("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number.");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 5000);
+      return;
+    }
+    
+        // Ensure confirm password matches password
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      setShowError(true);
+      setTimeout(() => setShowError(false), 5000);
+      return;
+    }
+
     try {
       await axios.post("http://localhost:3001/api/user/signup", {
         name: formData.name,
@@ -106,7 +124,7 @@ const Register: React.FC = () => {
       // Handle errors, such as displaying an error message to the user
       setErrorMessage("Error Registering");
       setShowError(true);
-      setTimeout(() => setShowError(false), 5000); // Hide error notification after 5 seconds
+      setTimeout(() => setShowError(false), 5000);
     }
   };
 
@@ -176,11 +194,12 @@ const Register: React.FC = () => {
             onChange={handleChange}
           />
           <Label htmlFor="facultyId">Faculty</Label>
-          <select
+          <Select
             id="facultyId"
             name="facultyId"
             value={formData.facultyId}
             onChange={handleChange}
+            variant='filled'
           >
             <option value="">Select Faculty</option>
             {faculties.map((faculty) => (
@@ -188,7 +207,7 @@ const Register: React.FC = () => {
                 {faculty.name}
               </option>
             ))}
-          </select>
+          </Select>
           <SubmitButton type="submit">Register</SubmitButton>
         </form>
         <SignUpText>Have an account?</SignUpText>
