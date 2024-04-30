@@ -497,17 +497,20 @@ function ArticleList() {
                     </Text>
                   </VStack>
                   <Spacer /> {/* Add spacer to push topic to the right */}
-                  {entries.map((entry) => (
+  
                     <Tag
-                      key={entry._id}
+                      key={selectedArticle?.entry_id}
                       variant="solid"
                       colorScheme={getRandomColorScheme()}
                       borderRadius="full"
-                      minW={54}
+                      minW={40}
+                      maxW={50}
+                      minH={10}
+                      maxH={16}
                     >
-                      {findEntryName(entry.name)}
+                      {findEntryName(selectedArticle?.entry_id ?? 'Searching Entry...')}
                     </Tag>
-                  ))}
+
                 </HStack>
                 <Heading fontSize="4xl" fontStyle="bold" mb={6}>
                   {selectedArticle?.text}
