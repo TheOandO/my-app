@@ -36,7 +36,7 @@ import axios from "axios";
 
 interface Article {
   text: string;
-  files: string[];
+  files: (string | File)[];
   images: string[];
   entryid: string;
   studentid: string;
@@ -94,12 +94,10 @@ function CreateArticle() {
       reader.onload = function (upload) {
         if (upload && upload.target && typeof upload.target.result === "string") {
           setImageSrc(upload.target.result);
-          // Generate a unique name for the image
-          const imageName = `${Date.now()}_${file.name}`;
-          // Save the generated filename to the form state
+          // Set the image file directly
           setForm(prevForm => ({
             ...prevForm,
-            images: [imageName], // Save the filename in an array
+            images: [file], // Save the file directly
           }));
         }
       };
@@ -109,6 +107,10 @@ function CreateArticle() {
 
   const handleRemoveImage = () => {
     setImageSrc("");
+    setForm(prevForm => ({
+      ...prevForm,
+      images: [], // Clear the image array
+    }));
   };
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -117,12 +119,9 @@ function CreateArticle() {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      // Generate a unique name for the file
-      const fileName = `${Date.now()}_${file.name}`;
-      // Save the generated filename to the form state
       setForm(prevForm => ({
         ...prevForm,
-        files: [fileName], // Save the filename in an array
+        files: [file], // Save the file directly
       }));
     }
   };

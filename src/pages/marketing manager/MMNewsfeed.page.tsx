@@ -244,6 +244,7 @@ function ArticleList() {
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json'
             },
           }
         );
@@ -460,7 +461,7 @@ function ArticleList() {
               display="flex"
               mt={4}
               boxSize="300px"
-              src={article.images}
+              src={`http://localhost:3001/image/${article.images}`}
               alt={stripHtmlTags(article.text)}
               mx="auto"
               maxW="300px"

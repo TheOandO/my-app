@@ -92,7 +92,7 @@ function ProfileCard() {
               {user.name}
             </Text>
             <Text fontSize="md" color="#fff">
-              Student of {findFacultyName(user.faculty_id)}
+              Member of {findFacultyName(user.faculty_id)}
             </Text>
           </VStack>
         </HStack>

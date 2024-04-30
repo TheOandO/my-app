@@ -307,19 +307,7 @@ function ArticleList() {
               align="center"
               borderBottomWidth="1px"
             >
-              {article.images && Array.isArray(article.images) && (
-                <>
-                  {article.images.map((image, index) => (
-                    <Image
-                      key={index}
-                      borderRadius="md"
-                      boxSize="100px"
-                      src={`http://localhost:3001/src/assets/uploads/${image}`}
-                      alt="image"
-                    />
-                  ))}
-                </>
-              )}
+              <Image borderRadius="md" boxSize="100px" src={`http://localhost:3001/image/${article.images}`} alt="image"/>
               <Box flex={1}>
                 <Text fontSize="2xl">{stripHtmlTags(article.text)}</Text>
                 <Text fontSize="md">
@@ -335,8 +323,7 @@ function ArticleList() {
                   {article.files.map((file, index) => (
                     <Box key={index} mx={4}>
                       {getFileIcon(file)}{" "}
-                      {/* Function to get file icon based on file type */}
-                      <Text>{file}</Text> {/* Display filename */}
+                      <Text>{file}</Text>
                     </Box>
                   ))}
                 </Flex>
