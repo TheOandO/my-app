@@ -4,7 +4,6 @@ import {
   Image,
   Link,
   Button,
-  Select,
   Text,
   Spacer,
   Center,
@@ -30,8 +29,6 @@ import ceo1 from "../../assets/ceo1.png"
 import ceo2 from "../../assets/ceo2.jpg"
 import ceo3 from "../../assets/ceo3.jpg"
 import logo from '../../assets/logo.png'
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Schema } from 'mongoose';
 
 export function Header() {
@@ -54,11 +51,6 @@ export function Header() {
             Contact
           </Text>
 
-          <Select placeholder="Language" width="auto" mr="20">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            {/* More languages */}
-          </Select>
           <Link href="/login">
             <Button bg="#426B1F" color="#FFF" variant="solid" size="lg" mr="4" _hover={{ bg: "#e0e0e0", color: "#426B1F" }}>Login</Button>
           </Link>

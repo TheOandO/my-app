@@ -1,11 +1,11 @@
 import {
   Avatar,
-  Box, Button, Divider, Flex, Heading, Icon, Link, Select, SimpleGrid, Spacer, Stat, StatLabel, StatNumber, VStack, Image, IconButton, Tooltip,
+  Box, Button, Divider, Flex, Heading, Icon, Link, SimpleGrid, Spacer, Stat, StatLabel, StatNumber, VStack, Image, IconButton, Tooltip,
   Alert,
   AlertIcon,
 } from '@chakra-ui/react';
 import { Footer, Quote, DiscussionPage } from '../guest/Home.page' 
-import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaEnvelopeOpenText, FaAnchor, FaAtlas } from 'react-icons/fa';
+import { FaUser, FaNewspaper, FaBell, FaCalendarDay, FaCog, FaAnchor, FaAtlas } from 'react-icons/fa';
 import { AddIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png'
