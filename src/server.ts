@@ -27,31 +27,8 @@ export class InitServer {
 
         // Setup middlewares
         this.server.use(cors());
-        this.server.use(helmet());
-        this.server.use(morgan('tiny'));
-        this.server.use(cookieParser());
-        this.server.use(express.json());
-        this.server.use(express.urlencoded({ extended: false }));
-
-        //setup assets folder for static files
-        this.server.use(express.static('assets'));
-        this.server.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-        //setup urlencoded for form data
-        this.server.use(express.urlencoded({ extended: true }));
-        
-        this.server.use(express.json());
-       
-        this.server.use(bodyParser.json()); //đọc body repuest gửi lên theo cấu trúc json
-        this.server.use(bodyParser.urlencoded({ extended: true })); // khi gửi extended = true thg gặp lỗi về ký tự
-
-       
-
-
-        // Setup routes
-        this.server.use('/', routes);
-
-        this.server.use(function (req, res, next) {
+        this.server.use((req, res, next) => {
+            res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             res.header(
@@ -59,7 +36,34 @@ export class InitServer {
               "Origin, X-Requested-With, Content-Type, Accept"
             );
             next();
-          });
+        });
+        // this.server.use(helmet());
+        this.server.use(morgan('tiny'));
+        this.server.use(cookieParser());
+        this.server.use(express.json());
+        //setup urlencoded for form data
+        this.server.use(express.urlencoded({ extended: true }));
+
+
+        this.server.use(bodyParser.json()); //đọc body repuest gửi lên theo cấu trúc json
+        this.server.use(bodyParser.urlencoded({ extended: true })); // khi gửi extended = true thg gặp lỗi về ký tự
+
+        //setup assets folder for static files
+        this.server.use(express.static('assets'));
+        this.server.use('/assets', express.static(path.join(__dirname, './assets')));
+
+        // Setup routes
+        this.server.use('/', routes);
+
+        // this.server.use(function (req, res, next) {
+        //     res.header("Access-Control-Allow-Origin", "*");
+        //     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        //     res.header(
+        //       "Access-Control-Allow-Headers",
+        //       "Origin, X-Requested-With, Content-Type, Accept"
+        //     );
+        //     next();
+        //   });
 
         // Create 404 error if requested route is not defined
         this.server.use((req: Request, res: Response, next: NextFunction) => {
