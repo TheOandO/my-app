@@ -47,7 +47,6 @@ interface Entry {
   dateline1: Date;
   dateline2: Date;
   faculty_id: string;
-  image: string;
 }
 interface Article {
   _id: string;
@@ -55,7 +54,7 @@ interface Article {
   student_id: string;
   createdAt: string;
   images: string;
-  avatarURL: string;
+  files: Array<string>;
   entry_id: string;
 }
 
@@ -417,7 +416,7 @@ function ArticleList() {
             mb={10}
           >
             <HStack spacing={4}>
-              <Avatar src={article.avatarURL} name={findUserName(article.student_id)} />
+              <Avatar src={findUserName(article.student_id)} name={findUserName(article.student_id)} />
               <VStack  alignItems="flex-start">
                 <Text fontSize="lg" fontWeight="bold">
                   {findUserName(article.student_id)}
@@ -496,7 +495,7 @@ function ArticleList() {
                         : "No submit date"}
                     </Text>
                   </VStack>
-                  <Spacer /> {/* Add spacer to push topic to the right */}
+                  <Spacer /> 
   
                     <Tag
                       key={selectedArticle?.entry_id}
@@ -542,6 +541,18 @@ function ArticleList() {
                 borderWidth={2}
                 mx={6}
               />
+                <VStack alignItems="flex-start">
+                  <Heading fontSize="xl">Files:</Heading>
+                  <VStack spacing={2} alignItems="flex-start">
+                    {selectedArticle?.files &&
+                      selectedArticle.files.map((file, index) => (
+                        <Box key={index}>
+                          <Text>{file}</Text>
+                          {/* Add download functionality here */}
+                        </Box>
+                      ))}
+                  </VStack>
+                </VStack>
               <Image
                 display="flex"
                 mt={4}

@@ -254,7 +254,6 @@ function MemberTable() {
       _id: '',
       name: '',
       email: '',
-      password: '',
       role: '',
       facultyid: '',
       username: '',
@@ -288,7 +287,6 @@ function MemberTable() {
         await axios.put(`http://localhost:3001/api/user/edit/${userId}`, {
           username: formData.username,
           email: formData.email,
-          password: formData.password,
           faculty_id: formData.facultyid,
         },
         {
@@ -466,15 +464,8 @@ function MemberTable() {
     );
   }  
 
-  const truncate = (password:any) => {
-    const maxLength = 5; // Maximum length of the displayed password
-    if (password.length <= maxLength) {
-      return password; // Return the full password if it's shorter than maxLength
-    } else {
-      return password.substring(0, maxLength) + '...'; // Truncate the password and add ellipses
-    }
-  };
-  const [sortCriteria, setSortCriteria] = useState('name'); // Initialize sortCriteria state
+
+  const [sortCriteria, setSortCriteria] = useState('name');
 
   const toggleSortOrder = () => {
     setIsAscending(!isAscending);
@@ -595,7 +586,6 @@ function MemberTable() {
                   <Th fontSize="3xl">Name</Th>
                   <Th fontSize="3xl">Username</Th>
                   <Th fontSize="3xl">Email</Th>
-                  <Th fontSize="3xl">Password</Th>
                   <Th fontSize="3xl">Role</Th>
                   <Th fontSize="3xl">Faculty</Th>
                   <Th fontSize="3xl">Created At</Th>
@@ -619,7 +609,6 @@ function MemberTable() {
                     <Td>{user.name}</Td>
                     <Td>{user.username}</Td>
                     <Td>{user.email}</Td>
-                    <Td>{truncate(user.password)}</Td>
                     <Td>{user.roles}</Td>
                     <Td>{findFacultyName(user.faculty_id)}</Td>
                     <Td>{format(user.createdAt, 'MM-dd-yyyy')}</Td>
