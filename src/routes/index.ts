@@ -16,7 +16,7 @@ const routes = Router();
 
 // Home route
 routes.get('/', (req: Request, res: Response) => {
-    res.send('Welcome to the API project!');
+  res.send('Welcome to the API project!');
 });
 
 // API routes
@@ -30,16 +30,23 @@ routes.use('/api/dowload', dowload);
 routes.use('/api/analysis', analysis);
 // api get image
 routes.get('/image/:image', (req: Request, res: Response) => {
-    const imagePath = path.join(__dirname, `../assets/uploads/${req.params.image}`);
-    // Kiểm tra xem tệp ảnh có tồn tại hay không
-    if (fs.existsSync(imagePath)) {
+  const imagePath = path.join(__dirname, `../assets/uploads/${req.params.image}`);
+  // Kiểm tra xem tệp ảnh có tồn tại hay không
+  if (fs.existsSync(imagePath)) {
+    //check file is image
+    const ext = path.extname(imagePath);
+    if (ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif' || ext === '.bmp' || ext === '.webp' || ext === '.svg' || ext === '.ico' || ext === '.tiff') {
       // Thiết lập header và gửi tệp cho client
-      res.setHeader("Content-Type", "image/jpeg");
+      res.setHeader("Content-Type", `image/${ext.slice(1)}`);
       res.sendFile(imagePath);
-    } else {
-      // Nếu tệp không tồn tại, trả về lỗi 404
+    }
+    else {
       res.status(404).send("Image not found");
     }
+  } else {
+    // Nếu tệp không tồn tại, trả về lỗi 404
+    res.status(404).send("Image not found");
+  }
 });
 
 // With Middleware
