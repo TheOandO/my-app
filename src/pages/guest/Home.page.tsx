@@ -41,11 +41,10 @@ export function Header() {
         <Image src={logo} alt="Website logo" boxSize="70px" ml="4" />
       </Box>
 
-      <Spacer /> {/* This pushes all elements to the right and left sides of the header */}
+      <Spacer />
 
       <Flex alignItems="center" ml="auto">
         <Box display="flex" alignItems="center">
-          {/* This container will group the navigation links, language selector, and login button */}
 
           <Text px="3" py="1" rounded="md" _hover={{ textDecoration: 'revert-layer', bg: 'gray.100' }} mr={20} onClick={scrollToBottom}>
             Contact
@@ -107,28 +106,28 @@ const discussions = [
     title: 'Photo correlations',
     author: 'Maria Omaga',
     timeAgo: '3 hours ago',
-    avatarUrl: 'path_to_maria_avatar_image' // replace with actual avatar URL
+    avatarUrl: 'path_to_maria_avatar_image'
   },
   {
     id: 'd2',
     title: 'Lightroom',
     author: 'Nicky Nicknack',
     timeAgo: '10 hours ago',
-    avatarUrl: 'path_to_nicky_avatar_image' // replace with actual avatar URL
+    avatarUrl: 'path_to_nicky_avatar_image'
   },
   {
     id: 'd3',
     title: 'Took this myself! !?!?',
     author: 'Black Woman',
     timeAgo: '2 days ago',
-    avatarUrl: 'path_to_black_woman_avatar_image' // replace with actual avatar URL
+    avatarUrl: 'path_to_black_woman_avatar_image'
   },
   {
     id: 'd4',
     title: 'Saturation Enhancer',
     author: 'Shala Kaddidi DuDuhu',
     timeAgo: '5 days ago',
-    avatarUrl: 'path_to_shala_avatar_image' // replace with actual avatar URL
+    avatarUrl: 'path_to_shala_avatar_image'
   }
 ];
 
@@ -137,8 +136,8 @@ const latestArticle = {
   title: 'Photo correlations',
   author: 'Maria Omaga',
   timeAgo: '3 hours ago',
-  avatarUrl: 'path_to_maria_avatar_image', // replace with actual avatar URL
-  imageUrl: post1 // replace with actual image URL of the forest
+  avatarUrl: 'path_to_maria_avatar_image',
+  imageUrl: post1
 };
 
 interface Article {
@@ -349,7 +348,7 @@ const teamMembers = [
   {
     name: 'Marcus Thompson',
     title: 'Dean of Student Affairs',
-    image: ceo1, // Replace with your image paths
+    image: ceo1,
   },
   {
     name: 'DaQuan Rodriguez',
@@ -361,7 +360,6 @@ const teamMembers = [
     title: 'Assistant Professor of Environmental Science',
     image: ceo2,
   },
-  // Add more team members as needed
 ];
 
 function TeamSection() {
@@ -378,13 +376,13 @@ function TeamSection() {
             key={member.name}
             spacing={4}
             p={5}
-            borderRadius="lg" // Adjust the borderRadius to match the desired style
+            borderRadius="lg"
             boxShadow="lg"
             _hover={{
               transform: 'translateY(-5px)',
-              boxShadow: 'xl' // You can adjust this value for a more dramatic effect
+              boxShadow: 'xl'
             }}
-            transition="transform 0.2s, box-shadow 0.2s" // Shadow to lift the cards off the page
+            transition="transform 0.2s, box-shadow 0.2s"
           >
             <Image
               src={member.image}
@@ -392,7 +390,7 @@ function TeamSection() {
               borderRadius="30"
               boxSize="250px"
               objectFit="cover"
-              mb={4} // Margin bottom for spacing between image and text box
+              mb={4}
             />
             <Box p={3} borderRadius="md" boxShadow="sm" textAlign="center">
               <Text fontWeight="bold" fontSize="lg" color="#fff">{member.name}</Text>
@@ -422,7 +420,6 @@ export function Footer() {
 
           </VStack>
 
-          {/* Center block with icons */}
           <VStack gap={3.5}>
             <Text fontSize="5xl" fontWeight="bold" mb={2}>Website</Text>
             <HStack spacing={4}>
@@ -444,7 +441,6 @@ export function Footer() {
             </Text>
           </VStack>
 
-          {/* Right text block */}
           <VStack alignItems="flex-start" spacing={2}>
             <Divider borderColor="whiteAlpha.800" />
             <Link href='/About'>

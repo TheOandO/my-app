@@ -46,7 +46,7 @@ interface Entry {
   name: string;
   dateline1: Date;
   dateline2: Date;
-  faculty_id: Schema.Types.ObjectId;
+  faculty_id: string;
   image: string;
 }
 interface Article {
@@ -206,7 +206,7 @@ function ArticleList() {
         }
       );
       console.log("Entries API Response:", response.data);
-      setUsers(response.data.data);
+      setEntries(response.data.data);
     } catch (error) {
       setErrorMessage("Error fetching Entries");
       setShowError(true);
@@ -300,7 +300,7 @@ function ArticleList() {
 
   const findUserName = (userId: string): string => {
     const user = users.find((u) => u._id === userId);
-    return user ? user.username : 'User';
+    return user ? user.name : 'User';
   };
 
   const findEntryName = (entryId: string): string => {
@@ -313,6 +313,7 @@ function ArticleList() {
     tmp.innerHTML = html;
     return tmp.textContent || tmp.innerText || "";
   };
+
   return (
     <VStack spacing={4} overflowY="auto">
       <Heading fontSize="4xl" color="#426b1f">
@@ -425,7 +426,7 @@ function ArticleList() {
                   Submitted {article.createdAt}
                 </Text>
               </VStack>
-              <Spacer /> {/* Add spacer to push topic to the right */}
+              <Spacer />
               <VStack>
                   <Tag
                     key={article.entry_id}
@@ -469,7 +470,6 @@ function ArticleList() {
           </Box>
         ))}
 
-        {/* Modal for displaying article */}
         <Modal
           isOpen={selectedArticle !== null}
           onClose={closeModal}
@@ -505,15 +505,7 @@ function ArticleList() {
                       borderRadius="full"
                       minW={54}
                     >
-                      <Image
-                        objectFit="cover"
-                        src={entry.image}
-                        alt={entry.name}
-                        mr={2}
-                        w="45px"
-                        h="45px"
-                      />
-                      {entry.name}
+                      {findEntryName(entry.name)}
                     </Tag>
                   ))}
                 </HStack>
