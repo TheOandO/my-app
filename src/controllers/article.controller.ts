@@ -68,12 +68,12 @@ export const create = async (req: Request, res: Response) => {
             files: await files.map((file) => file.filename),
             images: await images.map((image) => image.filename),
         });
-        const data = {
-            name: studentInfo!.name,
-            email: marketingCoordinator!.email,
-            // url : `http://localhost:3000/article/${newArticle._id}`
-        }
-        await sendEmailCreatedArticle(data);
+        // const data = {
+        //     name: studentInfo!.name,
+        //     email: marketingCoordinator!.email,
+        //     // url : `http://localhost:3000/article/${newArticle._id}`
+        // }
+        // await sendEmailCreatedArticle(data);
 
         return res.status(200).json({
             error: false, message: 'Article created', data: newArticle

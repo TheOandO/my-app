@@ -7,6 +7,8 @@ import { entry } from './entry.route';
 import { comment } from './comment.route';
 import { dowload } from './dowload.route';
 import { analysis } from './analysis.route';
+import path from 'path';
+import fs from 'fs';
 // import { UserMiddleware } from '../middlewares';
 
 const routes = Router();
@@ -26,6 +28,19 @@ routes.use('/api/entry', entry);
 routes.use('/api/comment', comment);
 routes.use('/api/dowload', dowload);
 routes.use('/api/analysis', analysis);
+// api get image
+routes.get('/image/:image', (req: Request, res: Response) => {
+    const imagePath = path.join(__dirname, `../assets/uploads/${req.params.image}`);
+    // Kiểm tra xem tệp ảnh có tồn tại hay không
+    if (fs.existsSync(imagePath)) {
+      // Thiết lập header và gửi tệp cho client
+      res.setHeader("Content-Type", "image/jpeg");
+      res.sendFile(imagePath);
+    } else {
+      // Nếu tệp không tồn tại, trả về lỗi 404
+      res.status(404).send("Image not found");
+    }
+});
 
 // With Middleware
 // routes.use('/api/user', userMiddleware.validateToken, userMiddleware.hasAnyRole(['user', 'admin']), user);
