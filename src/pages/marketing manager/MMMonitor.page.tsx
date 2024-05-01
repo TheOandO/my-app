@@ -360,18 +360,23 @@ function MemberTable() {
     selectedArticles: Article[];
     handleClick: (comment: string | undefined) => void;
   }> = ({ selectedUser, selectedArticles, handleClick }) => {
-  const coordinatorFaculty = selectedUser.faculty_id;
-  const filteredArticlesByFaculty = selectedArticles.filter(article => {
-    const user = users.find(user => user._id === article.student_id);
-    return user && user.faculty_id === coordinatorFaculty;
-  });
-  if (!selectedMember) {
-    return null;
-  }
-  return (
-    <>
-      <Heading fontSize="2xl" m='4'>Pending Articles: ({selectedArticles.length})</Heading>
-        {selectedArticles.map(article => (
+    console.log("Selected User:", selectedUser);
+    console.log("All Selected Articles:", selectedArticles);
+  
+    const coordinatorFaculty = selectedUser.faculty_id;
+    console.log("Coordinator Faculty ID:", coordinatorFaculty);
+  
+    // Filter articles based on the coordinator's faculty_id
+    const filteredArticlesByFaculty = selectedArticles.filter(article => {
+      const user = users.find(user => user._id === article.student_id);
+      return user && user.faculty_id === coordinatorFaculty;
+    });
+    console.log("Filtered Articles:", filteredArticlesByFaculty);
+  
+    return (
+      <>
+        <Heading fontSize="2xl" m='4'>Pending Articles: ({filteredArticlesByFaculty.length})</Heading>
+        {filteredArticlesByFaculty.map(article => (
           <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
             {article.images && (
               <Image borderRadius="md" boxSize="150px" src={url + `assets/uploads/${article.images}`} alt={stripHtmlTags(article.text)} maxW= '100px' maxH= '100px' />
@@ -403,7 +408,7 @@ function MemberTable() {
             </VStack>
           </HStack>
         ))}
-    </>
+      </>
     );
   };
 
@@ -526,14 +531,26 @@ function MemberTable() {
       <Modal isOpen={selectedMember !== null} onClose={ handleCloseModal}  size='6xl' isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader fontSize='4xl' color='#426b1f'>{selectedMember?.roles === 'Marketing Coordinator'
+          <ModalHeader fontSize='4xl' color='#426b1f'>{selectedMember?.roles.includes('marketingCoordinator')
             ? `${selectedMember?.name}'s Pending Articles`
             : `${selectedMember?.name}'s Articles`}
           </ModalHeader>
           <ModalCloseButton />
           <Divider my={2} borderColor="#426B1F" width='100%'/>
           <ModalBody>
-            <StudentModal selectedMember={selectedMember} selectedArticles={articles.filter(article => article.student_id === selectedMember?._id)} handleClick={handleClick}/>
+          {selectedMember?.roles.includes('marketingCoordinator') ? (
+            <MarketingCoordinatorModal
+              selectedUser={selectedMember}
+              selectedArticles={articles}
+              handleClick={handleClick}
+            />
+          ) : (
+            <StudentModal
+              selectedMember={selectedMember}
+              selectedArticles={articles.filter(article => article.student_id === selectedMember?._id)}
+              handleClick={handleClick}
+            />
+          )}
           </ModalBody>
         </ModalContent>
       </Modal>  
