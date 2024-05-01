@@ -26,7 +26,7 @@ routes.use('/api/faculty', faculty);
 routes.use('/api/school-year', schoolYear);
 routes.use('/api/entry', entry);
 routes.use('/api/comment', comment);
-routes.use('/api/dowload', dowload);
+routes.use('/api/getContribution', dowload);
 routes.use('/api/analysis', analysis);
 // api get image
 routes.get('/image/:image', (req: Request, res: Response) => {
