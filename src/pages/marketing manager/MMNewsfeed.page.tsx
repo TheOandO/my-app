@@ -294,13 +294,7 @@ function ArticleList() {
               >
                 {articles
                   .filter((article) => {
-                    if (value === "") {
-                      return "";
-                    } else if (
                       article.text.toLowerCase().includes(value.toLowerCase())
-                    ) {
-                      return article;
-                    }
                   })
                   .slice(0, 5)
                   .map((article) => (

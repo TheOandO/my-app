@@ -103,6 +103,7 @@ interface Topic {
 
 function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [value, setValue] = useState("");
   const [selectedComment, setSelectedComment] = useState(null);
   const toast = useToast();
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
@@ -279,7 +280,11 @@ function ArticleList() {
               <InputLeftElement pointerEvents="none">
                 <SearchIcon color="gray.500" />
               </InputLeftElement>
-              <Input placeholder="Search my article" />
+              <Input
+                placeholder="Search an article"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
             </InputGroup>
             <Link href="/Student/CreateArticle">
               <Button
@@ -299,7 +304,7 @@ function ArticleList() {
               </Button>
             </Link>
           </Box>
-          {articles.map((article) => (
+          {articles.filter((article => article.text.toLowerCase().includes(value.toLowerCase()))).map((article) => (
             <HStack
               key={article._id}
               p={5}

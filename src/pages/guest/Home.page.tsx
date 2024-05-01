@@ -22,7 +22,6 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import about from "../../assets/seven-shooter-hPKTYwJ4FUo-unsplash.jpg"
-import { SearchIcon } from '@chakra-ui/icons';
 import { FaFacebook, FaEnvelope, FaInstagram } from 'react-icons/fa';
 import post1 from "../../assets/post 1.jpg"
 import ceo1 from "../../assets/ceo1.png"
@@ -286,18 +285,14 @@ export function DiscussionPage() {
 
   return (
     <Flex background="#e1f4dc" p={20}>
-      {/* Header for 'Discussions & Articles' and 'View all discussions' */}
       <Flex justifyContent="start" width="50%" p={10} direction="column">
-        {/* 'Discussions & Articles' header box */}
         <Flex justifyContent="space-between" p={4} bg="#fff" borderRadius="lg" boxShadow="md" mb="5">
           <Text fontSize="3xl" fontWeight="bold" color="#426B1F" alignSelf="center">Discussions <br/>& Articles</Text>
           <Link href='/' color="#426B1F" fontWeight="bold" alignSelf="center">View all discussions</Link>
         </Flex>
-        {/* 'View all discussions' header box */}
     
         <Box width="full" backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" >
           <Stack spacing={4}>
-            {/* Mapping discussions */}
             {discussions.map((discussion) => (
               <Flex key={discussion.id} alignItems="center">
                 <Avatar name={discussion.author} src={discussion.avatarUrl} />
@@ -312,18 +307,9 @@ export function DiscussionPage() {
           </Stack>
         </Box>
       </Flex>
-       {/* Latest Articles Panel */}
        <Box width="50%" ml={50}>
-      {/* Title 'Latest Articles' */}
           <Text fontSize="4xl" fontWeight="bold" color="#426B1F" alignSelf="center" mb={5}>Latest Articles</Text>
-      {/* Search bar */}
-          <InputGroup mb={5}>
-            <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
-            <Input variant="filled" placeholder="Search discussions" />
-          </InputGroup>
-          {/* Green box containing the image and discussion title */}
           <Box backgroundColor="#a5cda2" borderRadius="lg" p={5} boxShadow="lg" position="relative" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
-            {/* Image */}
             <Image 
               src={latestArticle.imageUrl} 
               alt={latestArticle.title} 
@@ -331,7 +317,6 @@ export function DiscussionPage() {
               width="100%" 
               height="50%"
             />
-            {/* Discussion Title */}
             <Flex position="absolute" bottom={3} right={3} alignItems="center" backgroundColor="rgba(225, 244, 220, 0.8)" p={2} borderRadius="md" _hover={{transform: 'translateY(-5px)', boxShadow: 'xl'}} transition="transform 0.2s, box-shadow 0.2s">
               <Avatar name={latestArticle.author} src={latestArticle.avatarUrl} />
               <Box ml={3}>
