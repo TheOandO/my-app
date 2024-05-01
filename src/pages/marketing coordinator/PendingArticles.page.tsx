@@ -128,6 +128,7 @@ function ArticleList() {
   const [users, setUsers] = useState<User[]>([]);
   const accessToken = localStorage.getItem('access_token');
   const toast = useToast();
+  const [value, setValue] = useState("");
   const [comments, setComments] = useState<Comment[]>([]); 
   const [formData, setFormData] = useState<CommentFormData>({
     text: "",
@@ -348,11 +349,10 @@ function ArticleList() {
           <InputLeftElement pointerEvents="none">
             <SearchIcon color="gray.500" />
           </InputLeftElement>
-          <Input placeholder="Search an article" />
+          <Input placeholder="Search an article" _placeholder={{ color: "gray.500" }} value={value} onChange={(e) => setValue(e.target.value)}/>
         </InputGroup>
       </Box>
-      {/* Map through pending articles */}
-      {pendingArticles.map((article) => (
+      {pendingArticles.filter((article => article.text.toLowerCase().includes(value.toLowerCase()))).map((article) => (
         <Box key={article._id}>
           <HStack p={5} spacing={4} align="center" borderBottomWidth="1px">
             <Avatar
@@ -372,7 +372,7 @@ function ArticleList() {
               <Image
                 borderRadius="md"
                 boxSize="150px"
-                src={article.images}
+                src={`http://localhost:3001/assets/uploads/${article.images}`}
                 alt='image'
               />
             )}
