@@ -109,7 +109,12 @@ interface Faculty {
   name: string;
   marketing_coordinator_id: string;
 }
-
+interface Comment {
+  _id: string
+  text: string;
+  user_id: string;
+  article_id: string
+}
 
 type StatusType = 'Waiting' | 'Rejected' | 'Overdue' | 'Published';
 //   const pendingArticles = [
@@ -318,19 +323,33 @@ function MemberTable() {
     return <Tag fontSize="lg" fontWeight='bold' width='140px' height='50px' display='flex' alignItems='center' justifyContent='center' borderRadius="full" variant="solid" bg={color} color='white'>{status}</Tag>
   }
 
-  const [selectedComment, setSelectedComment] = useState(null); 
-  const handleClick = (comment:any) => {
-    if (comment) {
-      setSelectedComment(comment);
-    } else {
-      toast({ // Display toast notification
-        title: 'No comment yet!',
-        status: 'info',
-        duration: 2000,
-        isClosable: true,
-        colorScheme: 'green',
-        size: 'xl'
+  const [selectedComment, setSelectedComment] = useState<Comment[]>([]); 
+  const handleClick = async (articleId: string| undefined) => {
+    try {
+      const response = await axios.get(url + "api/comment/get-all", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          article_id: articleId,
+        },
       });
+      const comments = response.data.data;
+      const filteredComments = comments.filter((comment:Comment) => comment.article_id === articleId);
+
+      setSelectedComment(filteredComments);
+
+      if (filteredComments.length === 0) {
+        toast({
+          title: 'No comments yet!',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      // Handle error
     }
   };
 
@@ -378,33 +397,46 @@ function MemberTable() {
         <Heading fontSize="2xl" m='4'>Pending Articles: ({filteredArticlesByFaculty.length})</Heading>
         {filteredArticlesByFaculty.map(article => (
           <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
-            {article.images && (
-              <Image borderRadius="md" boxSize="150px" src={url + `assets/uploads/${article.images}`} alt={stripHtmlTags(article.text)} maxW= '100px' maxH= '100px' />
-            )}
+            <Avatar src={findUserName(article.student_id)} name={findUserName(article.student_id)} />
+            <VStack>
+              <Text fontSize='xl'>By {findUserName(article.student_id)}</Text>
+              <Text fontStyle='italic' fontSize='md'>Created {formatDistanceToNow(article.createdAt)} ago</Text>
+            </VStack>
             <Box flex={1}>
               <Heading fontSize="3xl">{stripHtmlTags(article.text)}</Heading>
             </Box>
+            {article.images && (
+              <Image borderRadius="md" boxSize="150px" src={url + `assets/uploads/${article.images}`} alt={stripHtmlTags(article.text)} maxW= '100px' maxH= '100px' />
+            )}
             <VStack>
               <Tag
                 key={article.entry_id}
                 variant="solid"
                 colorScheme='green'
                 borderRadius="full"
-                minW={60}
+                minW={40}
+                maxW={50}
                 minH={10}
+                maxH={16}
                 fontWeight='bold'
+                my={4}
               >
                 {findEntryName(article.entry_id)}
               </Tag>
-              {/* <Button
-                size="lg"
-                variant="solid"
-                onClick={() => handleClick(article.comment)}
-                colorScheme="gray"
-                borderRadius='full'
-              >
-                  View comment
-              </Button> */}
+                <Button
+                  size="lg"
+                  variant="solid"
+                  onClick={() => handleClick(article._id)}
+                  colorScheme="gray"
+                  borderRadius='full'
+                  minW={40}
+                  maxW={50}
+                  minH={10}
+                  maxH={16}
+                  my={4}
+                >
+                    View comment
+                </Button>                
             </VStack>
           </HStack>
         ))}
@@ -443,15 +475,15 @@ function MemberTable() {
                 >
                   {findEntryName(article.entry_id)}
                 </Tag>
-                {/* <Button
+                <Button
                   size="lg"
                   variant="solid"
-                  onClick={() => handleClick(article.comment)}
+                  onClick={() => handleClick(article._id)}
                   colorScheme="gray"
                   borderRadius='full'
                 >
                     View comment
-                </Button> */}
+                </Button>
               </VStack>
             </HStack>
           ))}
@@ -555,14 +587,15 @@ function MemberTable() {
         </ModalContent>
       </Modal>  
 
-      <Modal isOpen={selectedComment !== null} onClose={() => setSelectedComment(null)} size="md" isCentered>
+      <Modal isOpen={selectedComment.length !== 0} onClose={() => setSelectedComment([])} size="md" isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader fontSize='3xl' color='#426b1f'>Article Comment</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            
-            <Text fontSize='xl' m='5'>{selectedComment}</Text>
+            {selectedComment!.map(comment => (
+              <Text fontSize='xl' m='5'>{comment.text}</Text>
+            ))}
           </ModalBody>
         </ModalContent>
       </Modal>
