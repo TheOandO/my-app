@@ -220,7 +220,6 @@ function TopicModal({ topicId }: { topicId: string }) {
 
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic here
     try {
       await axios.put(url + `api/entry/edit/${topicId}`, {
         name: formData.name,

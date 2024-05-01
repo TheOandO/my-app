@@ -174,14 +174,15 @@ function ArticleList() {
   }, []);
 
   const handleDownload = async () => {
+    
     try {
       if (selectedArticle) {
-        const downloadUrl = url + `${selectedArticle._id}/zip`;
+        const downloadUrl = url + `api/getContribution/article/${selectedArticle._id}/zip`;
         await axios.get(
           downloadUrl,
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/octet-stream'
+              Authorization: `Bearer ${accessToken}`
             },
           }
         );
@@ -208,7 +209,7 @@ function ArticleList() {
   };
 
   const handleLoadMore = () => {
-    setArticlesToShow(articlesToShow + 4); // Increase the number of articles to show
+    setArticlesToShow(articlesToShow + 4);
   };
 
   const colorSchemes = ["teal", "purple", "orange", "green"];
@@ -370,57 +371,59 @@ function ArticleList() {
                   </VStack>
                   <Spacer />
                   <VStack>
-                      <Tag
-                        key={article.entry_id}
+                    <Tag
+                      key={article.entry_id}
                         variant="solid"
                         colorScheme={getRandomColorScheme()}
                         borderRadius="full"
                         minW={60}
-                        minH={10}
-                      >
-                        {findEntryName(article.entry_id)}
-                      </Tag>
-                    <Button
-                      bg="#426b1f"
-                      color="whitesmoke"
-                      variant="ghost"
-                      colorScheme="green"
-                      _hover={{ bg: "whitesmoke", color: "#426b1f" }}
-                      _focus={{ boxShadow: "none" }}
-                      transition="background-color 0.2s, box-shadow 0.2s"
-                      borderRadius="full"
-                      minW={54}
-                      w={60}
+                      minH={10}
                     >
-                      Download
-                    </Button>
-                  </VStack>
-                </HStack>
-                <Heading fontSize="3xl" mt={4}>
-                  {stripHtmlTags(article.text)}
-                </Heading>
-                <Image
-                  display="flex"
-                  mt={4}
-                  boxSize="300px"
-                  src={url + `assets/uploads/${article.images}`}
-                  alt={stripHtmlTags(article.text)}
-                  mx="auto"
-                  maxW="300px"
-                  maxH="300px"
-                />
-              </Box>
-            ))}
+                      {findEntryName(article.entry_id)}
+                    </Tag>
+                  <Button
+                    bg="#426b1f"
+                    color="whitesmoke"
+                    variant="ghost"
+                    colorScheme="green"
+                    _hover={{ bg: "whitesmoke", color: "#426b1f" }}
+                    _focus={{ boxShadow: "none" }}
+                    transition="background-color 0.2s, box-shadow 0.2s"
+                    borderRadius="full"
+                    minW={54}
+                    w={60}
+                    key={article._id}
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </VStack>
+              </HStack>
+              <Heading fontSize="3xl" mt={4}>
+                {stripHtmlTags(article.text)}
+              </Heading>
+              <Image
+                display="flex"
+                mt={4}
+                boxSize="300px"
+                src={url + `assets/uploads/${article.images}`}
+                alt={stripHtmlTags(article.text)}
+                mx="auto"
+                maxW="250px"
+                maxH="300px"
+              />
+            </Box>
+          ))}
 
-            <Modal
-              isOpen={selectedArticle !== null}
+          <Modal
+            isOpen={selectedArticle !== null}
               onClose={closeModal}
               isCentered
               motionPreset="slideInBottom"
               size="6xl"
-            >
-              <ModalOverlay />
-              <ModalContent>
+          >
+            <ModalOverlay />
+            <ModalContent>
                 <HStack m="12">
                   <VStack>
                     <HStack spacing={10} mb={6}>
@@ -506,10 +509,10 @@ function ArticleList() {
 
                 </HStack>
                 <ModalCloseButton />
-              </ModalContent>
-            </Modal>
-          </Grid>
-          {articles.length > articlesToShow && (
+            </ModalContent>
+          </Modal>
+        </Grid>
+        {articles.length > articlesToShow && (
             <Button
               onClick={handleLoadMore}
               bg="#426b1f"
@@ -525,9 +528,9 @@ function ArticleList() {
             >
               Load More Articles
             </Button>
-          )}
-        </>
-      )}
+        )}
+      </>
+    )}
     </VStack>
   );
 }
