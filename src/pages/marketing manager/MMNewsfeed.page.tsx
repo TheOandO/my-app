@@ -23,11 +23,13 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
+  Alert,
+  AlertIcon,
+  Link,
 } from "@chakra-ui/react";
 import { LoggedinHeader } from "../admin/AdminHome.page";
 import { FaSearch, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 import { Footer } from "../guest/Home.page";
-import { Schema } from "mongoose";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -57,112 +59,6 @@ interface Article {
   files: Array<string>;
   entry_id: string;
 }
-
-//   // Replace with your actual article data (including author name, avatar URL, and submit date)
-//   {
-//     title: "Mother Earth is pregnant for the third time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     image:
-//       "https://vinylcoverart.com/media/album-covers/3065/funkadelic-maggot-brain.jpg",
-//     author: "Nicky Nicknack",
-//     topicId: 2,
-//     avatarURL: "https://via.placeholder.com/50", // Replace with placeholder or actual avatar URL
-//     createdAt: new Date("2024-03-25T12:00:00Z"),
-//   },
-//   {
-//     title: "Sectoral heterochromia",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     image: "https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg",
-//     author: "Mandy Chow",
-//     topicId: 1,
-//     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     createdAt: new Date("2024-03-25T12:00:00Z"),
-//   },
-//   {
-//     title: `Cause I'm as free as a bird now`,
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     image: "https://i.scdn.co/image/ab67616d0000b273128450651c9f0442780d8eb8",
-//     author: "Kaling Bling",
-//     topicId: 4,
-//     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     createdAt: new Date("2024-03-25T12:00:00Z"),
-//   },
-//   {
-//     title: "There could be hell below, below",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     image:
-//       "https://i.discogs.com/DV7a-pnwsxi06Ci9Fxyy8pKjWWvDgQAR9RrLE7gOMgo/rs:fit/g:sm/q:90/h:600/w:594/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTU2ODk0/ODAtMTM5OTk5NzU2/OC0yMDQ0LmpwZWc.jpeg",
-//     author: "Mandy Chow",
-//     topicId: 3,
-//     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     createdAt: new Date("2024-03-25T12:00:00Z"),
-//   },
-//   {
-//     title: "No alarms to no surprises",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     image:
-//       "https://upload.wikimedia.org/wikipedia/en/thumb/5/5b/Radiohead_-_No_Surprises_%28CD1%29.jpg/220px-Radiohead_-_No_Surprises_%28CD1%29.jpg",
-//     author: "Nicky Nicknack",
-//     topicId: 2,
-//     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     createdAt: new Date("2024-03-25T12:00:00Z"),
-//   },
-//   {
-//     title: "Sectoral heterochromia",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     image: "https://i1.sndcdn.com/artworks-000157282441-rmtn0q-t500x500.jpg",
-//     author: "Kaling Bling",
-//     topicId: 1,
-//     avatarURL: "", // Replace with placeholder or actual avatar URL
-//     createdAt: new Date("2024-03-25T12:00:00Z"),
-//   },
-//   // ... more articles
-// ];
-
-// const topics = [
-//   {
-//     id: 1,
-//     title: "Take pics of your meat",
-//     image: meat,
-//     timeLeft: "2 days remaining",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     status: "In progress",
-//   },
-//   {
-//     id: 2,
-//     title: "Vegetable day !?!",
-//     image: vegetable,
-//     timeLeft: "4 days ago",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     status: "Expired",
-//   },
-//   {
-//     id: 3,
-//     title: "Where’s your family ?",
-//     image: family,
-//     timeLeft: "In 1 week",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     status: "Upcoming",
-//   },
-//   {
-//     id: 4,
-//     title: "Mother’s day bonanza",
-//     image: woman,
-//     timeLeft: "In 1 month",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae mauris eu ex tincidunt scelerisque vel et risus. Fusce et lorem metus. Fusce pellentesque sed lacus at facilisis. Suspendisse in.",
-//     status: "Upcoming",
-//   },
-// ];
 
 function ArticleList() {
   const [articlesToShow, setArticlesToShow] = useState(4);
@@ -194,6 +90,7 @@ function ArticleList() {
       setTimeout(() => setShowError(false), 10000);
     }
   };
+
   const fetchEntries = async () => {
     try {
       const response = await axios.get(
@@ -212,6 +109,7 @@ function ArticleList() {
       setTimeout(() => setShowError(false), 10000);
     }
   };
+
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
@@ -231,24 +129,63 @@ function ArticleList() {
       setTimeout(() => setShowError(false), 10000);
     }
   };
+
+  const [userRole, setUserRole] = useState('');
   useEffect(() => {
+    const checkTokenValidity = async () => {
+      try {
+        await axios.post("http://localhost:3001/api/user/validate", {
+          access_token: localStorage.getItem('access_token'),
+          user: localStorage.getItem('user'),
+          
+        },);
+        
+        const userDataString = localStorage.getItem('user');
+        const userData = JSON.parse(userDataString || '');
+        const userRole = userData.roles;
+        setUserRole(userRole);
+  
+      } catch (error) {
+        console.error("Error validating token:", error);
+        try {
+          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            user: localStorage.getItem('user'),
+            access_token: localStorage.getItem('access_token'),
+          });
+  
+          console.log(refreshResponse.data.message);
+          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          setUserRole(refreshResponse.data.user.roles);
+          
+        } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
+          // If refresh fails, redirect the user to the login page
+          setShowError(true)
+          setErrorMessage('Error refreshing token')
+  
+        }
+      }
+    }
+    checkTokenValidity();
     fetchUsers()
     fetchEntries()
     fetchArticles()
   }, []);
+
+  const url = 'http://localhost:3001/api/download/article/'
   const handleDownload = async () => {
     try {
       if (selectedArticle) {
+        const downloadUrl = url + `${selectedArticle._id}/zip`;
         await axios.get(
-          `http://localhost:3001/api/download/article/${selectedArticle._id}/zip`,
+          downloadUrl,
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
+              Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/octet-stream'
             },
           }
         );
-        
+        window.open(downloadUrl)
       } else {
         toast({
           title: "No article selected",
@@ -316,275 +253,286 @@ function ArticleList() {
 
   return (
     <VStack spacing={4} overflowY="auto">
-      <Heading fontSize="4xl" color="#426b1f">
-        Welcome to The Newsfeed, Marketing Manager!
-      </Heading>
-      <Text fontSize="md" color="gray.500">
-        Browse and download our favorite articles from students across all
-        faculties.
-      </Text>
-      <Divider my={6} borderWidth={2} borderColor="#426B1F" width="100%" />
-      <HStack mb={5} gap={6}>
-        <InputGroup minW={450} maxW={900}>
-          <InputLeftElement pointerEvents="none">
-            <FaSearch />
-          </InputLeftElement>
-          <Input
-            placeholder="Search an article"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <div
-            className="dropdown"
-            style={{
-              backgroundColor: "white",
-              display: "flex",
-              flexDirection: "column",
-              margin: "2px 0",
-              border: "1px solid gray",
-            }}
-          >
-            {articles
-              .filter((article) => {
-                if (value === "") {
-                  return "";
-                } else if (
-                  article.text.toLowerCase().includes(value.toLowerCase())
-                ) {
-                  return article;
+      {showError && (
+        <Alert status="error" mt={4}>
+          <AlertIcon />
+          {errorMessage}
+          <Link href='/login' ml={10}>
+            <Text fontStyle='italic'>Go to the Login Page</Text>
+          </Link>
+        </Alert>
+      )}
+      {userRole.includes('marketingManager') && (
+        <>
+          <Heading fontSize="4xl" color="#426b1f">
+            Welcome to The Newsfeed, Marketing Manager!
+          </Heading>
+          <Text fontSize="md" color="gray.500">
+            Browse and download our favorite articles from students across all
+            faculties.
+          </Text>
+          <Divider my={6} borderWidth={2} borderColor="#426B1F" width="100%" />
+          <HStack mb={5} gap={6}>
+            <InputGroup minW={450} maxW={900}>
+              <InputLeftElement pointerEvents="none">
+                <FaSearch />
+              </InputLeftElement>
+              <Input
+                placeholder="Search an article"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+              <div
+                className="dropdown"
+                style={{
+                  backgroundColor: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  margin: "2px 0",
+                  border: "1px solid gray",
+                }}
+              >
+                {articles
+                  .filter((article) => {
+                    if (value === "") {
+                      return "";
+                    } else if (
+                      article.text.toLowerCase().includes(value.toLowerCase())
+                    ) {
+                      return article;
+                    }
+                  })
+                  .slice(0, 5)
+                  .map((article) => (
+                    <div className="dropdown-row" style={{ textAlign: "start" }}>
+                      <a href="#">{stripHtmlTags(article.text)}</a>
+                    </div>
+                  ))}
+              </div>
+            </InputGroup>
+
+            <Flex gap={6}>
+              <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+                <option value="date">Date</option>
+                <option value="name">Name</option>
+                <option value="faculty">Faculty</option>
+              </Select>
+              <Button
+                rightIcon={
+                  isAscending ? (
+                    <Icon as={FaSortAmountUp} />
+                  ) : (
+                    <Icon as={FaSortAmountDown} />
+                  )
                 }
-              })
-              .slice(0, 5)
-              .map((article) => (
-                <div className="dropdown-row" style={{ textAlign: "start" }}>
-                  <a href="#">{stripHtmlTags(article.text)}</a>
-                </div>
-              ))}
-          </div>
-        </InputGroup>
+                variant="outline"
+                onClick={toggleSortOrder}
+                boxShadow={boxShadowColor}
+                minW={180}
+              >
+                {isAscending ? "Ascending" : "Descending"}
+              </Button>
+            </Flex>
+            <Button
+              bg="#426b1f"
+              color="whitesmoke"
+              variant="ghost"
+              colorScheme="green"
+              _hover={{ bg: "#BDD7A6", color: "#426b1f" }}
+              _focus={{ boxShadow: "none" }}
+              transition="background-color 0.2s, box-shadow 0.2s"
+              minW={150}
+            >
+              Submit
+            </Button>
+          </HStack>
 
-        <Flex gap={6}>
-          <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
-            <option value="date">Date</option>
-            <option value="name">Name</option>
-            <option value="faculty">Faculty</option>
-          </Select>
-          <Button
-            rightIcon={
-              isAscending ? (
-                <Icon as={FaSortAmountUp} />
-              ) : (
-                <Icon as={FaSortAmountDown} />
-              )
-            }
-            variant="outline"
-            onClick={toggleSortOrder}
-            boxShadow={boxShadowColor}
-            minW={180}
+          <Grid
+            templateColumns="repeat(2, minmax(150px, 5fr))"
+            gridAutoRows="minmax(min-content, auto)"
+            gap={38}
           >
-            {isAscending ? "Ascending" : "Descending"}
-          </Button>
-        </Flex>
-        <Button
-          bg="#426b1f"
-          color="whitesmoke"
-          variant="ghost"
-          colorScheme="green"
-          _hover={{ bg: "#BDD7A6", color: "#426b1f" }}
-          _focus={{ boxShadow: "none" }}
-          transition="background-color 0.2s, box-shadow 0.2s"
-          minW={150}
-        >
-          Submit
-        </Button>
-      </HStack>
-
-      <Grid
-        templateColumns="repeat(2, minmax(150px, 5fr))"
-        gridAutoRows="minmax(min-content, auto)"
-        gap={38}
-      >
-        {articles.slice(0, articlesToShow).map((article) => (
-          <Box
-            key={article._id}
-            bg="#F7FAFC"
-            p={5}
-            boxShadow={boxShadowColor}
-            borderRadius="lg"
-            cursor="pointer"
-            onClick={() => openModal(article)}
-            w="550px"
-            mb={10}
-          >
-            <HStack spacing={4}>
-              <Avatar src={findUserName(article.student_id)} name={findUserName(article.student_id)} />
-              <VStack  alignItems="flex-start">
-                <Text fontSize="lg" fontWeight="bold">
-                  {findUserName(article.student_id)}
-                </Text>
-                <Text fontSize="sm" color="gray.400" fontStyle="italic">
-                  Submitted {article.createdAt}
-                </Text>
-              </VStack>
-              <Spacer />
-              <VStack>
-                  <Tag
-                    key={article.entry_id}
-                    variant="solid"
-                    colorScheme={getRandomColorScheme()}
-                    borderRadius="full"
-                    minW={60}
-                    minH={10}
-                  >
-                    {findEntryName(article.entry_id)}
-                  </Tag>
-                <Button
-                  bg="#426b1f"
-                  color="whitesmoke"
-                  variant="ghost"
-                  colorScheme="green"
-                  _hover={{ bg: "whitesmoke", color: "#426b1f" }}
-                  _focus={{ boxShadow: "none" }}
-                  transition="background-color 0.2s, box-shadow 0.2s"
-                  borderRadius="full"
-                  minW={54}
-                  w={60}
-                >
-                  Download
-                </Button>
-              </VStack>
-            </HStack>
-            <Heading fontSize="3xl" mt={4}>
-              {stripHtmlTags(article.text)}
-            </Heading>
-            <Image
-              display="flex"
-              mt={4}
-              boxSize="300px"
-              src={`http://localhost:3001/image/${article.images}`}
-              alt={stripHtmlTags(article.text)}
-              mx="auto"
-              maxW="300px"
-              maxH="300px"
-            />
-          </Box>
-        ))}
-
-        <Modal
-          isOpen={selectedArticle !== null}
-          onClose={closeModal}
-          isCentered
-          motionPreset="slideInBottom"
-          size="6xl"
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <HStack m="12">
-              <VStack>
-                <HStack spacing={10} mb={6}>
-                  <Avatar
-                    size="xl"
-                    src={selectedArticle?.student_id}
-                  />
-                  <VStack alignItems="flex-start">
-                    <Text fontSize="xl" fontWeight="bold">
-                      {findUserName(selectedArticle?.student_id ?? 'Searching Username...')}
+            {articles.slice(0, articlesToShow).map((article) => (
+              <Box
+                key={article._id}
+                bg="#F7FAFC"
+                p={5}
+                boxShadow={boxShadowColor}
+                borderRadius="lg"
+                cursor="pointer"
+                onClick={() => openModal(article)}
+                w="550px"
+                mb={10}
+              >
+                <HStack spacing={4}>
+                  <Avatar src={findUserName(article.student_id)} name={findUserName(article.student_id)} />
+                  <VStack  alignItems="flex-start">
+                    <Text fontSize="lg" fontWeight="bold">
+                      {findUserName(article.student_id)}
                     </Text>
-                    <Text fontSize="lg" color="gray.400" fontStyle="italic">
-                      {selectedArticle?.createdAt
-                        ? selectedArticle.createdAt.toLocaleString()
-                        : "No submit date"}
+                    <Text fontSize="sm" color="gray.400" fontStyle="italic">
+                      Submitted {article.createdAt}
                     </Text>
                   </VStack>
-                  <Spacer /> 
-  
-                    <Tag
-                      key={selectedArticle?.entry_id}
-                      variant="solid"
-                      colorScheme={getRandomColorScheme()}
+                  <Spacer />
+                  <VStack>
+                      <Tag
+                        key={article.entry_id}
+                        variant="solid"
+                        colorScheme={getRandomColorScheme()}
+                        borderRadius="full"
+                        minW={60}
+                        minH={10}
+                      >
+                        {findEntryName(article.entry_id)}
+                      </Tag>
+                    <Button
+                      bg="#426b1f"
+                      color="whitesmoke"
+                      variant="ghost"
+                      colorScheme="green"
+                      _hover={{ bg: "whitesmoke", color: "#426b1f" }}
+                      _focus={{ boxShadow: "none" }}
+                      transition="background-color 0.2s, box-shadow 0.2s"
                       borderRadius="full"
-                      minW={40}
-                      maxW={50}
-                      minH={10}
-                      maxH={16}
+                      minW={54}
+                      w={60}
                     >
-                      {findEntryName(selectedArticle?.entry_id ?? 'Searching Entry...')}
-                    </Tag>
+                      Download
+                    </Button>
+                  </VStack>
+                </HStack>
+                <Heading fontSize="3xl" mt={4}>
+                  {stripHtmlTags(article.text)}
+                </Heading>
+                <Image
+                  display="flex"
+                  mt={4}
+                  boxSize="300px"
+                  src={`http://localhost:3001/assets/uploads/${article.images}`}
+                  alt={stripHtmlTags(article.text)}
+                  mx="auto"
+                  maxW="300px"
+                  maxH="300px"
+                />
+              </Box>
+            ))}
+
+            <Modal
+              isOpen={selectedArticle !== null}
+              onClose={closeModal}
+              isCentered
+              motionPreset="slideInBottom"
+              size="6xl"
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <HStack m="12">
+                  <VStack>
+                    <HStack spacing={10} mb={6}>
+                      <Avatar
+                        size="xl"
+                        src={selectedArticle?.student_id}
+                      />
+                      <VStack alignItems="flex-start">
+                        <Text fontSize="xl" fontWeight="bold">
+                          {findUserName(selectedArticle?.student_id ?? 'Searching Username...')}
+                        </Text>
+                        <Text fontSize="lg" color="gray.400" fontStyle="italic">
+                          {selectedArticle?.createdAt
+                            ?'Submitted at ' + selectedArticle.createdAt.toLocaleString()
+                            : "No submit date"}
+                        </Text>
+                      </VStack>
+                      <Spacer /> 
+      
+                        <Tag
+                          key={selectedArticle?.entry_id}
+                          variant="solid"
+                          colorScheme={getRandomColorScheme()}
+                          borderRadius="full"
+                          minW={40}
+                          maxW={50}
+                          minH={10}
+                          maxH={16}
+                        >
+                          {findEntryName(selectedArticle?.entry_id ?? 'Searching Entry...')}
+                        </Tag>
+
+                    </HStack>
+                    <Heading fontSize="4xl" fontStyle="bold" mb={6}>
+                      {selectedArticle?.text}
+                    </Heading>
+                    <Button
+                      fontSize="2xl"
+                      bg="#426b1f"
+                      color="whitesmoke"
+                      variant="ghost"
+                      colorScheme="green"
+                      _hover={{ bg: "whitesmoke", color: "#426b1f" }}
+                      _focus={{ boxShadow: "none" }}
+                      transition="background-color 0.2s, box-shadow 0.2s"
+                      borderRadius="10"
+                      w={300}
+                      minH={14}
+                      mt={10}
+                      alignItems="center"
+                      value={selectedArticle?._id}
+                      onClick={handleDownload}
+                    >
+                      Download
+                    </Button>
+                  </VStack>
+                  <Divider
+                    orientation="vertical"
+                    minH="450px"
+                    borderColor="#426b1f"
+                    borderWidth={2}
+                    mx={6}
+                  />
+                    <VStack alignItems="flex-start">
+                      <Heading fontSize="xl">Files:</Heading>
+                      <VStack spacing={2} alignItems="flex-start">
+                        {selectedArticle?.files &&
+                          selectedArticle.files.map((file, index) => (
+                            <Box key={index}>
+                              <Text>{file}</Text>
+                            </Box>
+                          ))}
+                      </VStack>
+                      <Heading fontSize='xl'>Images: </Heading>
+                    <Image display="flex" mt={4} boxSize="400px"
+                      src={`http://localhost:3001/assets/uploads/${selectedArticle?.images}`}
+                      alt={selectedArticle?.text}
+                      mx="auto"
+                      maxW="500px"
+                      maxH="500px"
+                    />                  
+                    </VStack>
 
                 </HStack>
-                <Heading fontSize="4xl" fontStyle="bold" mb={6}>
-                  {selectedArticle?.text}
-                </Heading>
-                <Button
-                  fontSize="2xl"
-                  bg="#426b1f"
-                  color="whitesmoke"
-                  variant="ghost"
-                  colorScheme="green"
-                  _hover={{ bg: "whitesmoke", color: "#426b1f" }}
-                  _focus={{ boxShadow: "none" }}
-                  transition="background-color 0.2s, box-shadow 0.2s"
-                  borderRadius="10"
-                  w={300}
-                  minH={14}
-                  mt={10}
-                  alignItems="center"
-                  value={selectedArticle?._id}
-                  onClick={handleDownload}
-                >
-                  Download
-                </Button>
-              </VStack>
-              <Divider
-                orientation="vertical"
-                minH="450px"
-                borderColor="#426b1f"
-                borderWidth={2}
-                mx={6}
-              />
-                <VStack alignItems="flex-start">
-                  <Heading fontSize="xl">Files:</Heading>
-                  <VStack spacing={2} alignItems="flex-start">
-                    {selectedArticle?.files &&
-                      selectedArticle.files.map((file, index) => (
-                        <Box key={index}>
-                          <Text>{file}</Text>
-                          {/* Add download functionality here */}
-                        </Box>
-                      ))}
-                  </VStack>
-                </VStack>
-              <Image
-                display="flex"
-                mt={4}
-                boxSize="400px"
-                src={selectedArticle?.images}
-                alt={selectedArticle?.text}
-                mx="auto"
-                maxW="500px"
-                maxH="500px"
-              />
-            </HStack>
-            <ModalCloseButton />
-          </ModalContent>
-        </Modal>
-      </Grid>
-      {articles.length > articlesToShow && (
-        <Button
-          onClick={handleLoadMore}
-          bg="#426b1f"
-          color="whitesmoke"
-          variant="outline"
-          colorScheme="green"
-          _hover={{ bg: "whitesmoke", color: "#426b1f" }}
-          _focus={{ boxShadow: "none" }}
-          transition="background-color 0.2s, box-shadow 0.2s"
-          minW={50}
-          w="50%"
-          m={10}
-        >
-          Load More Articles
-        </Button>
+                <ModalCloseButton />
+              </ModalContent>
+            </Modal>
+          </Grid>
+          {articles.length > articlesToShow && (
+            <Button
+              onClick={handleLoadMore}
+              bg="#426b1f"
+              color="whitesmoke"
+              variant="outline"
+              colorScheme="green"
+              _hover={{ bg: "whitesmoke", color: "#426b1f" }}
+              _focus={{ boxShadow: "none" }}
+              transition="background-color 0.2s, box-shadow 0.2s"
+              minW={50}
+              w="50%"
+              m={10}
+            >
+              Load More Articles
+            </Button>
+          )}
+        </>
       )}
     </VStack>
   );

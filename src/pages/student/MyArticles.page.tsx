@@ -307,7 +307,7 @@ function ArticleList() {
               align="center"
               borderBottomWidth="1px"
             >
-              <Image borderRadius="md" boxSize="100px" src={`http://localhost:3001/image/${article.images}`} alt="image"/>
+              <Image borderRadius="md" boxSize="310px" maxW={200} maxH={300} w={200} h={200} src={`http://localhost:3001/assets/uploads/${article.images}`} alt="image"/>
               <Box flex={1}>
                 <Text fontSize="2xl">{stripHtmlTags(article.text)}</Text>
                 <Text fontSize="md">
