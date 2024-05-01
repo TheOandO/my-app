@@ -254,7 +254,6 @@ function ArticleList() {
           user_id: article.student_id,
           article_id: article._id
         }));
-        console.log("Comments API Response:", response.data);
         setComments(response.data.data);
 
       } catch (error) {

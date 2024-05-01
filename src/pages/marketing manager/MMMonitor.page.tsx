@@ -175,7 +175,7 @@ function MemberTable() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [faculties, setFaculties] = useState<Faculty[]>([]);
-  const [selectedMember, setSelectedMember] = useState<User | null>(null); // Explicitly specify the type of selectedMember
+  const [selectedMember, setSelectedMember] = useState<User | null>(null);
   const accessToken = localStorage.getItem("access_token");
   const [value, setValue] = useState("");
   const [showError, setShowError] = useState(false);
@@ -191,11 +191,9 @@ function MemberTable() {
     setSelectedMember(user);
   };
   
-  // Function to handle modal close
   const handleCloseModal = () => {
     setSelectedMember(null);
   };
-
 
   const fetchFaculties = async () => {
     try {
@@ -220,7 +218,6 @@ function MemberTable() {
           },
         }
       );
-      console.log("Faculty API Response:", response.data);
       setArticles(response.data.data);
     } catch (error) {
       setErrorMessage("Error fetching faculties");
@@ -239,7 +236,6 @@ function MemberTable() {
           },
         }
       );
-      console.log("Entries API Response:", response.data);
       setEntries(response.data.data);
     } catch (error) {
       setErrorMessage("Error fetching Entries");
@@ -258,11 +254,10 @@ function MemberTable() {
           Authorization: `Bearer ${accessToken}`,
         }
       },
-    );
-    const filteredUsers = response.data.users.filter((user:User) => {
-      return user.roles.includes("student") || user.roles.includes("marketingCoordinator");
-    });
-    console.log(filteredUsers)
+      );
+      const filteredUsers = response.data.users.filter((user:User) => {
+        return user.roles.includes("student") || user.roles.includes("marketingCoordinator");
+      });
       setUsers(filteredUsers);
     } catch (error) {
       setErrorMessage("Error fetching users");
@@ -339,7 +334,7 @@ function MemberTable() {
     }
   };
 
-  const getUserName = (userId: string) => {
+  const findUserName = (userId: string) => {
     const user = users.find(u => u._id === userId);
     return user ? user.name : 'User'; 
   };
@@ -349,91 +344,115 @@ function MemberTable() {
     return faculty ? faculty.name : 'Unknown Faculty';
   };
 
-  // const MarketingCoordinatorModal: React.FC<{
-  //   selectedUser: User;
-  //   pendingArticles: Article[];
-  //   handleClick: (comment: string | undefined) => void;
-  // }> = ({ selectedUser, pendingArticles, handleClick }) => {
-  // const coordinatorFaculty = selectedUser.faculty_id;
-  // const filteredArticlesByFaculty = pendingArticles.filter(article => {
-  //   const user = users.find(user => user._id === article.student_id);
-  //   return user && user.faculty_id === coordinatorFaculty;
-  // });
-  //   return ( 
-  //       <>
-  //         <Heading fontSize="2xl" m='4'>Pending Articles: ({filteredArticlesByFaculty.length})</Heading>
-  //         <Box maxHeight="400px" overflowY="auto">
-  //           {filteredArticlesByFaculty
-  //             .map(article => (
-  //             <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
-  //               <Avatar size='lg' name={article.student_id} src={`path_to_author_avatar_based_on_${article.student_id}`} />
+  const findEntryName = (entryId: string): string => {
+    const entry = entries.find((e) => e._id === entryId);
+    return entry ? entry.name : 'Entry';
+  };
 
-  //               <VStack align="flex-start" flex={1} mr={4}>
-  //                 <Text fontSize="xl">{getUserName(article.student_id)}</Text>
-  //                 <Text fontSize="sm" color="gray.400" fontStyle="italic">
-  //                   Submitted {formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}
-  //                 </Text>
-  //               </VStack>
-                  
-  //               <VStack align="flex-start" flex={4}>
-  //                 <Heading fontSize="3xl">{article.text}</Heading>
-  //               </VStack>
+  const stripHtmlTags = (html: string) => {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
 
-  //               {article.images && (
-  //                 <Image borderRadius="md" boxSize="150px" src={url + `assets/uploads/${article.images}`} alt={article.text} />
-  //               )}
-  //               <VStack>
-  //                 {/* <Button
-  //                   size="lg"
-  //                   variant="solid"
-  //                   onClick={() => handleClick(article.comment)}
-  //                   colorScheme="gray"
-  //                   borderRadius='full'
-  //                 >
-  //                   View comment
-  //                 </Button>  */}
-  //               </VStack>
+  const MarketingCoordinatorModal: React.FC<{
+    selectedUser: User;
+    selectedArticles: Article[];
+    handleClick: (comment: string | undefined) => void;
+  }> = ({ selectedUser, selectedArticles, handleClick }) => {
+  const coordinatorFaculty = selectedUser.faculty_id;
+  const filteredArticlesByFaculty = selectedArticles.filter(article => {
+    const user = users.find(user => user._id === article.student_id);
+    return user && user.faculty_id === coordinatorFaculty;
+  });
+  if (!selectedMember) {
+    return null;
+  }
+  return (
+    <>
+      <Heading fontSize="2xl" m='4'>Pending Articles: ({selectedArticles.length})</Heading>
+        {selectedArticles.map(article => (
+          <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+            {article.images && (
+              <Image borderRadius="md" boxSize="150px" src={url + `assets/uploads/${article.images}`} alt={stripHtmlTags(article.text)} maxW= '100px' maxH= '100px' />
+            )}
+            <Box flex={1}>
+              <Heading fontSize="3xl">{stripHtmlTags(article.text)}</Heading>
+            </Box>
+            <VStack>
+              <Tag
+                key={article.entry_id}
+                variant="solid"
+                colorScheme='green'
+                borderRadius="full"
+                minW={60}
+                minH={10}
+                fontWeight='bold'
+              >
+                {findEntryName(article.entry_id)}
+              </Tag>
+              {/* <Button
+                size="lg"
+                variant="solid"
+                onClick={() => handleClick(article.comment)}
+                colorScheme="gray"
+                borderRadius='full'
+              >
+                  View comment
+              </Button> */}
+            </VStack>
+          </HStack>
+        ))}
+    </>
+    );
+  };
 
-  //             </HStack>
-  //             ))}
-  //         </Box>
-  //       </>  
-  //   );
-  // };
-
-  // const StudentModal: React.FC<{
-  //   selectedMember: User;
-  //   pendingArticles: Article[];
-  //   publishedArticles: Article[];
-  //   handleClick: (comment: string | undefined) => void;
-  // }> = ({ selectedMember, pendingArticles, publishedArticles, handleClick }) => {
-  //   return (
-  //     <>
-  //       <Heading fontSize="2xl" m='4'>Pending Articles: ({pendingArticles.filter(article => article.student_id === selectedMember?._id).length})</Heading>
-  //         {pendingArticles.filter(article => article.student_id === selectedMember?._id).map(article => (
-  //           <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
-  //             {article.images && (
-  //               <Image borderRadius="md" boxSize="150px" src={article.images} alt={article.text} maxW= '100px' maxH= '100px' />
-  //             )}
-  //             <Box flex={1}>
-  //               <Heading fontSize="3xl">{article.text}</Heading>
-  //             </Box>
-  //             <VStack>
-  //               {/* <Button
-  //                 size="lg"
-  //                 variant="solid"
-  //                 onClick={() => handleClick(article.comment)}
-  //                 colorScheme="gray"
-  //                 borderRadius='full'
-  //               >
-  //                   View comment
-  //               </Button> */}
-  //             </VStack>
-  //           </HStack>
-  //         ))}
-  //     </>
-  //   );
-  // };
+  const StudentModal: React.FC<{
+    selectedMember: User | null;
+    selectedArticles: Article[];
+    handleClick: (comment: string | undefined) => void;
+  }> = ({ selectedMember, selectedArticles, handleClick }) => {
+    if (!selectedMember) {
+      return null;
+    }
+    return (
+      <>
+        <Heading fontSize="2xl" m='4'>Pending Articles: ({selectedArticles.length})</Heading>
+          {selectedArticles.map(article => (
+            <HStack key={article._id} p={5} spacing={4} align="center" borderBottomWidth="1px">
+              {article.images && (
+                <Image borderRadius="md" boxSize="150px" src={url + `assets/uploads/${article.images}`} alt={stripHtmlTags(article.text)} maxW= '100px' maxH= '100px' />
+              )}
+              <Box flex={1}>
+                <Heading fontSize="3xl">{stripHtmlTags(article.text)}</Heading>
+              </Box>
+              <VStack>
+                <Tag
+                  key={article.entry_id}
+                  variant="solid"
+                  colorScheme='green'
+                  borderRadius="full"
+                  minW={60}
+                  minH={10}
+                  fontWeight='bold'
+                >
+                  {findEntryName(article.entry_id)}
+                </Tag>
+                {/* <Button
+                  size="lg"
+                  variant="solid"
+                  onClick={() => handleClick(article.comment)}
+                  colorScheme="gray"
+                  borderRadius='full'
+                >
+                    View comment
+                </Button> */}
+              </VStack>
+            </HStack>
+          ))}
+      </>
+    );
+  };
 
   return (
     <Box flex="1" bgGradient="linear(to-t, #e1f5dd, white)" p={5}>
@@ -504,7 +523,7 @@ function MemberTable() {
         </Table>
       </Box>
   
-      {/* <Modal isOpen={selectedMember !== null} onClose={ handleCloseModal}  size='6xl' isCentered>
+      <Modal isOpen={selectedMember !== null} onClose={ handleCloseModal}  size='6xl' isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader fontSize='4xl' color='#426b1f'>{selectedMember?.roles === 'Marketing Coordinator'
@@ -514,18 +533,10 @@ function MemberTable() {
           <ModalCloseButton />
           <Divider my={2} borderColor="#426B1F" width='100%'/>
           <ModalBody>
-            {selectedMember ? (
-              selectedMember?.roles === 'Marketing Coordinator' ? (
-                <MarketingCoordinatorModal selectedUser={selectedMember} pendingArticles={pendingArticles} handleClick={handleClick} />
-                ) : (
-                  <StudentModal selectedMember={selectedMember} handleClick={handleClick} />
-                )
-              ) : (
-                <p>No member selected.</p> // Placeholder or any other content for when no member is selected
-            )}
+            <StudentModal selectedMember={selectedMember} selectedArticles={articles.filter(article => article.student_id === selectedMember?._id)} handleClick={handleClick}/>
           </ModalBody>
         </ModalContent>
-      </Modal>   */}
+      </Modal>  
 
       <Modal isOpen={selectedComment !== null} onClose={() => setSelectedComment(null)} size="md" isCentered>
         <ModalOverlay />
@@ -533,13 +544,14 @@ function MemberTable() {
           <ModalHeader fontSize='3xl' color='#426b1f'>Article Comment</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            
             <Text fontSize='xl' m='5'>{selectedComment}</Text>
           </ModalBody>
         </ModalContent>
       </Modal>
     </Box>
     )
-  }
+}
 
 export default function MMMonitor() {
     return(
