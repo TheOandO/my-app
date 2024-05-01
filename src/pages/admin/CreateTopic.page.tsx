@@ -38,6 +38,7 @@ interface EntryFormData {
 const CreateTopic: React.FC = () => {
 
   const toast = useToast();
+  const url = 'http://localhost:3001/'
 
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [formData, setFormData] = useState<EntryFormData>({
@@ -62,7 +63,7 @@ const CreateTopic: React.FC = () => {
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
+        url + "api/faculty/get-all"
       );
       console.log("Faculty API Response:", response.data);
       setFaculties(response.data.data);
@@ -80,7 +81,7 @@ const CreateTopic: React.FC = () => {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -95,7 +96,7 @@ const CreateTopic: React.FC = () => {
         console.error("Error validating token:", error);
         // If token is invalid or expired, attempt to refresh it
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
   
@@ -130,7 +131,7 @@ const CreateTopic: React.FC = () => {
     e.preventDefault();
     // Form submission logic here
     try {
-      await axios.post("http://localhost:3001/api/entry/create", {
+      await axios.post(url + "api/entry/create", {
         name: formData.name,
         dateline1: startDate,
         dateline2: endDate,
@@ -187,7 +188,7 @@ const CreateTopic: React.FC = () => {
           boxShadow="lg"
           bg={formBackground}
           p={8}
-          width={{ base: "90%", md: "768px" }} // Increased width for medium-sized devices and up
+          width={{ base: "90%", md: "768px" }}
         >
           <Heading
             as="h2"

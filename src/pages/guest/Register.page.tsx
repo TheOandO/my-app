@@ -57,6 +57,7 @@ const Register: React.FC = () => {
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const url = 'http://localhost:3001/'
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -71,7 +72,7 @@ const Register: React.FC = () => {
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
+        url + "api/faculty/get-all"
       );
       console.log("Faculty API Response:", response.data);
       setFaculties(response.data.data);
@@ -108,7 +109,7 @@ const Register: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:3001/api/user/signup", {
+      await axios.post(url + "api/user/signup", {
         name: formData.name,
         email: formData.email,
         password: formData.password,

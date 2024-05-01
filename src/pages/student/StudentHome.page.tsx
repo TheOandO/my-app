@@ -59,11 +59,12 @@ export function Topics() {
 
   const [topics, setTopics] = useState<Topic[]>([]);
   const [faculties, setFaculties] = useState<Faculty[]>([]);
+  const url = 'http://localhost:3001/'
 
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
+        url + "api/faculty/get-all"
       );
       setFaculties(response.data.data);
     } catch (error) {
@@ -75,7 +76,7 @@ export function Topics() {
 
   const fetchTopics = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/entry/get-all");
+      const response = await axios.get(url + "api/entry/get-all");
 
       const currentDate = new Date();
       const updatedTopics = response.data.data.map((topic: Topic) => {
@@ -260,13 +261,14 @@ function Dashboard() {
       navigate('/Student/CreateArticle');
       // Additional logic when the plus button is clicked
     };
+    const url = 'http://localhost:3001/'
 
     const [userRole, setUserRole] = useState('');
     useEffect(() => {
       const checkTokenValidity = async () => {
         try {
           // Make a request to the /validate endpoint to check token validity
-          await axios.post("http://localhost:3001/api/user/validate", {
+          await axios.post(url + "api/user/validate", {
             access_token: localStorage.getItem('access_token'),
             user: localStorage.getItem('user'),
             
@@ -283,7 +285,7 @@ function Dashboard() {
 
           // If token is invalid or expired, attempt to refresh it
           try {
-            const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+            const refreshResponse = await axios.post(url + "api/user/refresh", {
               user: localStorage.getItem('user'),
             });
 

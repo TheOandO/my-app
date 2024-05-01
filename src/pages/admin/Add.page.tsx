@@ -51,7 +51,7 @@ const AddForm: React.FC = () => {
     facultyId: "",
   });
   const navigate = useNavigate();
-
+  const url = 'http://localhost:3001/'
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -68,9 +68,7 @@ const AddForm: React.FC = () => {
 
   const fetchFaculties = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
-      );
+      const response = await axios.get(url + "api/faculty/get-all");
       console.log("Faculty API Response:", response.data);
       setFaculties(response.data.data);
     } catch (error) {
@@ -85,7 +83,7 @@ const AddForm: React.FC = () => {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -100,7 +98,7 @@ const AddForm: React.FC = () => {
         console.error("Error validating token:", error);
         // If token is invalid or expired, attempt to refresh it
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
   
@@ -125,7 +123,7 @@ const AddForm: React.FC = () => {
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/user/signup", {
+      await axios.post(url + "api/user/signup", {
         name: formData.name,
         email: formData.email,
         password: formData.password,

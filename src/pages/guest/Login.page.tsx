@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Divider,
   FooterLink,
   FooterLinksContainer,
   LoginImageContainer,
@@ -9,12 +8,9 @@ import {
   LoginFormContainer,
   LoginPageContainer,
   Logo,
-  SocialIconsContainer,
   SubmitButton,
   SignUpLink,
   SignUpText,
-  SocialIcons,
-  SocialIconsLink,
 } from "../../components/Login.styles";
 import { Alert, AlertIcon, useToast } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
@@ -25,7 +21,8 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
-  
+  const url = 'http://localhost:3001/'
+
   const toast = useToast()
   const navigate = useNavigate();
 
@@ -34,7 +31,7 @@ function Login() {
 
     try {
       // Make a POST request to your backend API
-      const response = await axios.post("http://localhost:3001/api/user/login", {
+      const response = await axios.post(url + "api/user/login", {
         username: username,
         password: password,
       });

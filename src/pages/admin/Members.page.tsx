@@ -10,7 +10,6 @@ import {
   Tr,
   Th,
   Td,
-  useDisclosure,
   Input,
   Select,
   VStack,
@@ -32,10 +31,8 @@ import {
   useToast,
   Alert,
   AlertIcon,
-  MenuItemOption,
 } from "@chakra-ui/react";
 import {
-  FaUserPlus,
   FaSearch,
   FaSortAmountDown,
   FaSortAmountUp,
@@ -147,11 +144,12 @@ function MemberTable() {
   );
   const toast = useToast()
   const accessToken = localStorage.getItem('access_token');
+  const url = 'http://localhost:3001/'
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/user/get-all",{
+        url + "api/user/get-all",{
         headers: {
           Authorization: `Bearer ${accessToken}`
         }          
@@ -168,7 +166,7 @@ function MemberTable() {
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all", {
+        url + "api/faculty/get-all", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -185,7 +183,7 @@ function MemberTable() {
   const fetchRoles = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/user/get-all-role", 
+        url + "api/user/get-all-role", 
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -204,7 +202,7 @@ function MemberTable() {
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -218,7 +216,7 @@ function MemberTable() {
       } catch (error) {
         console.error("Error validating token:", error);
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
   
@@ -260,7 +258,7 @@ function MemberTable() {
     });
     const fetchUserById = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/user/get-by-id/${userId}`,
+        const response = await axios.get(url + `api/user/get-by-id/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -284,7 +282,7 @@ function MemberTable() {
       e.preventDefault();
       // Form submission logic here
       try {
-        await axios.put(`http://localhost:3001/api/user/edit/${userId}`, {
+        await axios.put(url + `api/user/edit/${userId}`, {
           username: formData.username,
           email: formData.email,
           faculty_id: formData.facultyid,
@@ -296,7 +294,7 @@ function MemberTable() {
         }
       );
 
-        await axios.put(`http://localhost:3001/api/user/change-role/${userId}`, {
+        await axios.put(url + `api/user/change-role/${userId}`, {
           roles: formData.role
         },
         {
@@ -327,7 +325,7 @@ function MemberTable() {
   
     const handleDelete = async (e: React.FormEvent) => {
       try {
-        await axios.delete(`http://localhost:3001/api/user/delete/${userId}`,
+        await axios.delete(url + `api/user/delete/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

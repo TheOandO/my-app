@@ -36,10 +36,11 @@ function ProfileCard() {
   const userId = userData ? userData._id : ''; // Extract ID from user data
 
   const accessToken = localStorage.getItem('access_token');
+  const url = 'http://localhost:3001/'
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/api/user/get-by-id/${userId}`, {
+      const response = await axios.get(url + `api/user/get-by-id/${userId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
@@ -70,7 +71,7 @@ function ProfileCard() {
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
+        url + "api/faculty/get-all"
       );
       setFaculties(response.data.data);
     } catch (error) {

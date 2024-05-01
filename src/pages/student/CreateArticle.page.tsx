@@ -71,6 +71,7 @@ function CreateArticle() {
     term_condition: false,
   })
   const toast = useToast();
+  const url = 'http://localhost:3001/'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -141,7 +142,7 @@ function CreateArticle() {
         const facultyId = userData?.faculty_id; // Access faculty_id safely
   
         if (facultyId) {
-          const response = await axios.get("http://localhost:3001/api/entry/get-all");
+          const response = await axios.get(url + "api/entry/get-all");
   
           // Filter entries based on faculty_id
           const filteredEntries: Entry[] = response.data.data.filter((entry: Entry) => entry.faculty_id === facultyId);
@@ -171,7 +172,7 @@ function CreateArticle() {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -188,7 +189,7 @@ function CreateArticle() {
 
         // If token is invalid or expired, attempt to refresh it
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
 
@@ -233,7 +234,7 @@ function CreateArticle() {
         const userData = userDataString ? JSON.parse(userDataString) : null; // Parse user data
         const studentId = userData ? userData._id : '';
 
-        const SYresponse = await axios.get("http://localhost:3001/api/school-year/get-all");
+        const SYresponse = await axios.get(url + "api/school-year/get-all");
         const schoolYearsData = SYresponse.data.data;
         const lastSchoolYear = schoolYearsData.length > 0 ? schoolYearsData[schoolYearsData.length - 1]._id : null;
     
@@ -258,7 +259,7 @@ function CreateArticle() {
             formData.append('student_id', studentId);
             formData.append('school_year_id', lastSchoolYear);
             const response = await axios.post(
-              "http://localhost:3001/api/article/create", formData,
+              url + "api/article/create", formData,
               {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,

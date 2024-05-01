@@ -53,6 +53,7 @@ export function Topics() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [value, setValue] = useState("");
+  const url = 'http://localhost:3001/'
 
   type StatusType = 'In progress' | 'Expired' | 'Upcoming';
 
@@ -72,7 +73,7 @@ export function Topics() {
   const fetchFaculties = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/faculty/get-all"
+        url + "api/faculty/get-all"
       );
       setFaculties(response.data.data);
     } catch (error) {
@@ -84,7 +85,7 @@ export function Topics() {
 
   const fetchTopics = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/entry/get-all");
+      const response = await axios.get(url + "api/entry/get-all");
 
       const currentDate = new Date();
       const updatedTopics = response.data.data.map((topic: Topic) => {
@@ -116,7 +117,7 @@ export function Topics() {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -131,7 +132,7 @@ export function Topics() {
         console.error("Error validating token:", error);
         // If token is invalid or expired, attempt to refresh it
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
   
@@ -203,7 +204,7 @@ function TopicModal({ topicId }: { topicId: string }) {
   });
   const fetchTopicById = async () => {
     try {
-      const response = await axios.get<Topic>(`http://localhost:3001/api/entry/get-by-id/${topicId}`);
+      const response = await axios.get<Topic>(url + `api/entry/get-by-id/${topicId}`);
 
       setTopic(response.data);
       setIsOpen(true);
@@ -221,7 +222,7 @@ function TopicModal({ topicId }: { topicId: string }) {
     e.preventDefault();
     // Form submission logic here
     try {
-      await axios.put(`http://localhost:3001/api/entry/edit/${topicId}`, {
+      await axios.put(url + `api/entry/edit/${topicId}`, {
         name: formData.name,
         dateline1: startDate,
         dateline2: endDate,
@@ -249,7 +250,7 @@ function TopicModal({ topicId }: { topicId: string }) {
 
   const handleDelete = async (e: React.FormEvent) => {
     try {
-      await axios.delete(`http://localhost:3001/api/entry/delete/${topicId}`);
+      await axios.delete(url + `api/entry/delete/${topicId}`);
       toast({
         title: "Topic deleted.",
         description: "The topic has been successfully deleted.",

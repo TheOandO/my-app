@@ -107,6 +107,7 @@ function ArticleList() {
   const [selectedComment, setSelectedComment] = useState(null);
   const toast = useToast();
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const url = 'http://localhost:3001/'
 
   const handleClick = (article: any) => {
     setSelectedArticle(article);
@@ -131,7 +132,7 @@ function ArticleList() {
   const fetchArticles = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/article/get-by-student/${userId}`,
+        url + `api/article/get-by-student/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -149,7 +150,7 @@ function ArticleList() {
   const fetchEntries = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/entry/get-all"
+        url + "api/entry/get-all"
       );
       setTopics(response.data.data);
     } catch (error) {
@@ -161,7 +162,7 @@ function ArticleList() {
   const handleDelete = async (articleId: string) => {
     try {
       await axios.delete(
-        `http://localhost:3001/api/article/delete/${articleId}`
+        url + `api/article/delete/${articleId}`
       );
       toast({
         title: "Articcle deleted.",
@@ -198,7 +199,7 @@ function ArticleList() {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem("access_token"),
           user: localStorage.getItem("user"),
         });
@@ -212,7 +213,7 @@ function ArticleList() {
         // If token is invalid or expired, attempt to refresh it
         try {
           const refreshResponse = await axios.post(
-            "http://localhost:3001/api/user/refresh",
+            url + "api/user/refresh",
             {
               user: localStorage.getItem("user"),
             }
@@ -312,7 +313,7 @@ function ArticleList() {
               align="center"
               borderBottomWidth="1px"
             >
-              <Image borderRadius="md" boxSize="310px" maxW={200} maxH={300} w={200} h={200} src={`http://localhost:3001/assets/uploads/${article.images}`} alt="image"/>
+              <Image borderRadius="md" boxSize="310px" maxW={200} maxH={300} w={200} h={200} src={url + `assets/uploads/${article.images}`} alt="image"/>
               <Box flex={1}>
                 <Text fontSize="2xl">{stripHtmlTags(article.text)}</Text>
                 <Text fontSize="md">

@@ -71,11 +71,12 @@ function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const url = 'http://localhost:3001/'
 
   const fetchArticles = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/article/get-all`,
+        url + `api/article/get-all`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -94,7 +95,7 @@ function ArticleList() {
   const fetchEntries = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/entry/get-all",
+        url + "api/entry/get-all",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -113,7 +114,7 @@ function ArticleList() {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/user/get-all"
+        url + "api/user/get-all"
       ,
       {
         headers: {
@@ -134,7 +135,7 @@ function ArticleList() {
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -148,7 +149,7 @@ function ArticleList() {
       } catch (error) {
         console.error("Error validating token:", error);
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
             access_token: localStorage.getItem('access_token'),
           });
@@ -172,7 +173,6 @@ function ArticleList() {
     fetchArticles()
   }, []);
 
-  const url = 'http://localhost:3001/api/download/article/'
   const handleDownload = async () => {
     try {
       if (selectedArticle) {
@@ -403,7 +403,7 @@ function ArticleList() {
                   display="flex"
                   mt={4}
                   boxSize="300px"
-                  src={`http://localhost:3001/assets/uploads/${article.images}`}
+                  src={url + `assets/uploads/${article.images}`}
                   alt={stripHtmlTags(article.text)}
                   mx="auto"
                   maxW="300px"
@@ -496,7 +496,7 @@ function ArticleList() {
                       </VStack>
                       <Heading fontSize='xl'>Images: </Heading>
                     <Image display="flex" mt={4} boxSize="400px"
-                      src={`http://localhost:3001/assets/uploads/${selectedArticle?.images}`}
+                      src={url + `assets/uploads/${selectedArticle?.images}`}
                       alt={selectedArticle?.text}
                       mx="auto"
                       maxW="500px"

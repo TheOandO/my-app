@@ -107,11 +107,12 @@ export function Overview() {
   const [endTime, setEndTime] = useState(Number);
   const [schoolYears, setSchoolYears] = useState(Number);
   const accessToken = localStorage.getItem('access_token');
+  const url = 'http://localhost:3001/'
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/user/get-all",{
+        url + "api/user/get-all",{
         headers: {
           Authorization: `Bearer ${accessToken}`
         }          
@@ -126,7 +127,7 @@ export function Overview() {
   const fetchArticles = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/article/get-all",{
+        url + "api/article/get-all",{
         headers: {
           Authorization: `Bearer ${accessToken}`
         }          
@@ -143,7 +144,7 @@ export function Overview() {
   const fetchSchoolYear = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3001/api/school-year/get-all",{
+        url + "api/school-year/get-all",{
         headers: {
           Authorization: `Bearer ${accessToken}`
         }          
@@ -235,11 +236,13 @@ function Homepage() {
   const [userRole, setUserRole] = useState('');
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const url = 'http://localhost:3001/'
+
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -254,7 +257,7 @@ function Homepage() {
         console.error("Error validating token:", error);
         // If token is invalid or expired, attempt to refresh it
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
   

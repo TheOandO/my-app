@@ -135,10 +135,11 @@ function ArticleList() {
     user_id: "",
     article_id: "",
   });
+  const url = 'http://localhost:3001/'
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/user/get-all", {
+      const response = await axios.get(url + "api/user/get-all", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -154,7 +155,7 @@ function ArticleList() {
 
   const fetchEntries = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/entry/get-all", {
+      const response = await axios.get(url + "api/entry/get-all", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -171,7 +172,7 @@ function ArticleList() {
   const fetchArticles = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/article/get-all`, {
+        url + `api/article/get-all`, {
           headers: {
             Authorization: `Bearer ${accessToken}`
           } 
@@ -240,7 +241,7 @@ function ArticleList() {
     // If expanding the article, fetch comments for the article
     if (expandedArticleId !== article._id) {
       try {
-        const response = await axios.get("http://localhost:3001/api/comment/get-all", {
+        const response = await axios.get(url + "api/comment/get-all", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -279,7 +280,7 @@ function ArticleList() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/comment/create", {
+      await axios.post(url + "api/comment/create", {
         text: formData.text,
         user_id: formData.user_id,
         article_id: formData.article_id
@@ -372,7 +373,7 @@ function ArticleList() {
               <Image
                 borderRadius="md"
                 boxSize="150px"
-                src={`http://localhost:3001/assets/uploads/${article.images}`}
+                src={url + `assets/uploads/${article.images}`}
                 alt='image'
               />
             )}
@@ -450,11 +451,13 @@ function PendingArticles() {
   const [userRole, setUserRole] = useState('');
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const url = 'http://localhost:3001/'
+
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {
         // Make a request to the /validate endpoint to check token validity
-        await axios.post("http://localhost:3001/api/user/validate", {
+        await axios.post(url + "api/user/validate", {
           access_token: localStorage.getItem('access_token'),
           user: localStorage.getItem('user'),
           
@@ -469,7 +472,7 @@ function PendingArticles() {
         console.error("Error validating token:", error);
         // If token is invalid or expired, attempt to refresh it
         try {
-          const refreshResponse = await axios.post("http://localhost:3001/api/user/refresh", {
+          const refreshResponse = await axios.post(url + "api/user/refresh", {
             user: localStorage.getItem('user'),
           });
   
