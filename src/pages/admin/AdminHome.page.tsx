@@ -15,8 +15,8 @@ import { differenceInDays, format } from 'date-fns';
 export function LoggedinHeader() {
   const userDataString = localStorage.getItem('user');
   const userData = userDataString ? JSON.parse(userDataString) : null; 
-  const userId = userData ? userData._id : ''; // Extract ID from user data
-  const role = userData ? userData.roles : ''; // Extract role from user data
+  const userId = userData ? userData._id : '';
+  const role = userData ? userData.roles : ''; 
   const [href, setHref] = useState('/');
   const navigate = useNavigate()
   const handleLogout = async () => {
@@ -31,15 +31,15 @@ export function LoggedinHeader() {
 
   useEffect(() => {
     const currentPath = window.location.pathname.toLowerCase();
-    if (currentPath.includes('/mm')) {
+    if (currentPath.includes('/mm') || role.includes('marketingManager')) {
       setHref('/mm');
-    } else if (currentPath.includes('/admin')) {
+    } else if (currentPath.includes('/admin') || role.includes('admin')) {
       setHref('/admin');
-    } else if (currentPath.includes('/mc')) {
+    } else if (currentPath.includes('/mc') || role.includes('marketingCoordinator')) {
       setHref('/mc');
     } else if (currentPath.includes('/')) {
       setHref('/');
-    } else if (currentPath.includes('/student')) {
+    } else if (currentPath.includes('/student') || role.includes('student')) {
       setHref('/student');
     } else {
       setHref('/');
@@ -67,9 +67,8 @@ export function LoggedinHeader() {
             Logout              
           </Button>
 
-          {/* Avatar for logged in account */}
           <Link href={`/MyAccount/${userId}`}>
-            <Avatar name="My Account" src="path-to-admin-avatar.jpg" size="md" />
+            <Avatar name="My Account" src="" size="md" />
           </Link>
           
         </Box>
