@@ -79,7 +79,7 @@ function ArticleList() {
   const fetchArticles = async () => {
     try {
       const response = await axios.get(
-        url + `api/article/get-by-faculty/${userFaculty}`,
+        url + `api/article/get-all`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
