@@ -213,6 +213,7 @@ const CreateTopic: React.FC = () => {
                 required
                 value={formData.name}
                 onChange={handleChange}
+                maxLength={60}
               />
             </FormControl>
 
