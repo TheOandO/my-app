@@ -80,13 +80,15 @@ function CreateArticle() {
       [name]: value,
     }));
   };
-
+  const MAX_TEXT_LENGTH = 20;
   const handleText = (value: string) => {
-    setForm(prevForm => ({
-      ...prevForm,
-      text: value,
-    }));
-  };
+    if (value.length <= MAX_TEXT_LENGTH) {
+      setForm(prevForm => ({
+        ...prevForm,
+        text: value,
+      }));
+    };
+  }
 
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
@@ -216,8 +218,7 @@ function CreateArticle() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
   // Perform validation
-    if (!form.entryid || !form.text || !isTermsAccepted) {
-      // If any required field is empty or checkbox is unchecked, show error message
+    if (!form.entryid || !form.text || !isTermsAccepted || form.text.length > MAX_TEXT_LENGTH) {
       toast({
         title: 'Form Validation Error',
         description: 'Please fill out all required fields and accept the terms & conditions.',
@@ -356,7 +357,7 @@ function CreateArticle() {
               </Select>
             </FormControl>
             <FormControl id="article-description" isRequired isInvalid={!form.text}>
-            <FormErrorMessage>Please enter a description</FormErrorMessage>
+              <FormErrorMessage>Please enter a description</FormErrorMessage>
               <FormLabel>Description</FormLabel>
               <ReactQuill
                 style={{ width: "100%", height: "300px" }}
@@ -364,6 +365,9 @@ function CreateArticle() {
                 value={form.text}
                 onChange={handleText}
               />
+              <Text mt={2} color={form.text.length > MAX_TEXT_LENGTH ? 'red' : 'gray.400'}>
+                {form.text.length}/{MAX_TEXT_LENGTH} characters
+              </Text>
             </FormControl>
             <FormControl id="image">
               <FormLabel>Image</FormLabel>

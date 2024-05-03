@@ -58,16 +58,16 @@ export function StudentSidebar() {
         alignItems="center"
         justifyContent="center"
       >
-        <Link as={RouterLink} to="/Student/MyArticles">
+        <Link as={RouterLink} to="/student/MyArticles">
           <Button
-            bg={isActive("/Student/MyArticles") ? "whitesmoke" : "transparent"}
+            bg={isActive("/student/MyArticles") ? "whitesmoke" : "transparent"}
             _hover={
-              isActive("/Student/MyArticles")
+              isActive("/student/MyArticles")
                 ? {}
                 : { bg: "#fff", color: "#2d4b12" }
             }
             leftIcon={<FaNewspaper />}
-            color={isActive("/Student/MyArticles") ? "#2d4b12" : "whitesmoke"}
+            color={isActive("/student/MyArticles") ? "#2d4b12" : "whitesmoke"}
             w="300px"
             variant="outline"
           >
@@ -306,7 +306,7 @@ function ArticleList() {
                 onChange={(e) => setValue(e.target.value)}
               />
             </InputGroup>
-            <Link href="/Student/CreateArticle">
+            <Link href="/student/CreateArticle">
               <Button
                 leftIcon={<AddIcon />}
                 bg="#426b1f"

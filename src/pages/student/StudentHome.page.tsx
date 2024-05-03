@@ -234,12 +234,12 @@ function Dashboard() {
       <VStack>
         <Topics />
         <HStack spacing={4}>
-          <Link href='/Student/CreateArticle' width='50%'>
+          <Link href='/student/CreateArticle' width='50%'>
             <Button size="lg" width='220px' bg="#426B1F" mt={5}  color='white' _hover={{ bg:"#fff", color:'#2d4b12'}}>
               Make a post now!
             </Button>
           </Link>
-          <Link href='/Student/MyArticles' width='50%'>
+          <Link href='/student/MyArticles' width='50%'>
             <Button size="lg" width='220px' bg="#426B1F" mt={5}  color='white' _hover={{ bg:"#fff", color:'#2d4b12'}}>
               My articles
             </Button>
@@ -258,7 +258,7 @@ function Dashboard() {
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const handleAddButtonClick = () => {
-      navigate('/Student/CreateArticle');
+      navigate('/student/CreateArticle');
       // Additional logic when the plus button is clicked
     };
     const url = 'http://localhost:3001/'

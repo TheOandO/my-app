@@ -5,9 +5,9 @@ import MyArticles from '../pages/student/MyArticles.page';
 function StudentRoute() {
   return (
     <>
-      <Route path='/Student' element={<StudentHome />} />
-      <Route path='/Student/CreateArticle' element={<CreateArticle />} />
-      <Route path='/Student/MyArticles' element={<MyArticles />} />
+      <Route path='/student' element={<StudentHome />} />
+      <Route path='/student/CreateArticle' element={<CreateArticle />} />
+      <Route path='/student/MyArticles' element={<MyArticles />} />
     </>
   );
 }
