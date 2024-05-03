@@ -450,66 +450,46 @@ function CreateArticle() {
                   <ModalCloseButton />
                   <ModalBody>
                     <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Cras ultrices luctus metus ullamcorper pulvinar. Fusce in
-                      metus eleifend ex lobortis tempus vel vel risus. Cras et
-                      ante mattis, dictum nisi non, porttitor velit. Phasellus a
-                      pretium mauris, egestas aliquet sapien. Donec erat felis,
-                      vehicula quis augue non, pretium tempus massa.
-                      Pellentesque quis vehicula massa. Morbi eget iaculis arcu,
-                      vestibulum scelerisque velit. Etiam vehicula ex id ornare
-                      consectetur. Aenean condimentum sem vel lectus rhoncus,
-                      vel posuere risus semper. Nam lacinia eu tellus eget
-                      cursus. Sed in eros justo. Morbi lobortis erat erat, in
-                      dapibus tortor ultricies ut. Donec suscipit ante mattis ex
-                      mollis, ac dignissim orci rhoncus. <br /> Sed eros tellus,
-                      dictum quis libero at, pellentesque ornare erat. Sed
-                      ullamcorper consequat justo sollicitudin facilisis.
-                      Vestibulum eros urna, scelerisque eu aliquam quis, semper
-                      et orci. Pellentesque placerat dapibus sem, a vehicula
-                      ligula sollicitudin sit amet. Interdum et malesuada fames
-                      ac ante ipsum primis in faucibus. Mauris convallis
-                      volutpat erat, nec condimentum augue commodo eget. Cras
-                      neque erat, imperdiet eget volutpat a, facilisis sit amet
-                      risus. Morbi porta consequat dui, malesuada tristique nisl
-                      scelerisque vitae. Proin pretium tempor erat sit amet
-                      lacinia. Suspendisse quis diam vehicula leo eleifend
-                      vestibulum. Etiam auctor metus id tellus laoreet, in
-                      elementum tortor tempus. Pellentesque at tristique orci,
-                      non posuere augue. Ut vitae felis fermentum, imperdiet
-                      velit scelerisque, sollicitudin ipsum. Aenean ultrices
-                      vehicula aliquet.
-                      <br /> Praesent vehicula orci quis magna lacinia, ut
-                      posuere elit fringilla. Sed porta dapibus elit a
-                      consectetur. Vestibulum justo metus, venenatis eu diam at,
-                      ultricies suscipit eros. Maecenas sem leo, gravida id
-                      volutpat quis, elementum nec ipsum. Ut ex arcu, blandit
-                      non nibh at, ultrices finibus turpis. Morbi et feugiat
-                      nulla, et ullamcorper ex. Integer id enim semper,
-                      condimentum dolor id, interdum sapien. Ut turpis nunc,
-                      semper sit amet erat nec, iaculis imperdiet libero. In
-                      condimentum eleifend magna, id molestie nulla. Phasellus
-                      quis tortor in dolor vehicula fermentum nec eu arcu.
-                      Aliquam erat volutpat. Vestibulum id bibendum magna, nec
-                      molestie urna. Nulla porttitor odio sed lobortis accumsan.
-                      Integer cursus ante non tincidunt dapibus. <br />
-                      Nunc posuere luctus arcu, in finibus magna maximus eu. Ut
-                      pulvinar facilisis eleifend. Aliquam sed vulputate velit,
-                      a tempus metus. Sed non eleifend urna. Mauris ipsum mi,
-                      tristique in velit et, aliquam luctus orci. Curabitur
-                      pretium rutrum turpis. Class aptent taciti sociosqu ad
-                      litora torquent per conubia nostra, per inceptos
-                      himenaeos. Etiam laoreet elit at lectus lacinia varius.
-                      Nullam justo turpis, elementum quis feugiat eu, iaculis et
-                      risus. Etiam et dignissim dui. Suspendisse potenti.
-                      Phasellus in enim eu massa laoreet tempus eget vitae
-                      metus. Vivamus ornare ultrices neque quis vulputate. Nam
-                      quis enim sed diam mattis dapibus et vel urna. In hac
-                      habitasse platea dictumst. Class aptent taciti sociosqu ad
-                      litora torquent per conubia nostra, per inceptos
-                      himenaeos. In placerat justo tellus, ut vehicula augue
-                      pellentesque in. Aenean semper sem at ante dictum, vitae
-                      hendrerit elit efficitur.
+<Heading>1. Introduction</Heading>
+
+These Terms of Service ("Terms") govern your access to and use of Website ("Website"), a platform that allows users to upload, share, and access articles ("Articles"). By accessing or using the Website, you agree to be bound by these Terms. If you disagree with any part of these Terms, you may not access or use the Website.
+
+<Heading>2. User Accounts</Heading>
+
+2.1 You may be required to create an account ("Account") to access certain features of the Website. You are responsible for maintaining the confidentiality of your account information, including your username and password. You are also responsible for all activity that occurs under your Account.
+
+2.2 You agree to provide true, accurate, current, and complete information when creating your Account. You agree to update your Account information to keep it accurate.
+
+2.3 You may not use the Website for any illegal or unauthorized purpose. You are solely responsible for your use of the Website and for any violations of law or the rights of others that may result from your use of the Website.
+
+<Heading>3. Content Ownership</Heading>
+
+3.1 You retain all ownership rights to the Articles you upload to the Website.
+
+3.2 By uploading Articles to the Website, you grant Website a non-exclusive, royalty-free, worldwide license to display, reproduce, modify, translate, publish, distribute, and otherwise use your Articles on the Website and for promotional purposes.
+
+3.3 You are solely responsible for ensuring that you have the necessary rights to upload any Articles to the Website, including any intellectual property rights.
+
+<Heading>4. User Conduct</Heading>
+
+4.1 You agree not to upload any Articles that are:
+
+Illegal, obscene, defamatory, threatening, harassing, abusive, hateful, or discriminatory.
+In violation of any intellectual property rights of another person.
+That contain viruses, malware, or other harmful code.
+4.2 You agree not to use the Website to spam, advertise, or solicit others.
+
+4.3 You agree not to impersonate any person or entity, or to falsely state or misrepresent your affiliation with a person or entity.
+
+4.4 You agree not to interfere with or disrupt the Website or its servers.
+
+<Heading>5. Termination</Heading>
+
+Website may terminate your Account or your access to the Website at any time, for any reason, without notice.
+
+<Heading>6. Disclaimer</Heading>
+
+The Website and the Articles are provided "as is" and without warranties of any kind, express or implied. Website disclaims all warranties, including, but not limited to, the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.
                     </p>
                   </ModalBody>
                 </ModalContent>
