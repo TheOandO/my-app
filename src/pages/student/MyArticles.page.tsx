@@ -100,28 +100,47 @@ interface Topic {
   dateline2: Date;
   faculty_id: Schema.Types.ObjectId;
 }
+interface Comment {
+  _id: string
+  text: string;
+  user_id: string;
+  article_id: string
+}
 
 function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [value, setValue] = useState("");
-  const [selectedComment, setSelectedComment] = useState(null);
   const toast = useToast();
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const url = 'http://localhost:3001/'
 
-  const handleClick = (article: any) => {
-    setSelectedArticle(article);
-    if (article.comment) {
-      setSelectedComment(article.comment); // Assuming comment is always a string
-    } else {
-      toast({
-        // Display toast notification
-        title: "No comment yet!",
-        status: "info",
-        duration: 2000,
-        isClosable: true,
-        colorScheme: "green",
+  const [selectedComment, setSelectedComment] = useState<Comment[]>([]); 
+  const handleClick = async (articleId: string| undefined) => {
+    try {
+      const response = await axios.get(url + "api/comment/get-all", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          article_id: articleId,
+        },
       });
+      const comments = response.data.data;
+      const filteredComments = comments.filter((comment:Comment) => comment.article_id === articleId);
+
+      setSelectedComment(filteredComments);
+
+      if (filteredComments.length === 0) {
+        toast({
+          title: 'No comments yet!',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      // Handle error
     }
   };
 
@@ -338,7 +357,7 @@ function ArticleList() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={() => handleClick(article)}
+                  onClick={() => handleClick(article._id)}
                 >
                   View comment
                 </Button>
@@ -357,6 +376,18 @@ function ArticleList() {
               </VStack>
             </HStack>
           ))}
+          <Modal isOpen={selectedComment.length !== 0} onClose={() => setSelectedComment([])} size="md" isCentered>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader fontSize='3xl' color='#426b1f'>Article Comment</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {selectedComment!.map(comment => (
+                  <Text fontSize='xl' m='5'>{comment.text}</Text>
+                ))}
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </>
       )}
     </VStack>
