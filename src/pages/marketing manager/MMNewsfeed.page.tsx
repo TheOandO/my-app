@@ -356,8 +356,9 @@ function ArticleList() {
                 borderRadius="lg"
                 cursor="pointer"
                 onClick={() => openModal(article)}
-                w="550px"
+                w="650px"
                 mb={10}
+                
               >
                 <HStack spacing={4}>
                   <Avatar src={findUserName(article.student_id)} name={findUserName(article.student_id)} />
@@ -402,16 +403,22 @@ function ArticleList() {
               <Heading fontSize="3xl" mt={4}>
                 {stripHtmlTags(article.text)}
               </Heading>
-              <Image
+              <Box
+                w={article.images ? "600px" : "auto"}
+                h={article.images ? "450px" : "auto"}
                 display="flex"
-                mt={4}
-                boxSize="300px"
-                src={url + `assets/uploads/${article.images}`}
-                alt={stripHtmlTags(article.text)}
-                mx="auto"
-                maxW="250px"
-                maxH="300px"
-              />
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Image
+                  display="flex"
+                  boxSize="auto"
+                  maxW="100%"
+                  maxH="100%"
+                  src={url + `assets/uploads/${article.images}`}
+                  alt={stripHtmlTags(article.text)}
+                />
+              </Box>
             </Box>
           ))}
 
@@ -443,7 +450,7 @@ function ArticleList() {
                       </VStack>
                       <Spacer /> 
       
-                        <Tag
+                      <Tag
                           key={selectedArticle?.entry_id}
                           variant="solid"
                           colorScheme={getRandomColorScheme()}
@@ -454,7 +461,7 @@ function ArticleList() {
                           maxH={16}
                         >
                           {findEntryName(selectedArticle?.entry_id ?? 'Searching Entry...')}
-                        </Tag>
+                      </Tag>
 
                     </HStack>
                     <Heading fontSize="4xl" fontStyle="bold" mb={6}>
@@ -487,31 +494,40 @@ function ArticleList() {
                     borderWidth={2}
                     mx={6}
                   />
-                    <VStack alignItems="flex-start">
-                      <Heading fontSize="xl">Files:</Heading>
-                      <VStack spacing={2} alignItems="flex-start">
-                        {selectedArticle?.files &&
-                          selectedArticle.files.map((file, index) => (
-                            <Box key={index}>
-                              <Text>{file}</Text>
-                            </Box>
-                          ))}
-                      </VStack>
-                      <Heading fontSize='xl'>Images: </Heading>
-                    <Image display="flex" mt={4} boxSize="400px"
-                      src={url + `assets/uploads/${selectedArticle?.images}`}
-                      alt={selectedArticle?.text}
-                      mx="auto"
-                      maxW="500px"
-                      maxH="500px"
-                    />                  
+                  <VStack alignItems="flex-start">
+                    <Heading fontSize="xl">Files:</Heading>
+                    <VStack spacing={2} alignItems="flex-start">
+                      {selectedArticle?.files &&
+                        selectedArticle.files.map((file, index) => (
+                          <Box key={index}>
+                            <Text>{file}</Text>
+                          </Box>
+                        ))}
                     </VStack>
+                    <Heading fontSize='xl'>Images: </Heading>
+                    <Box
+                      w={selectedArticle?.images ? "750px" : "auto"}
+                      h={selectedArticle?.images ? "550px" : "auto"}
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <Image
+                        display="flex"
+                        boxSize="auto"
+                        maxW="100%"
+                        maxH="100%"
+                        src={url + `assets/uploads/${selectedArticle?.images}`}
+                        alt={selectedArticle?.text}
+                      />
+                    </Box>               
+                  </VStack>
 
                 </HStack>
                 <ModalCloseButton />
             </ModalContent>
           </Modal>
-        </Grid>
+          </Grid>
         {articles.length > articlesToShow && (
             <Button
               onClick={handleLoadMore}
