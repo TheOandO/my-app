@@ -233,18 +233,6 @@ function ArticleList() {
             {isAscending ? "Ascending" : "Descending"}
           </Button>
         </Flex>
-        <Button
-          bg="#426b1f"
-          color="whitesmoke"
-          variant="ghost"
-          colorScheme="green"
-          _hover={{ bg: "#BDD7A6", color: "#426b1f" }}
-          _focus={{ boxShadow: "none" }}
-          transition="background-color 0.2s, box-shadow 0.2s"
-          minW={150}
-        >
-          Submit
-        </Button>
       </HStack>
 
       <Grid
