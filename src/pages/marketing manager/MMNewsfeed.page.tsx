@@ -71,18 +71,22 @@ function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const url = 'http://localhost:3001/'
+  const url = "http://localhost:3001/";
 
+  const filteredArticles = articles.filter((article) =>
+    article.text.toLowerCase().includes(value.toLowerCase())
+  );
+  const findArticle = (articleId: string) => {
+    const article = articles.find((a) => a._id === articleId);
+    return article ? article.text : "Article";
+  };
   const fetchArticles = async () => {
     try {
-      const response = await axios.get(
-        url + `api/article/get-all`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.get(url + `api/article/get-all`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log("Faculty API Response:", response.data);
       setArticles(response.data.data);
     } catch (error) {
@@ -94,14 +98,11 @@ function ArticleList() {
 
   const fetchEntries = async () => {
     try {
-      const response = await axios.get(
-        url + "api/entry/get-all",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.get(url + "api/entry/get-all", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log("Entries API Response:", response.data);
       setEntries(response.data.data);
     } catch (error) {
@@ -113,15 +114,11 @@ function ArticleList() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(
-        url + "api/user/get-all"
-      ,
-      {
+      const response = await axios.get(url + "api/user/get-all", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-        }
-      },
-    );
+        },
+      });
       console.log("Users API Response:", response.data);
       setUsers(response.data.users);
     } catch (error) {
@@ -131,62 +128,58 @@ function ArticleList() {
     }
   };
 
-  const [userRole, setUserRole] = useState('');
+  const [userRole, setUserRole] = useState("");
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {
         await axios.post(url + "api/user/validate", {
-          access_token: localStorage.getItem('access_token'),
-          user: localStorage.getItem('user'),
-          
-        },);
-        
-        const userDataString = localStorage.getItem('user');
-        const userData = JSON.parse(userDataString || '');
+          access_token: localStorage.getItem("access_token"),
+          user: localStorage.getItem("user"),
+        });
+
+        const userDataString = localStorage.getItem("user");
+        const userData = JSON.parse(userDataString || "");
         const userRole = userData.roles;
         setUserRole(userRole);
-  
       } catch (error) {
         console.error("Error validating token:", error);
         try {
           const refreshResponse = await axios.post(url + "api/user/refresh", {
-            user: localStorage.getItem('user'),
-            access_token: localStorage.getItem('access_token'),
+            user: localStorage.getItem("user"),
+            access_token: localStorage.getItem("access_token"),
           });
-  
+
           console.log(refreshResponse.data.message);
-          localStorage.setItem('access_token', refreshResponse.data.access_token);
+          localStorage.setItem(
+            "access_token",
+            refreshResponse.data.access_token
+          );
           setUserRole(refreshResponse.data.user.roles);
-          
         } catch (refreshError) {
           console.error("Error refreshing token:", refreshError);
           // If refresh fails, redirect the user to the login page
-          setShowError(true)
-          setErrorMessage('Error refreshing token')
-  
+          setShowError(true);
+          setErrorMessage("Error refreshing token");
         }
       }
-    }
+    };
     checkTokenValidity();
-    fetchUsers()
-    fetchEntries()
-    fetchArticles()
+    fetchUsers();
+    fetchEntries();
+    fetchArticles();
   }, []);
 
   const handleDownload = async () => {
-    
     try {
       if (selectedArticle) {
-        const downloadUrl = url + `api/getContribution/article/${selectedArticle._id}/zip`;
-        await axios.get(
-          downloadUrl,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            },
-          }
-        );
-        window.open(downloadUrl)
+        const downloadUrl =
+          url + `api/getContribution/article/${selectedArticle._id}/zip`;
+        await axios.get(downloadUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        window.open(downloadUrl);
       } else {
         toast({
           title: "No article selected",
@@ -238,12 +231,12 @@ function ArticleList() {
 
   const findUserName = (userId: string): string => {
     const user = users.find((u) => u._id === userId);
-    return user ? user.name : 'User';
+    return user ? user.name : "User";
   };
 
   const findEntryName = (entryId: string): string => {
     const entry = entries.find((e) => e._id === entryId);
-    return entry ? entry.name : 'Entry';
+    return entry ? entry.name : "Entry";
   };
 
   const stripHtmlTags = (html: string) => {
@@ -258,12 +251,12 @@ function ArticleList() {
         <Alert status="error" mt={4}>
           <AlertIcon />
           {errorMessage}
-          <Link href='/login' ml={10}>
-            <Text fontStyle='italic'>Go to the Login Page</Text>
+          <Link href="/login" ml={10}>
+            <Text fontStyle="italic">Go to the Login Page</Text>
           </Link>
         </Alert>
       )}
-      {userRole.includes('marketingManager') && (
+      {userRole.includes("marketingManager") && (
         <>
           <Heading fontSize="4xl" color="#426b1f">
             Welcome to The Newsfeed, Marketing Manager!
@@ -283,31 +276,14 @@ function ArticleList() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
               />
-              <div
-                className="dropdown"
-                style={{
-                  backgroundColor: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  margin: "2px 0",
-                  border: "1px solid gray",
-                }}
-              >
-                {articles
-                  .filter((article) => {
-                      article.text.toLowerCase().includes(value.toLowerCase())
-                  })
-                  .slice(0, 5)
-                  .map((article) => (
-                    <div className="dropdown-row" style={{ textAlign: "start" }}>
-                      <a href="#">{stripHtmlTags(article.text)}</a>
-                    </div>
-                  ))}
-              </div>
             </InputGroup>
 
             <Flex gap={6}>
-              <Select placeholder="Sort by" boxShadow={boxShadowColor} width={40}>
+              <Select
+                placeholder="Sort by"
+                boxShadow={boxShadowColor}
+                width={40}
+              >
                 <option value="date">Date</option>
                 <option value="name">Name</option>
                 <option value="faculty">Faculty</option>
@@ -328,18 +304,6 @@ function ArticleList() {
                 {isAscending ? "Ascending" : "Descending"}
               </Button>
             </Flex>
-            <Button
-              bg="#426b1f"
-              color="whitesmoke"
-              variant="ghost"
-              colorScheme="green"
-              _hover={{ bg: "#BDD7A6", color: "#426b1f" }}
-              _focus={{ boxShadow: "none" }}
-              transition="background-color 0.2s, box-shadow 0.2s"
-              minW={150}
-            >
-              Submit
-            </Button>
           </HStack>
 
           <Grid
@@ -347,7 +311,7 @@ function ArticleList() {
             gridAutoRows="minmax(min-content, auto)"
             gap={38}
           >
-            {articles.slice(0, articlesToShow).map((article) => (
+            {filteredArticles.slice(0, articlesToShow).map((article) => (
               <Box
                 key={article._id}
                 bg="#F7FAFC"
@@ -358,11 +322,13 @@ function ArticleList() {
                 onClick={() => openModal(article)}
                 w="650px"
                 mb={10}
-                
               >
                 <HStack spacing={4}>
-                  <Avatar src={findUserName(article.student_id)} name={findUserName(article.student_id)} />
-                  <VStack  alignItems="flex-start">
+                  <Avatar
+                    src={findUserName(article.student_id)}
+                    name={findUserName(article.student_id)}
+                  />
+                  <VStack alignItems="flex-start">
                     <Text fontSize="lg" fontWeight="bold">
                       {findUserName(article.student_id)}
                     </Text>
@@ -374,95 +340,97 @@ function ArticleList() {
                   <VStack>
                     <Tag
                       key={article.entry_id}
-                        variant="solid"
-                        colorScheme={getRandomColorScheme()}
-                        borderRadius="full"
-                        minW={60}
+                      variant="solid"
+                      colorScheme={getRandomColorScheme()}
+                      borderRadius="full"
+                      minW={60}
                       minH={10}
                     >
                       {findEntryName(article.entry_id)}
                     </Tag>
-                  <Button
-                    bg="#426b1f"
-                    color="whitesmoke"
-                    variant="ghost"
-                    colorScheme="green"
-                    _hover={{ bg: "whitesmoke", color: "#426b1f" }}
-                    _focus={{ boxShadow: "none" }}
-                    transition="background-color 0.2s, box-shadow 0.2s"
-                    borderRadius="full"
-                    minW={54}
-                    w={60}
-                    key={article._id}
-                    onClick={handleDownload}
-                  >
-                    Download
-                  </Button>
-                </VStack>
-              </HStack>
-              <Heading fontSize="3xl" mt={4}>
-                {stripHtmlTags(article.text)}
-              </Heading>
-              <Box
-                w={article.images ? "600px" : "auto"}
-                h={article.images ? "450px" : "auto"}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Image
+                    <Button
+                      bg="#426b1f"
+                      color="whitesmoke"
+                      variant="ghost"
+                      colorScheme="green"
+                      _hover={{ bg: "whitesmoke", color: "#426b1f" }}
+                      _focus={{ boxShadow: "none" }}
+                      transition="background-color 0.2s, box-shadow 0.2s"
+                      borderRadius="full"
+                      minW={54}
+                      w={60}
+                      key={article._id}
+                      onClick={handleDownload}
+                    >
+                      Download
+                    </Button>
+                  </VStack>
+                </HStack>
+                <Heading fontSize="3xl" mt={4}>
+                  {stripHtmlTags(article.text)}
+                </Heading>
+                <Box
+                  w={article.images ? "600px" : "auto"}
+                  h={article.images ? "450px" : "auto"}
                   display="flex"
-                  boxSize="auto"
-                  maxW="100%"
-                  maxH="100%"
-                  src={url + `assets/uploads/${article.images}`}
-                  alt={stripHtmlTags(article.text)}
-                />
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Image
+                    display="flex"
+                    boxSize="auto"
+                    maxW="100%"
+                    maxH="100%"
+                    src={url + `assets/uploads/${article.images}`}
+                    alt={stripHtmlTags(article.text)}
+                  />
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
 
-          <Modal
-            isOpen={selectedArticle !== null}
+            <Modal
+              isOpen={selectedArticle !== null}
               onClose={closeModal}
               isCentered
               motionPreset="slideInBottom"
               size="6xl"
-          >
-            <ModalOverlay />
-            <ModalContent>
+            >
+              <ModalOverlay />
+              <ModalContent>
                 <HStack m="12">
                   <VStack>
                     <HStack spacing={10} mb={6}>
-                      <Avatar
-                        size="xl"
-                        src={selectedArticle?.student_id}
-                      />
+                      <Avatar size="xl" src={selectedArticle?.student_id} />
                       <VStack alignItems="flex-start">
                         <Text fontSize="xl" fontWeight="bold">
-                          {findUserName(selectedArticle?.student_id ?? 'Searching Username...')}
+                          {findUserName(
+                            selectedArticle?.student_id ??
+                              "Searching Username..."
+                          )}
                         </Text>
                         <Text fontSize="lg" color="gray.400" fontStyle="italic">
                           {selectedArticle?.createdAt
-                            ?'Submitted at ' + selectedArticle.createdAt.toLocaleString()
+                            ? "Submitted at " +
+                              selectedArticle.createdAt.toLocaleString()
                             : "No submit date"}
                         </Text>
                       </VStack>
-                      <Spacer /> 
-      
-                      <Tag
-                          key={selectedArticle?.entry_id}
-                          variant="solid"
-                          colorScheme={getRandomColorScheme()}
-                          borderRadius="full"
-                          minW={40}
-                          maxW={50}
-                          minH={10}
-                          maxH={16}
-                        >
-                          {findEntryName(selectedArticle?.entry_id ?? 'Searching Entry...')}
-                      </Tag>
+                      <Spacer />
 
+                      <Tag
+                        key={selectedArticle?.entry_id}
+                        variant="solid"
+                        colorScheme={getRandomColorScheme()}
+                        borderRadius="full"
+                        minW={40}
+                        maxW={50}
+                        minH={10}
+                        maxH={16}
+                      >
+                        {findEntryName(
+                          selectedArticle?.entry_id ?? "Searching Entry..."
+                        )}
+                      </Tag>
                     </HStack>
                     <Heading fontSize="4xl" fontStyle="bold" mb={6}>
                       {selectedArticle?.text}
@@ -504,7 +472,7 @@ function ArticleList() {
                           </Box>
                         ))}
                     </VStack>
-                    <Heading fontSize='xl'>Images: </Heading>
+                    <Heading fontSize="xl">Images: </Heading>
                     <Box
                       w={selectedArticle?.images ? "750px" : "auto"}
                       h={selectedArticle?.images ? "550px" : "auto"}
@@ -520,15 +488,14 @@ function ArticleList() {
                         src={url + `assets/uploads/${selectedArticle?.images}`}
                         alt={selectedArticle?.text}
                       />
-                    </Box>               
+                    </Box>
                   </VStack>
-
                 </HStack>
                 <ModalCloseButton />
-            </ModalContent>
-          </Modal>
+              </ModalContent>
+            </Modal>
           </Grid>
-        {articles.length > articlesToShow && (
+          {articles.length > articlesToShow && (
             <Button
               onClick={handleLoadMore}
               bg="#426b1f"
@@ -544,9 +511,9 @@ function ArticleList() {
             >
               Load More Articles
             </Button>
-        )}
-      </>
-    )}
+          )}
+        </>
+      )}
     </VStack>
   );
 }
