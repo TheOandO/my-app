@@ -33,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
+import { parseISO, isBefore, isAfter } from "date-fns";
 
 interface Article {
   text: string;
@@ -133,19 +134,21 @@ function CreateArticle() {
 
   const fetchEntries = async () => {
     try {
-      // Retrieve user data from local storage
       const userDataString = localStorage.getItem('user');
   
       // If user data exists and contains faculty_id
       if (userDataString) {
         const userData = JSON.parse(userDataString);
-        const facultyId = userData?.faculty_id; // Access faculty_id safely
+        const facultyId = userData?.faculty_id;
   
         if (facultyId) {
           const response = await axios.get(url + "api/entry/get-all");
   
-          // Filter entries based on faculty_id
-          const filteredEntries: Entry[] = response.data.data.filter((entry: Entry) => entry.faculty_id === facultyId);
+          const filteredEntries: Entry[] = response.data.data.filter((entry: Entry) => {
+            const currentDate = new Date();
+
+            return entry.faculty_id === facultyId && isBefore(currentDate, entry.dateline2) && isAfter(currentDate, entry.dateline1);
+          });
   
           setEntries(filteredEntries);
         } else {
