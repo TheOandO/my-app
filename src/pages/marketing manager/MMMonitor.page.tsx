@@ -404,7 +404,7 @@ function MemberTable() {
                 <FaSearch />
               </InputLeftElement>
               <Input
-                placeholder="Search a topic"
+                placeholder="Search a user"
                 _placeholder={{ color: "gray.500" }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
